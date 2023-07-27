@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -20,7 +20,7 @@
             <img class="shopImg" src="${contextPath}/${item.imagepath}" alt="${contextPath}/images/error-page.png">
             <h3>${item.name}</h3>
             <p>${item.sometext}</p>
-            <form action="${contextPath}/sneakersShop/category/${item.id}" method="GET">
+            <form action="${contextPath}/category/${item.id}" method="GET">
                 <button class="buy-1">Buy now</button>
             </form>
         </div>

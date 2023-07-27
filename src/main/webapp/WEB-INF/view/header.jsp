@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <header>
@@ -11,11 +12,11 @@
         <div class="navb-items d-none d-xl-flex">
 
             <div class="item">
-                <a href="${contextPath}/sneakersShop/catalog">Home</a>
+                <a href="${contextPath}/catalog">Home</a>
             </div>
 
             <div class="item">
-                <a href="${contextPath}/sneakersShop/cart">Cart</a>
+                <a href="${contextPath}/cart">Cart</a>
                 <div class="circle">
                     <c:choose>
                         <c:when test="${empty sessionScope.cart}">0</c:when>
@@ -25,11 +26,11 @@
             </div>
 
             <div class="item">
-                <a href="${contextPath}/sneakersShop/account">Account</a>
+                <a href="${contextPath}/account">Account</a>
             </div>
 
             <div class="item">
-                <a href="${contextPath}/sneakersShop/search">Search</a>
+                <a href="${contextPath}/search">Search</a>
             </div>
 
             <div class="item-button">
@@ -89,6 +90,5 @@
         </div>
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js
-    "></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
 </header>

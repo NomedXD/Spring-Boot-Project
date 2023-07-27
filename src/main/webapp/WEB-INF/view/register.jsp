@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -12,7 +13,7 @@
 </head>
 <body>
 <div class="login-dark">
-    <form action="/sneakersShop/registration" method="POST" class="js-form">
+    <form action="${contextPath}/registration" method="POST" class="js-form">
         <h2 class="sr-only">Login Form</h2>
         <div class="illustration"><i class="icon ion-ios-locked-outline"></i></div>
         <div class="form-group">

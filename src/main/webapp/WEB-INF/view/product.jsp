@@ -6,9 +6,6 @@
 <head>
     <title>Product</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-            crossorigin="anonymous"></script>
     <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
@@ -60,7 +57,7 @@
                 <hr/>
                 <div class="row">
                     <div class="col-sm-12 col-md-6 col-lg-6">
-                        <a href="${contextPath}/sneakersShop/cart/add/${product.id}" class="btn btn-success btn-lg">Add to cart ${product.price}$</a>
+                        <a href="${contextPath}/cart/add/${product.id}" class="btn btn-success btn-lg">Add to cart ${product.price}$</a>
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-6">
                         <div class="btn-group pull-right">

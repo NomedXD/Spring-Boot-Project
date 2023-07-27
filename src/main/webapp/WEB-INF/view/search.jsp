@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
 <html>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <head>
@@ -21,7 +22,7 @@
 <body class="body">
 <jsp:include page="header.jsp"/>
 <div class="s007 container">
-    <form action="/sneakersShop/search" method="POST">
+    <form action="${contextPath}/search" method="POST">
         <div class="inner-form">
             <div class="basic-search">
                 <div class="input-field">
@@ -135,8 +136,7 @@
                 </div>
                 <h6 class="text-success">Available</h6>
                 <div class="d-flex flex-column mt-4">
-                    <a class="btn btn-primary btn-sm" type="button" href="${contextPath}
-                /sneakersShop/product/${product.id}">More info</a>
+                    <a class="btn btn-primary btn-sm" type="button" href="${contextPath}/product/${product.id}">More info</a>
                     <button class="btn btn-outline-primary btn-sm mt-2" type="button">Add to wishlist</button>
                 </div>
             </div>
@@ -166,7 +166,7 @@
         </nav>
     </div>
 </div>
-<script src="../../jsp-scripts/choices.js"></script>
+<script src="${contextPath}/jsp-scripts/choices.js"></script>
 <script>
     const customSelects = document.querySelectorAll("select");
     const deleteBtn = document.getElementById('delete')
