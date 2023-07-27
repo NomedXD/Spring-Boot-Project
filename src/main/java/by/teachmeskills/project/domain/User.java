@@ -1,12 +1,25 @@
 package by.teachmeskills.project.domain;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDate;
 
 public class User extends BaseEntity{
+    @Email
+    @NotNull
     private String mail;
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$")
+    @NotNull
     private String password;
+    @Pattern(regexp = "[a-zA-Z ,.'-]+")
+    @NotNull
     private String name;
+    @Pattern(regexp = "[a-zA-Z ,.'-]+")
+    @NotNull
     private String surname;
+    @NotNull
     private LocalDate date;
     private Float currentBalance;
     private String mobile;

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Cart {
-
     private final Map<Integer, Product> products;
     private float totalPrice;
 

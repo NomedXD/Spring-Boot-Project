@@ -12,6 +12,7 @@ import by.teachmeskills.project.validator.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -106,8 +107,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView register(User user, String repeatPassword) {
-        if (ValidatorUtils.validateRegistration(user.getMail(), user.getName(), user.getSurname(), user.getPassword(), repeatPassword)) {
+    public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) {
+        if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
             ModelMap model = new ModelMap();
             User loggedUser = create(new User(user.getMail(), user.getPassword(), user.getName(), user.getSurname(), user.getDate(), 0));
             if (loggedUser != null) {

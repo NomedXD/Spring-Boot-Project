@@ -4,8 +4,10 @@ import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,8 +33,8 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public ModelAndView register(@ModelAttribute(EshopConstants.USER) User user, @RequestParam(name = "repeatPasswordParam") String repeatPassword) {
-        return userService.register(user, repeatPassword);
+    public ModelAndView register(@Valid @ModelAttribute(EshopConstants.USER) User user, BindingResult bindingResult, @RequestParam(name = "repeatPasswordParam") String repeatPassword) {
+        return userService.register(user, bindingResult, repeatPassword);
     }
 
     @ModelAttribute(EshopConstants.USER)
