@@ -1,10 +1,26 @@
 package by.teachmeskills.project.domain;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
+
 public class Product extends BaseEntity{
+    @NotNull
+    @Pattern(regexp = "[a-zA-Z ,.'-]+")
+    @Size(min = 0, max = 45)
     private String name;
+    @NotNull
+    @Size(min = 0, max = 45)
     private String imagepath;
+    @NotNull
     private String description;
+    @NotNull
+    @PositiveOrZero
     private int categoryid;
+    @NotNull
+    @Positive
     private float price;
 
     public Product(){

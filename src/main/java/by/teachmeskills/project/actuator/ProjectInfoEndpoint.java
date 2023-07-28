@@ -16,8 +16,8 @@ import java.io.FileReader;
 import java.io.IOException;
 @Component
 @Endpoint(id = "project")
-public class ProjectStatisticEndpoint {
-    private final static Logger logger = LoggerFactory.getLogger(ProjectStatisticEndpoint.class);
+public class ProjectInfoEndpoint {
+    private final static Logger logger = LoggerFactory.getLogger(ProjectInfoEndpoint.class);
     @ReadOperation
     public ModelAndView getProjectInfo(){
         ModelMap modelMap = new ModelMap();

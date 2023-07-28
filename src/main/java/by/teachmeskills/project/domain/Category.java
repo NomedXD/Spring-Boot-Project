@@ -1,8 +1,19 @@
 package by.teachmeskills.project.domain;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class Category extends BaseEntity{
+    @NotNull
+    @Pattern(regexp = "[a-zA-Z ,.'-]+")
+    @Size(min = 0, max = 45)
     private String name;
+    @NotNull
+    @Size(min = 0, max = 45)
     private String imagepath;
+    @NotNull
+    @Size(min = 0, max = 45)
     private String sometext;
 
     public Category(){
