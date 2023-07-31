@@ -34,7 +34,7 @@ public class SearchController {
     }
 
     @PostMapping
-    public ModelAndView submitSearch(@RequestParam(name = "searchField") String searchString) {
+    public ModelAndView submitSearch(@RequestParam(name = "searchField") String searchString) throws SQLExecutionException {
         ModelMap model = new ModelMap();
         List<Product> productList = productService.getSearchedProducts(searchString);
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productList);

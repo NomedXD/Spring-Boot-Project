@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategoryByName(String name) {
-        return categoryRepository.getCategoryByName(name);
+    public void getCategoryByName(String name) throws SQLExecutionException {
+        categoryRepository.getCategoryByName(name);
     }
 }

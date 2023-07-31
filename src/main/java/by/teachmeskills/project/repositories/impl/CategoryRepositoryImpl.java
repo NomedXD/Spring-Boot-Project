@@ -1,6 +1,7 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.Category;
+import by.teachmeskills.project.exception.SQLExecutionException;
 import by.teachmeskills.project.repositories.CategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     private static final String GET_CATEGORY_BY_ITS_NAME = "SELECT * FROM categories WHERE name = ?";
 
     @Override
-    public Category create(Category entity) {
+    public Category create(Category entity) throws SQLExecutionException {
         Category category = new Category();
         Connection connection = connectionPool.getConnection();
         try {
@@ -37,14 +38,14 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             return category;
         } catch (SQLException e) {
             logger.warn("SQLException while creating category. Most likely request is wrong");
-            return category;
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public List<Category> read() {
+    public List<Category> read() throws SQLExecutionException {
         List<Category> categoryArrayList = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try {
@@ -57,14 +58,14 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             return categoryArrayList;
         } catch (SQLException e) {
             logger.warn("SQLException while getting categories. Most likely request is wrong");
-            return categoryArrayList;
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public Category update(Category entity) {
+    public Category update(Category entity) throws SQLExecutionException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -78,14 +79,14 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             return entity;
         } catch (SQLException e) {
             logger.warn("SQLException while updating category. Most likely request is wrong");
-            return entity;
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws SQLExecutionException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -94,13 +95,14 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.warn("SQLException while deleting category. Most likely request is wrong");
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public Category getCategoryByName(String name) {
+    public Category getCategoryByName(String name) throws SQLExecutionException {
         Category category = new Category();
         Connection connection = connectionPool.getConnection();
         try {
@@ -114,7 +116,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             return category;
         } catch (SQLException e) {
             logger.warn("SQLException while getting category by it's id. Most likely request is wrong");
-            return category;
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }

@@ -7,19 +7,19 @@ import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 public class User extends BaseEntity{
-    @Email
-    @NotNull
+    @NotNull(message = "Field is null validation error")
+    @Email(message = "Field does not satisfy regexp")
     private String mail;
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$")
-    @NotNull
+    @NotNull(message = "Field is null validation error")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$", message = "Field does not satisfy regexp")
     private String password;
-    @Pattern(regexp = "[a-zA-Z ,.'-]+")
-    @NotNull
+    @NotNull(message = "Field is null validation error")
+    @Pattern(regexp = "[a-zA-Z ,.'-]+", message = "Field does not satisfy regexp")
     private String name;
-    @Pattern(regexp = "[a-zA-Z ,.'-]+")
-    @NotNull
+    @NotNull(message = "Field is null validation error")
+    @Pattern(regexp = "[a-zA-Z ,.'-]+", message = "Field does not satisfy regexp")
     private String surname;
-    @NotNull
+    @NotNull(message = "Field is null validation error")
     private LocalDate date;
     private Float currentBalance;
     private String mobile;

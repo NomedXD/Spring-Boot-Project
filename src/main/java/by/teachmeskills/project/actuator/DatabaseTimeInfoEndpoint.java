@@ -2,6 +2,7 @@ package by.teachmeskills.project.actuator;
 
 import by.teachmeskills.project.domain.StatisticEntity;
 import by.teachmeskills.project.enums.PagesPathEnum;
+import by.teachmeskills.project.exception.SQLExecutionException;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.StatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class DatabaseTimeInfoEndpoint {
     }
 
     @ReadOperation
-    public ModelAndView getCategoryProductStatistic(@Selector String categoryName) {
+    public ModelAndView getCategoryProductStatistic(@Selector String categoryName) throws SQLExecutionException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         categoryService.getCategoryByName(categoryName);

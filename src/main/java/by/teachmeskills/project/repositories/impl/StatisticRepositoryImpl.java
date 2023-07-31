@@ -1,6 +1,7 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.StatisticEntity;
+import by.teachmeskills.project.exception.SQLExecutionException;
 import by.teachmeskills.project.repositories.StatisticRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     private static final String GET_STATISTIC_BY_ITS_ID = "SELECT * FROM time_statistic WHERE id = ?";
 
     @Override
-    public StatisticEntity create(StatisticEntity entity) {
+    public StatisticEntity create(StatisticEntity entity) throws SQLExecutionException {
         Connection connection = connectionPool.getConnection();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_STATISTIC_DATA);
@@ -32,7 +33,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.warn("SQLException while creating statistic note in db. Most likely request is wrong");
-            return entity;
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
@@ -40,7 +41,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     }
 
     @Override
-    public List<StatisticEntity> read() {
+    public List<StatisticEntity> read() throws SQLExecutionException {
         List<StatisticEntity> statisticEntityList = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try {
@@ -51,7 +52,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             }
         } catch (SQLException e) {
             logger.warn("SQLException while getting all statistic. Most likely request is wrong");
-            return statisticEntityList;
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
@@ -59,7 +60,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     }
 
     @Override
-    public StatisticEntity update(StatisticEntity entity) {
+    public StatisticEntity update(StatisticEntity entity) throws SQLExecutionException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -71,14 +72,14 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             return entity;
         } catch (SQLException e) {
             logger.warn("SQLException while updating statistic. Most likely request is wrong");
-            return entity;
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws SQLExecutionException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -87,13 +88,14 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.warn("SQLException while deleting statistic. Most likely request is wrong");
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public StatisticEntity getStatisticEntityById(int id) {
+    public StatisticEntity getStatisticEntityById(int id) throws SQLExecutionException {
         StatisticEntity statisticEntity = new StatisticEntity();
         Connection connection = connectionPool.getConnection();
         try {
@@ -106,7 +108,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             return statisticEntity;
         } catch (SQLException e) {
             logger.warn("SQLException while getting statistic by it's id. Most likely request is wrong");
-            return statisticEntity;
+            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }

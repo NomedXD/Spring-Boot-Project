@@ -39,22 +39,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getCategoryProducts(int categoryId) {
+    public List<Product> getCategoryProducts(int categoryId) throws SQLExecutionException {
         return productRepository.getCategoryProducts(categoryId);
     }
 
     @Override
-    public Product getProductById(int id) {
+    public Product getProductById(int id) throws SQLExecutionException {
         return productRepository.getProductById(id);
     }
 
     @Override
-    public Product getProductByName(String name) {
+    public Product getProductByName(String name) throws SQLExecutionException {
         return productRepository.getProductByName(name);
     }
 
     @Override
-    public List<Product> getSearchedProducts(String searchString) {
+    public List<Product> getSearchedProducts(String searchString) throws SQLExecutionException {
         return productRepository.getSearchedProducts(searchString);
     }
 }

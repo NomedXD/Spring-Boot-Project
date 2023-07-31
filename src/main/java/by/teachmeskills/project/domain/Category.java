@@ -5,15 +5,15 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class Category extends BaseEntity{
-    @NotNull
-    @Pattern(regexp = "[a-zA-Z ,.'-]+")
-    @Size(min = 0, max = 45)
+    @NotNull(message = "Field is null validation error")
+    @Pattern(regexp = "[a-zA-Z ,.'-]+", message = "Field does not satisfy regexp")
+    @Size(min = 0, max = 45, message = "Out of validation bounds")
     private String name;
-    @NotNull
-    @Size(min = 0, max = 45)
+    @NotNull(message = "Field is null validation error")
+    @Size(min = 0, max = 45, message = "Out of validation bounds")
     private String imagepath;
-    @NotNull
-    @Size(min = 0, max = 45)
+    @NotNull(message = "Field is null validation error")
+    @Size(min = 0, max = 45, message = "Out of validation bounds")
     private String sometext;
 
     public Category(){

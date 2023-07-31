@@ -5,11 +5,11 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 public class StatisticEntity extends BaseEntity{
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "Field is null validation error")
+    @PositiveOrZero(message = "Field must be positive or zero")
     private Integer id;
-    @NotNull
-    @Size(min = 0, max = 45)
+    @NotNull(message = "Field is null validation error")
+    @Size(min = 0, max = 45, message = "Out of validation bounds")
     private String description;
 
     public StatisticEntity(){
