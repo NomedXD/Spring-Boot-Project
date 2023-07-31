@@ -37,6 +37,11 @@
         <div class="form-group">
             <button class="btn btn-primary btn-block" type="submit">Submit and log in</button>
         </div>
+        <c:if test="${not empty registrationErrorMessage}">
+            <div class="form-group">
+                <div class="bar error">${registrationErrorMessage}</div>
+            </div>
+        </c:if>
     </form>
 </div>
 <script src="${contextPath}/jsp-scripts/script.js"></script>

@@ -1,6 +1,7 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Product;
+import by.teachmeskills.project.exception.SQLExecutionException;
 import by.teachmeskills.project.repositories.ProductRepository;
 import by.teachmeskills.project.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +19,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product create(Product entity) {
+    public Product create(Product entity) throws SQLExecutionException {
         return productRepository.create(entity);
     }
 
     @Override
-    public List<Product> read() {
+    public List<Product> read() throws SQLExecutionException {
         return productRepository.read();
     }
 
     @Override
-    public Product update(Product entity) {
+    public Product update(Product entity) throws SQLExecutionException {
         return productRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws SQLExecutionException {
         productRepository.delete(id);
     }
 

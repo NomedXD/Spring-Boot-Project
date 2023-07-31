@@ -1,6 +1,7 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.StatisticEntity;
+import by.teachmeskills.project.exception.SQLExecutionException;
 import by.teachmeskills.project.repositories.StatisticRepository;
 import by.teachmeskills.project.services.StatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +19,22 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public StatisticEntity create(StatisticEntity entity) {
+    public StatisticEntity create(StatisticEntity entity) throws SQLExecutionException {
         return statisticRepository.create(entity);
     }
 
     @Override
-    public List<StatisticEntity> read() {
+    public List<StatisticEntity> read() throws SQLExecutionException {
         return statisticRepository.read();
     }
 
     @Override
-    public StatisticEntity update(StatisticEntity entity) {
+    public StatisticEntity update(StatisticEntity entity) throws SQLExecutionException {
         return statisticRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws SQLExecutionException {
         statisticRepository.delete(id);
     }
 }

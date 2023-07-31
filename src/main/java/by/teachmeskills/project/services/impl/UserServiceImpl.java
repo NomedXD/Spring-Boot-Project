@@ -5,6 +5,9 @@ import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
+import by.teachmeskills.project.exception.NoSuchUserException;
+import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.UserAlreadyExistException;
 import by.teachmeskills.project.repositories.UserRepository;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.UserService;
@@ -31,32 +34,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User entity) {
+    public User create(User entity) throws SQLExecutionException {
         return userRepository.create(entity);
     }
 
     @Override
-    public List<User> read() {
+    public List<User> read() throws SQLExecutionException {
         return userRepository.read();
     }
 
     @Override
-    public User update(User entity) {
+    public User update(User entity) throws SQLExecutionException {
         return userRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws SQLExecutionException {
         userRepository.delete(id);
     }
 
     @Override
-    public User getUserByCredentials(String mail, String password) {
+    public User getUserByCredentials(String mail, String password) throws SQLExecutionException {
         return userRepository.getUserByCredentials(mail, password);
     }
 
     @Override
-    public ModelAndView updateAccountData(User updatedUserFields, User user) {
+    public ModelAndView updateAccountData(User updatedUserFields, User user) throws SQLExecutionException {
         Map<String, String> params = new HashMap<>();
         params.put(RequestParamsEnum.MOBILE.getValue(), updatedUserFields.getMobile());
         params.put(RequestParamsEnum.STREET.getValue(), updatedUserFields.getStreet());
@@ -94,7 +97,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView logIn(User user) {
+    public ModelAndView logIn(User user) throws SQLExecutionException {
         ModelMap model = new ModelMap();
         User loggedUser = getUserByCredentials(user.getMail(), user.getPassword());
         if (loggedUser != null) {
@@ -102,12 +105,12 @@ public class UserServiceImpl implements UserService {
             model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
             return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
         } else {
-            return new ModelAndView(PagesPathEnum.LOG_IN_PAGE.getPath());
+            throw new NoSuchUserException("Wrong email or password. Try again");
         }
     }
 
     @Override
-    public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) {
+    public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) throws SQLExecutionException {
         if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
             ModelMap model = new ModelMap();
             User loggedUser = create(new User(user.getMail(), user.getPassword(), user.getName(), user.getSurname(), user.getDate(), 0));
@@ -116,14 +119,14 @@ public class UserServiceImpl implements UserService {
                 model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
                 return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
             } else {
-                return new ModelAndView(PagesPathEnum.REGISTRATION_PAGE.getPath());
+                throw new UserAlreadyExistException("User with such email already exist");
             }
         }
         return new ModelAndView(PagesPathEnum.REGISTRATION_PAGE.getPath());
     }
 
     @Override
-    public ModelAndView checkIfLoggedInUser(User user) {
+    public ModelAndView checkIfLoggedInUser(User user) throws SQLExecutionException {
         ModelMap model = new ModelMap();
         if (user != null) {
             List<Category> categoriesList = categoryService.read();

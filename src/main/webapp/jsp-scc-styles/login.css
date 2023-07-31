@@ -70,3 +70,15 @@
     transform: translateY(1px);
 }
 
+.bar {
+    padding: 10px;
+    margin: 10px;
+    background: transparent;
+    border: 1px solid #ccc;
+}
+.error {
+    color: #ba3939;
+    background: transparent;
+    border: 1px solid #a33a3a;
+}
+

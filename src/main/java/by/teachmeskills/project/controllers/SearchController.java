@@ -3,6 +3,7 @@ package by.teachmeskills.project.controllers;
 import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
+import by.teachmeskills.project.exception.SQLExecutionException;
 import by.teachmeskills.project.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,7 @@ public class SearchController {
     }
 
     @GetMapping
-    public ModelAndView getSearchPage() {
+    public ModelAndView getSearchPage() throws SQLExecutionException {
         ModelMap model = new ModelMap();
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productService.read());
         return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
