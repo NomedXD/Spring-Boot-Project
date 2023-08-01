@@ -3,8 +3,10 @@ package by.teachmeskills.project.repositories.impl;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.exception.SQLExecutionException;
 import by.teachmeskills.project.repositories.UserRepository;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
+    private final SessionFactory sessionFactory;
     private final static Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
     private static final String GET_USER_QUERY = "SELECT * FROM users WHERE mail = ? AND password = ?";
     private static final String GET_ALL_USERS = "SELECT * FROM users";
@@ -26,6 +29,11 @@ public class UserRepositoryImpl implements UserRepository {
             " balance) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String DELETE_USER = "DELETE FROM users WHERE id = ?";
     private static final String UPDATE_USER_DATA = "UPDATE users SET mobile = ?, street = ?, accommodation_number = ?, flat_number = ? WHERE id = ?";
+
+    @Autowired
+    public UserRepositoryImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public User create(User entity) throws SQLExecutionException {
