@@ -36,7 +36,7 @@ public class Product extends BaseEntity{
 
     }
 
-    public Product(int id, String name, String imagepath, String description, int categoryid, float price) {
+    public Product(Integer id, String name, String imagepath, String description, int categoryid, float price) {
         this.id = id;
         this.name = name;
         this.imagepath = imagepath;
@@ -45,7 +45,7 @@ public class Product extends BaseEntity{
         this.price = price;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

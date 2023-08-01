@@ -3,7 +3,10 @@ package by.teachmeskills.project.repositories.impl;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.exception.SQLExecutionException;
 import by.teachmeskills.project.repositories.UserRepository;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,23 +43,22 @@ public class UserRepositoryImpl implements UserRepository {
         User user;
         Connection connection = connectionPool.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(REGISTER_USER);
-            preparedStatement.setString(1, entity.getMail());
-            preparedStatement.setString(2, entity.getPassword());
-            preparedStatement.setString(3, entity.getName());
-            preparedStatement.setString(4, entity.getSurname());
-            preparedStatement.setDate(5, Date.valueOf(entity.getDate()));
-            preparedStatement.setFloat(6, entity.getCurrentBalance());
-            preparedStatement.execute();
+            Session session = sessionFactory.getCurrentSession();
+            Transaction transaction = session.getTransaction();
+            transaction.begin();
+            session.persist(entity);
+            transaction.commit();
+            session.close();
             user = getUserByCredentials(entity.getMail(), entity.getPassword());
             return user;
-        } catch (SQLException e) {
-            if (e instanceof SQLIntegrityConstraintViolationException) {
-                return null;
-            } else {
-                logger.warn("SQLException while saving user. Most likely request is wrong");
-                throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
-            }
+        } catch (HibernateException e) {
+            return null;
+//            if (e instanceof SQLIntegrityConstraintViolationException) {
+//                return null;
+//            } else {
+//                logger.warn("SQLException while saving user. Most likely request is wrong");
+//                throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+//            }
         } finally {
             connectionPool.closeConnection(connection);
         }

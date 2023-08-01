@@ -27,14 +27,14 @@ public class Category extends BaseEntity{
 
     }
 
-    public Category(int id, String name, String imagepath, String sometext) {
+    public Category(Integer id, String name, String imagepath, String sometext) {
         this.id = id;
         this.name = name;
         this.imagepath = imagepath;
         this.sometext = sometext;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

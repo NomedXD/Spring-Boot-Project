@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class User extends BaseEntity{
     @NotNull(message = "Field is null validation error")
     @Email(message = "Field does not satisfy regexp")
-    @Column(name = "mail")
+    @Column(name = "mail", unique = true)
     private String mail;
     @NotNull(message = "Field is null validation error")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$", message = "Field does not satisfy regexp")
@@ -45,7 +45,7 @@ public class User extends BaseEntity{
 
     }
 
-    public User(int id, String mail, String password, String name, String surname, LocalDate date, float currentBalance, String mobile, String street, String accommodationNumber, String flatNumber) {
+    public User(Integer id, String mail, String password, String name, String surname, LocalDate date, float currentBalance, String mobile, String street, String accommodationNumber, String flatNumber) {
         this.id = id;
         this.mail = mail;
         this.password = password;
@@ -68,7 +68,7 @@ public class User extends BaseEntity{
         this.currentBalance = currentBalance;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
