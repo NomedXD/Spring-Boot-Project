@@ -1,13 +1,23 @@
 package by.teachmeskills.project.domain;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Cart {
-
+    /*
+     *  Annotated for the future admin account in shop
+     */
+    @NotNull(message = "Field is null validation error")
+    @Size(min = 0, max = 100, message = "Out of validation bounds")
     private final Map<Integer, Product> products;
+    @NotNull(message = "Field is null validation error")
+    @PositiveOrZero(message = "Field must be positive or zero")
     private float totalPrice;
 
     public Cart() {

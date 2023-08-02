@@ -3,6 +3,7 @@ package by.teachmeskills.project.controllers;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,7 @@ public class AccountController {
     }
 
     @PostMapping("/update")
-    public ModelAndView updateAccountData(@ModelAttribute("updatedUserFields") User updatedUserFields, @SessionAttribute(EshopConstants.USER) User user) {
+    public ModelAndView updateAccountData(@ModelAttribute("updatedUserFields") User updatedUserFields, @SessionAttribute(EshopConstants.USER) User user) throws EntityOperationException {
         return userService.updateAccountData(updatedUserFields, user);
     }
 

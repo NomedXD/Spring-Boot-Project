@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -15,16 +15,23 @@
 <body class="body">
 <jsp:include page="header.jsp"/>
 <div class="gallery">
-    <c:forEach items="${categories}" var="item">
-        <div class="content">
-            <img class="shopImg" src="${contextPath}/${item.imagepath}" alt="${contextPath}/images/error-page.png">
-            <h3>${item.name}</h3>
-            <p>${item.sometext}</p>
-            <form action="${contextPath}/sneakersShop/category/${item.id}" method="GET">
-                <button class="buy-1">Buy now</button>
-            </form>
-        </div>
-    </c:forEach>
+    <c:choose>
+        <c:when test="${categories.size() == 0}">
+            <div class="bar warn">No categories found. Try later</div>
+        </c:when>
+        <c:otherwise>
+            <c:forEach items="${categories}" var="item">
+                <div class="content">
+                    <img class="shopImg" src="${contextPath}/${item.imagepath}" alt="${contextPath}/images/error-page.png">
+                    <h3>${item.name}</h3>
+                    <p>${item.sometext}</p>
+                    <form action="${contextPath}/category/${item.id}" method="GET">
+                        <button class="buy-1">Buy now</button>
+                    </form>
+                </div>
+            </c:forEach>
+        </c:otherwise>
+    </c:choose>
 </div>
 </body>
 </html>

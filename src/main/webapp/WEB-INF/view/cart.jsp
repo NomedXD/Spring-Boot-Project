@@ -7,9 +7,7 @@
     <title>Category</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/cart.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-            crossorigin="anonymous"></script>
+
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
@@ -36,8 +34,7 @@
             </div>
             <h6 class="text-success">Available</h6>
             <div class="d-flex flex-column mt-4">
-                <a class="btn btn-primary btn-sm" type="button" href="${contextPath}
-                /sneakersShop/cart/remove/${cartProduct.id}">Delete form cart</a>
+                <a class="btn btn-primary btn-sm" type="button" href="${contextPath}/cart/remove/${cartProduct.id}">Delete form cart</a>
             </div>
         </div>
     </div>
