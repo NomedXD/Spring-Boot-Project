@@ -1,7 +1,7 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.Product;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     private static final String GET_SEARCHED_PRODUCTS = "SELECT * FROM products WHERE name LIKE ? OR description LIKE ?";
 
     @Override
-    public Product create(Product entity) throws SQLExecutionException {
+    public Product create(Product entity) throws EntityOperationException {
         Product product = new Product();
         Connection connection = connectionPool.getConnection();
         try {
@@ -42,15 +42,15 @@ public class ProductRepositoryImpl implements ProductRepository {
             product = getProductByName(entity.getName());
             return product;
         } catch (SQLException e) {
-            logger.warn("SQLException while creating product. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public List<Product> read() throws SQLExecutionException {
+    public List<Product> read() throws EntityOperationException {
         List<Product> productArrayList = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try {
@@ -62,8 +62,8 @@ public class ProductRepositoryImpl implements ProductRepository {
                         resultSet.getInt("categoryid"), resultSet.getFloat("price")));
             }
         } catch (SQLException e) {
-            logger.warn("SQLException while getting all products. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
@@ -71,7 +71,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Product update(Product entity) throws SQLExecutionException {
+    public Product update(Product entity) throws EntityOperationException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -86,15 +86,15 @@ public class ProductRepositoryImpl implements ProductRepository {
             entity = getProductById(entity.getId());
             return entity;
         } catch (SQLException e) {
-            logger.warn("SQLException while updating product. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public void delete(int id) throws SQLExecutionException {
+    public void delete(int id) throws EntityOperationException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -102,15 +102,15 @@ public class ProductRepositoryImpl implements ProductRepository {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            logger.warn("SQLException while deleting product. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public List<Product> getCategoryProducts(int categoryId) throws SQLExecutionException {
+    public List<Product> getCategoryProducts(int categoryId) throws EntityOperationException {
         List<Product> productList = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try {
@@ -124,15 +124,15 @@ public class ProductRepositoryImpl implements ProductRepository {
             }
             return productList;
         } catch (SQLException e) {
-            logger.warn("SQLException while getting products by category. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public Product getProductById(int id) throws SQLExecutionException {
+    public Product getProductById(int id) throws EntityOperationException {
         Product product = new Product();
         Connection connection = connectionPool.getConnection();
         try {
@@ -146,15 +146,15 @@ public class ProductRepositoryImpl implements ProductRepository {
             }
             return product;
         } catch (SQLException e) {
-            logger.warn("SQLException while getting product by it's id. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public Product getProductByName(String name) throws SQLExecutionException {
+    public Product getProductByName(String name) throws EntityOperationException {
         Product product = new Product();
         Connection connection = connectionPool.getConnection();
         try {
@@ -168,15 +168,15 @@ public class ProductRepositoryImpl implements ProductRepository {
             }
             return product;
         } catch (SQLException e) {
-            logger.warn("SQLException while getting product by it's name. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public List<Product> getSearchedProducts(String searchString) throws SQLExecutionException {
+    public List<Product> getSearchedProducts(String searchString) throws EntityOperationException {
         List<Product> productArrayList = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try {
@@ -190,8 +190,8 @@ public class ProductRepositoryImpl implements ProductRepository {
                         resultSet.getInt("categoryid"), resultSet.getFloat("price")));
             }
         } catch (SQLException e) {
-            logger.warn("SQLException while getting searched products. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }

@@ -1,7 +1,7 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.StatisticEntity;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.StatisticRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +25,15 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     private static final String GET_STATISTIC_BY_ITS_ID = "SELECT * FROM time_statistic WHERE id = ?";
 
     @Override
-    public StatisticEntity create(StatisticEntity entity) throws SQLExecutionException {
+    public StatisticEntity create(StatisticEntity entity) throws EntityOperationException {
         Connection connection = connectionPool.getConnection();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_STATISTIC_DATA);
             preparedStatement.setString(1, entity.getDescription());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            logger.warn("SQLException while creating statistic note in db. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
@@ -41,7 +41,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     }
 
     @Override
-    public List<StatisticEntity> read() throws SQLExecutionException {
+    public List<StatisticEntity> read() throws EntityOperationException {
         List<StatisticEntity> statisticEntityList = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try {
@@ -51,8 +51,8 @@ public class StatisticRepositoryImpl implements StatisticRepository {
                 statisticEntityList.add(new StatisticEntity(resultSet.getInt("id"), resultSet.getString("description")));
             }
         } catch (SQLException e) {
-            logger.warn("SQLException while getting all statistic. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
@@ -60,7 +60,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     }
 
     @Override
-    public StatisticEntity update(StatisticEntity entity) throws SQLExecutionException {
+    public StatisticEntity update(StatisticEntity entity) throws EntityOperationException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -71,15 +71,15 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             entity = getStatisticEntityById(entity.getId());
             return entity;
         } catch (SQLException e) {
-            logger.warn("SQLException while updating statistic. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public void delete(int id) throws SQLExecutionException {
+    public void delete(int id) throws EntityOperationException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -87,15 +87,15 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            logger.warn("SQLException while deleting statistic. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public StatisticEntity getStatisticEntityById(int id) throws SQLExecutionException {
+    public StatisticEntity getStatisticEntityById(int id) throws EntityOperationException {
         StatisticEntity statisticEntity = new StatisticEntity();
         Connection connection = connectionPool.getConnection();
         try {
@@ -107,8 +107,8 @@ public class StatisticRepositoryImpl implements StatisticRepository {
             }
             return statisticEntity;
         } catch (SQLException e) {
-            logger.warn("SQLException while getting statistic by it's id. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }

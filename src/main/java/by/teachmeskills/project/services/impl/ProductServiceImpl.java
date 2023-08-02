@@ -1,7 +1,7 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Product;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.ProductRepository;
 import by.teachmeskills.project.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,42 +19,42 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product create(Product entity) throws SQLExecutionException {
+    public Product create(Product entity) throws EntityOperationException {
         return productRepository.create(entity);
     }
 
     @Override
-    public List<Product> read() throws SQLExecutionException {
+    public List<Product> read() throws EntityOperationException {
         return productRepository.read();
     }
 
     @Override
-    public Product update(Product entity) throws SQLExecutionException {
+    public Product update(Product entity) throws EntityOperationException {
         return productRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) throws SQLExecutionException {
+    public void delete(int id) throws EntityOperationException {
         productRepository.delete(id);
     }
 
     @Override
-    public List<Product> getCategoryProducts(int categoryId) throws SQLExecutionException {
+    public List<Product> getCategoryProducts(int categoryId) throws EntityOperationException {
         return productRepository.getCategoryProducts(categoryId);
     }
 
     @Override
-    public Product getProductById(int id) throws SQLExecutionException {
+    public Product getProductById(int id) throws EntityOperationException {
         return productRepository.getProductById(id);
     }
 
     @Override
-    public Product getProductByName(String name) throws SQLExecutionException {
+    public Product getProductByName(String name) throws EntityOperationException {
         return productRepository.getProductByName(name);
     }
 
     @Override
-    public List<Product> getSearchedProducts(String searchString) throws SQLExecutionException {
+    public List<Product> getSearchedProducts(String searchString) throws EntityOperationException {
         return productRepository.getSearchedProducts(searchString);
     }
 }

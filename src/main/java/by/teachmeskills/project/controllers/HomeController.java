@@ -2,7 +2,7 @@ package by.teachmeskills.project.controllers;
 
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,7 @@ public class HomeController {
     }
 
     @GetMapping
-    public ModelAndView getShopPage(@SessionAttribute(name = EshopConstants.USER, required = false) User user) throws SQLExecutionException {
+    public ModelAndView getShopPage(@SessionAttribute(name = EshopConstants.USER, required = false) User user) throws EntityOperationException {
         return userService.checkIfLoggedInUser(user);
     }
 }

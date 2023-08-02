@@ -6,7 +6,7 @@ import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.NoSuchUserException;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.exception.UserAlreadyExistException;
 import by.teachmeskills.project.repositories.UserRepository;
 import by.teachmeskills.project.services.CategoryService;
@@ -34,32 +34,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User entity) throws SQLExecutionException {
+    public User create(User entity) throws EntityOperationException {
         return userRepository.create(entity);
     }
 
     @Override
-    public List<User> read() throws SQLExecutionException {
+    public List<User> read() throws EntityOperationException {
         return userRepository.read();
     }
 
     @Override
-    public User update(User entity) throws SQLExecutionException {
+    public User update(User entity) throws EntityOperationException {
         return userRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) throws SQLExecutionException {
+    public void delete(int id) throws EntityOperationException {
         userRepository.delete(id);
     }
 
     @Override
-    public User getUserByCredentials(String mail, String password) throws SQLExecutionException {
+    public User getUserByCredentials(String mail, String password) throws EntityOperationException {
         return userRepository.getUserByCredentials(mail, password);
     }
 
     @Override
-    public ModelAndView updateAccountData(User updatedUserFields, User user) throws SQLExecutionException {
+    public ModelAndView updateAccountData(User updatedUserFields, User user) throws EntityOperationException {
         Map<String, String> params = new HashMap<>();
         params.put(RequestParamsEnum.MOBILE.getValue(), updatedUserFields.getMobile());
         params.put(RequestParamsEnum.STREET.getValue(), updatedUserFields.getStreet());
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView logIn(User user) throws SQLExecutionException {
+    public ModelAndView logIn(User user) throws EntityOperationException {
         ModelMap model = new ModelMap();
         User loggedUser = getUserByCredentials(user.getMail(), user.getPassword());
         if (loggedUser != null) {
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) throws SQLExecutionException {
+    public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) throws EntityOperationException {
         if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
             ModelMap model = new ModelMap();
             User loggedUser = create(new User(user.getMail(), user.getPassword(), user.getName(), user.getSurname(), user.getDate(), 0));
@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView checkIfLoggedInUser(User user) throws SQLExecutionException {
+    public ModelAndView checkIfLoggedInUser(User user) throws EntityOperationException {
         ModelMap model = new ModelMap();
         if (user != null) {
             List<Category> categoriesList = categoryService.read();

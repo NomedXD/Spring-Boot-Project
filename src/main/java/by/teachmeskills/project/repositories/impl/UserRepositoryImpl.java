@@ -1,7 +1,7 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.User;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String UPDATE_USER_DATA = "UPDATE users SET mobile = ?, street = ?, accommodation_number = ?, flat_number = ? WHERE id = ?";
 
     @Override
-    public User create(User entity) throws SQLExecutionException {
+    public User create(User entity) throws EntityOperationException {
         User user;
         Connection connection = connectionPool.getConnection();
         try {
@@ -46,8 +46,8 @@ public class UserRepositoryImpl implements UserRepository {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 return null;
             } else {
-                logger.warn("SQLException while saving user. Most likely request is wrong");
-                throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+                logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+                throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
             }
         } finally {
             connectionPool.closeConnection(connection);
@@ -55,7 +55,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> read() throws SQLExecutionException {
+    public List<User> read() throws EntityOperationException {
         List<User> userArrayList = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try {
@@ -70,15 +70,15 @@ public class UserRepositoryImpl implements UserRepository {
             }
             return userArrayList;
         } catch (SQLException e) {
-            logger.warn("SQLException while getting users. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public User update(User entity) throws SQLExecutionException {
+    public User update(User entity) throws EntityOperationException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -92,15 +92,15 @@ public class UserRepositoryImpl implements UserRepository {
             entity = getUserByCredentials(entity.getMail(), entity.getPassword());
             return entity;
         } catch (SQLException e) {
-            logger.warn("SQLException while saving user. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public void delete(int id) throws SQLExecutionException {
+    public void delete(int id) throws EntityOperationException {
         Connection connection = connectionPool.getConnection();
         PreparedStatement preparedStatement;
         try {
@@ -108,15 +108,15 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            logger.warn("SQLException while deleting user. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
     }
 
     @Override
-    public User getUserByCredentials(String mail, String password) throws SQLExecutionException {
+    public User getUserByCredentials(String mail, String password) throws EntityOperationException {
         User user = null;
         Connection connection = connectionPool.getConnection();
         try {
@@ -133,8 +133,8 @@ public class UserRepositoryImpl implements UserRepository {
             }
             return user;
         } catch (SQLException e) {
-            logger.warn("SQLException while getting user. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message:" + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         } finally {
             connectionPool.closeConnection(connection);
         }
