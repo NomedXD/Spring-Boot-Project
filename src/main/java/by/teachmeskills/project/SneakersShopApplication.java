@@ -22,15 +22,20 @@ public class SneakersShopApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(SneakersShopApplication.class, args);
+        try {
+            SpringApplication.run(SneakersShopApplication.class, args);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Bean(name = "dataSource")
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(env.getProperty("db.url"));
-        dataSource.setUsername(env.getProperty("db.login"));
-        dataSource.setPassword(env.getProperty("db.pass"));
+        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setUrl(env.getProperty("spring.datasource.url"));
+        dataSource.setUsername(env.getProperty("spring.datasource.username"));
+        dataSource.setPassword(env.getProperty("spring.datasource.password"));
         return dataSource;
     }
 
