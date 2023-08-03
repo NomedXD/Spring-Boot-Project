@@ -2,7 +2,7 @@ package by.teachmeskills.project.controllers;
 
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +23,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryid}")
-    public ModelAndView getCategoryPage(@PathVariable(name = "categoryid") Integer categoryId) throws SQLExecutionException {
+    public ModelAndView getCategoryPage(@PathVariable(name = "categoryid") Integer categoryId) throws EntityOperationException {
         ModelMap model = new ModelMap();
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productService.getCategoryProducts(categoryId));
         return new ModelAndView(PagesPathEnum.CATEGORY_PAGE.getPath(), model);

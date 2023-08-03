@@ -1,7 +1,7 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Category;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.CategoryRepository;
 import by.teachmeskills.project.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,27 +19,27 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category create(Category entity) throws SQLExecutionException {
+    public Category create(Category entity) throws EntityOperationException {
         return categoryRepository.create(entity);
     }
 
     @Override
-    public List<Category> read() throws SQLExecutionException {
+    public List<Category> read() throws EntityOperationException {
         return categoryRepository.read();
     }
 
     @Override
-    public Category update(Category entity) throws SQLExecutionException {
+    public Category update(Category entity) throws EntityOperationException {
         return categoryRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) throws SQLExecutionException {
+    public void delete(int id) throws EntityOperationException {
         categoryRepository.delete(id);
     }
 
     @Override
-    public void getCategoryByName(String name) throws SQLExecutionException {
+    public void getCategoryByName(String name) throws EntityOperationException {
         categoryRepository.getCategoryByName(name);
     }
 }

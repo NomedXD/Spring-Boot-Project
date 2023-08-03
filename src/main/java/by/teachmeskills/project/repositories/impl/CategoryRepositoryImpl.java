@@ -1,124 +1,81 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.Category;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.domain.Product;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.CategoryRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceException;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class CategoryRepositoryImpl implements CategoryRepository {
+    @PersistenceContext
+    private final EntityManager factory;
     private final static Logger logger = LoggerFactory.getLogger(CategoryRepositoryImpl.class);
-    private static final String CREATE_CATEGORY = "INSERT INTO categories(name, imagepath, sometext) VALUES (?, ?, ?)";
-    private static final String GET_All_CATEGORIES = "SELECT * FROM categories";
-    private static final String UPDATE_CATEGORY_DATA = "UPDATE categories SET name = ?, imagepath = ?, sometext = ? WHERE id = ?";
-    private static final String DELETE_CATEGORY = "DELETE FROM categories WHERE id = ?";
-    private static final String GET_CATEGORY_BY_ITS_NAME = "SELECT * FROM categories WHERE name = ?";
+
+    @Autowired
+    public CategoryRepositoryImpl(EntityManager factory) {
+        this.factory = factory;
+    }
 
     @Override
-    public Category create(Category entity) throws SQLExecutionException {
-        Category category = new Category();
-        Connection connection = connectionPool.getConnection();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(CREATE_CATEGORY);
-            preparedStatement.setString(1, entity.getName());
-            preparedStatement.setString(2, entity.getImagepath());
-            preparedStatement.setString(3, entity.getSometext());
-            preparedStatement.execute();
-            category = getCategoryByName(entity.getName());
-            return category;
-        } catch (SQLException e) {
-            logger.warn("SQLException while creating category. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
-        } finally {
-            connectionPool.closeConnection(connection);
+    public Category create(Category entity) throws EntityOperationException {
+        try(Session session = factory.unwrap(Session.class)) {
+            session.persist(entity);
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while creating category. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
+        }
+        return entity;
+    }
+
+    @Override
+    public List<Category> read() throws EntityOperationException {
+        try (Session session = factory.unwrap(Session.class)) {
+            return session.createQuery("from Category", Category.class).list();
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while getting all categories. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }
 
     @Override
-    public List<Category> read() throws SQLExecutionException {
-        List<Category> categoryArrayList = new ArrayList<>();
-        Connection connection = connectionPool.getConnection();
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(GET_All_CATEGORIES);
-            while (resultSet.next()) {
-                categoryArrayList.add(new Category(resultSet.getInt("id"), resultSet.getString("name"),
-                        resultSet.getString("imagepath"), resultSet.getString("sometext")));
-            }
-            return categoryArrayList;
-        } catch (SQLException e) {
-            logger.warn("SQLException while getting categories. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
-        } finally {
-            connectionPool.closeConnection(connection);
+    public Category update(Category entity) throws EntityOperationException {
+        try (Session session = factory.unwrap(Session.class)) {
+            return session.merge(entity);
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while updating category. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }
 
     @Override
-    public Category update(Category entity) throws SQLExecutionException {
-        Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement;
-        try {
-            preparedStatement = connection.prepareStatement(UPDATE_CATEGORY_DATA);
-            preparedStatement.setString(1, entity.getName());
-            preparedStatement.setString(2, entity.getImagepath());
-            preparedStatement.setString(3, entity.getSometext());
-            preparedStatement.setInt(4, entity.getId());
-            preparedStatement.executeUpdate();
-            entity = getCategoryByName(entity.getName());
-            return entity;
-        } catch (SQLException e) {
-            logger.warn("SQLException while updating category. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
-        } finally {
-            connectionPool.closeConnection(connection);
+    public void delete(Integer id) throws EntityOperationException {
+        try(Session session = factory.unwrap(Session.class)) {
+            Category category = session.get(Category.class, id);
+            session.remove(category);
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while deleting category. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }
 
     @Override
-    public void delete(int id) throws SQLExecutionException {
-        Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement;
-        try {
-            preparedStatement = connection.prepareStatement(DELETE_CATEGORY);
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            logger.warn("SQLException while deleting category. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
-        } finally {
-            connectionPool.closeConnection(connection);
-        }
-    }
-
-    @Override
-    public Category getCategoryByName(String name) throws SQLExecutionException {
-        Category category = new Category();
-        Connection connection = connectionPool.getConnection();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_CATEGORY_BY_ITS_NAME);
-            preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                category = new Category(resultSet.getInt("id"), resultSet.getString("name"),
-                        resultSet.getString("imagepath"), resultSet.getString("sometext"));
-            }
-            return category;
-        } catch (SQLException e) {
-            logger.warn("SQLException while getting category by it's id. Most likely request is wrong");
-            throw new SQLExecutionException("Unexpected error on the site. How do you get here?\nCheck us later");
-        } finally {
-            connectionPool.closeConnection(connection);
+    public Category getCategoryByName(String name) throws EntityOperationException {
+        try (Session session = factory.unwrap(Session.class)) {
+            return session.createQuery("from Category c where c.name =: name", Category.class).
+                    setParameter("name", name).getSingleResultOrNull();
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while getting category by it's name. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }
 }

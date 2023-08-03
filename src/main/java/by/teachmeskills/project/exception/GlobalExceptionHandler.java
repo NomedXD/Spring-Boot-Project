@@ -38,9 +38,9 @@ public class GlobalExceptionHandler {
         return new ModelAndView(PagesPathEnum.REGISTRATION_PAGE.getPath(), modelMap);
     }
 
-    @ExceptionHandler(SQLExecutionException.class)
+    @ExceptionHandler(EntityOperationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ModelAndView handleSQLExecutionException(SQLExecutionException exception){
+    public ModelAndView handleEntityOperationException(EntityOperationException exception){
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute("SQLErrorMessage", exception.getMessage());
         return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);

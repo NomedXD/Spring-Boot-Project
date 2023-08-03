@@ -5,7 +5,7 @@ import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -42,7 +42,7 @@ public class CartController {
 
     @GetMapping("/add/{productid}")
     public ModelAndView addProductToCart(@PathVariable(name = "productid") Integer productId,
-                                         @SessionAttribute(name = EshopConstants.SHOPPING_CART, required = false) Cart cart) throws SQLExecutionException {
+                                         @SessionAttribute(name = EshopConstants.SHOPPING_CART, required = false) Cart cart) throws EntityOperationException {
         ModelMap model = new ModelMap();
         Product product = productService.getProductById(productId);
         model.addAttribute(EshopConstants.SHOPPING_CART, Cart.checkCart(product, cart));

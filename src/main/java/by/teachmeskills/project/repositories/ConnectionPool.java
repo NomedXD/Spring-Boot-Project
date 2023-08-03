@@ -15,9 +15,9 @@ public class ConnectionPool {
     private static volatile ConnectionPool instance;
 
     private static final String DB_PROPERTY_FILE = "application";
-    private static final String DB_URL = "db.url";
-    private static final String DB_LOGIN = "db.login";
-    private static final String DB_PASS = "db.pass";
+    private static final String DB_URL = "spring.datasource.url";
+    private static final String DB_LOGIN = "spring.datasource.username";
+    private static final String DB_PASS = "spring.datasource.password";
     private static final int MAX_CONNECTION_COUNT = 10;
     private static final int MIN_CONNECTION_COUNT = 5;
 

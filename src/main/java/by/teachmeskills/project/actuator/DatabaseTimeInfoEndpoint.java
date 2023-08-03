@@ -2,7 +2,7 @@ package by.teachmeskills.project.actuator;
 
 import by.teachmeskills.project.domain.StatisticEntity;
 import by.teachmeskills.project.enums.PagesPathEnum;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.StatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +26,14 @@ public class DatabaseTimeInfoEndpoint {
     }
 
     @ReadOperation
-    public ModelAndView getCategoryProductStatistic(@Selector String categoryName) throws SQLExecutionException {
+    public ModelAndView getCategoryProductStatistic(@Selector String categoryName) throws EntityOperationException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         categoryService.getCategoryByName(categoryName);
         stopWatch.stop();
         ModelMap modelMap = new ModelMap();
         StatisticEntity statisticEntity = statisticService.create(
-                new StatisticEntity(0, "Time to read category " + categoryName + " is " + stopWatch.getTotalTimeSeconds()));
+                new StatisticEntity("Time to read category " + categoryName + " is " + stopWatch.getTotalTimeSeconds()));
         modelMap.addAttribute("info", statisticEntity.getDescription());
         return new ModelAndView(PagesPathEnum.DB_TIME_INFO_PAGE.getPath(), modelMap);
     }

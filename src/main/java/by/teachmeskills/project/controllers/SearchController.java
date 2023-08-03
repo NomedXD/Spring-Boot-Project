@@ -3,7 +3,7 @@ package by.teachmeskills.project.controllers;
 import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
-import by.teachmeskills.project.exception.SQLExecutionException;
+import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,14 +27,14 @@ public class SearchController {
     }
 
     @GetMapping
-    public ModelAndView getSearchPage() throws SQLExecutionException {
+    public ModelAndView getSearchPage() throws EntityOperationException {
         ModelMap model = new ModelMap();
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productService.read());
         return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
     }
 
     @PostMapping
-    public ModelAndView submitSearch(@RequestParam(name = "searchField") String searchString) throws SQLExecutionException {
+    public ModelAndView submitSearch(@RequestParam(name = "searchField") String searchString) throws EntityOperationException {
         ModelMap model = new ModelMap();
         List<Product> productList = productService.getSearchedProducts(searchString);
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productList);
