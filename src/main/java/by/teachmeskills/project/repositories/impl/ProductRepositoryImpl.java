@@ -1,6 +1,7 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.Product;
+import by.teachmeskills.project.domain.SearchEntity;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.ProductRepository;
 import jakarta.persistence.EntityManager;
@@ -89,10 +90,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> getSearchedProducts(String searchString) throws EntityOperationException {
+    public List<Product> getSearchedProducts(SearchEntity searchEntity, Integer first, Integer count) throws EntityOperationException {
         try (Session session = factory.unwrap(Session.class)) {
-            return session.createQuery("from Product p where p.description like :searchString", Product.class).
-                    setParameter("searchString","%" + searchString + "%").list();
+            return session.createQuery("from Product p where p.name like :searchString or p.description like :searchString order by p.name", Product.class).
+                    setParameter("searchString","%" + searchEntity.getSearchString() + "%").setFirstResult(first).
+                    setMaxResults(count).list();
         } catch (PersistenceException e) {
             logger.warn("SQLException while searching products. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
@@ -104,17 +106,27 @@ public class ProductRepositoryImpl implements ProductRepository {
         try(Session session = factory.unwrap(Session.class)) {
             return session.createQuery("select count(*) from Product", Long.class).getSingleResultOrNull();
         } catch (PersistenceException e) {
+            logger.warn("SQLException while getting count of all products. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
+        }
+    }
+
+    @Override
+    public Long getCountAppropriateProducts(SearchEntity searchEntity) throws EntityOperationException {
+        try(Session session = factory.unwrap(Session.class)) {
+            return session.createQuery("select count(*) from Product p where p.name like :searchString or p.description like :searchString", Long.class).setParameter("searchString","%" + searchEntity.getSearchString() + "%").getSingleResultOrNull();
+        } catch (PersistenceException e) {
             logger.warn("SQLException while getting count of products. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }
 
     @Override
-    public List<Product> getProductsInRange(Integer first, Integer count) throws EntityOperationException {
+    public List<Product> getAllOrderedProducts(Integer first, Integer count) throws EntityOperationException {
         try(Session session = factory.unwrap(Session.class)) {
-            return session.createQuery("from Product", Product.class).setFirstResult(first).setMaxResults(count).list();
+            return session.createQuery("from Product p order by p.name", Product.class).setFirstResult(first).setMaxResults(count).list();
         } catch (PersistenceException e) {
-            logger.warn("SQLException while getting count of products. Most likely request is wrong. Full message - " + e.getMessage());
+            logger.warn("SQLException while getting all ordered products. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }

@@ -1,25 +1,24 @@
 package by.teachmeskills.project.controllers;
 
-import by.teachmeskills.project.domain.Product;
+import by.teachmeskills.project.domain.SearchEntity;
 import by.teachmeskills.project.enums.EshopConstants;
-import by.teachmeskills.project.enums.PagesPathEnum;
-import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/search")
+@SessionAttributes({EshopConstants.SEARCH_ENTITY})
 public class SearchController {
     private final ProductService productService;
 
@@ -28,16 +27,27 @@ public class SearchController {
         this.productService = productService;
     }
 
+    @GetMapping
+    public ModelAndView getSearchPage() throws EntityOperationException {
+        return productService.getSearchedProducts(null, 1);
+    }
+
     @GetMapping("/{page}")
-    public ModelAndView getSearchPage(@PathVariable(name = "page") Integer currentPage) throws EntityOperationException {
-        return productService.getProductsInRange(currentPage);
+    /* Заметка сумасшедшего:
+    required = false В SessionAttribute здесь не поможет, так как при любом первом обращении к контроллеру searchEntity добавится в модель и сессию.
+    А все из-за того, что метод setUpSearchEntity вызывается всегда раньше остальных методов. AAAAAAAAAAAA WATAFACK
+     */
+    public ModelAndView changeSearchPage(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY) SearchEntity searchEntity, @PathVariable(name = "page") Integer currentPage) throws EntityOperationException {
+        return productService.getSearchedProducts(searchEntity, currentPage);
     }
 
     @PostMapping
-    public ModelAndView submitSearch(@RequestParam(name = "searchField") String searchString) throws EntityOperationException {
-        ModelMap model = new ModelMap();
-        List<Product> productList = productService.getSearchedProducts(searchString);
-        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productList);
-        return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
+    public ModelAndView submitSearch(@ModelAttribute(EshopConstants.SEARCH_ENTITY) SearchEntity searchEntity) throws EntityOperationException {
+        return productService.getSearchedProducts(searchEntity, 1);
+    }
+
+    @ModelAttribute(EshopConstants.SEARCH_ENTITY)
+    public SearchEntity setUpSearchEntity() {
+        return new SearchEntity();
     }
 }

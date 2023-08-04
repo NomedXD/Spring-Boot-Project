@@ -1,6 +1,7 @@
 package by.teachmeskills.project.services;
 
 import by.teachmeskills.project.domain.Product;
+import by.teachmeskills.project.domain.SearchEntity;
 import by.teachmeskills.project.exception.EntityOperationException;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -11,9 +12,9 @@ public interface ProductService extends BaseService<Product> {
 
     Product getProductById(int id) throws EntityOperationException;
 
-    List<Product> getSearchedProducts(String searchString) throws EntityOperationException;
+    ModelAndView getSearchedProducts(SearchEntity searchEntity, Integer currentPage) throws EntityOperationException;
 
-    Long getCountOfProducts() throws EntityOperationException;
+    Long getCountOfAllProducts() throws EntityOperationException;
 
-    ModelAndView getProductsInRange(Integer currentPage) throws EntityOperationException;
+    Long getCountAppropriateProducts(SearchEntity searchEntity) throws EntityOperationException;
 }

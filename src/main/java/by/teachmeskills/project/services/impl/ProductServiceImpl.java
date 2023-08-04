@@ -1,6 +1,7 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Product;
+import by.teachmeskills.project.domain.SearchEntity;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
@@ -54,24 +55,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getSearchedProducts(String searchString) throws EntityOperationException {
-        return productRepository.getSearchedProducts(searchString);
-    }
-
-    @Override
-    public Long getCountOfProducts() throws EntityOperationException {
+    public Long getCountOfAllProducts() throws EntityOperationException {
         return productRepository.getCountOfAllProducts();
     }
 
     @Override
-    public ModelAndView getProductsInRange(Integer currentPage) throws EntityOperationException {
-        Long countOfAllProducts = productRepository.getCountOfAllProducts();
-        List<Product> productList = productRepository.getProductsInRange((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+    public Long getCountAppropriateProducts(SearchEntity searchEntity) throws EntityOperationException {
+        return productRepository.getCountAppropriateProducts(searchEntity);
+    }
+
+    @Override
+    public ModelAndView getSearchedProducts(SearchEntity searchEntity, Integer currentPage) throws EntityOperationException {
         ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.TOTAL_SEARCH_RESULTS.getValue(), countOfAllProducts);
+        Long count;
+        List<Product> productList;
+        if ((searchEntity == null) || (searchEntity.getSearchString() == null)) {
+            count = getCountOfAllProducts();
+            productList = productRepository.getAllOrderedProducts((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+        } else {
+            count = getCountAppropriateProducts(searchEntity);
+            productList = productRepository.getSearchedProducts(searchEntity, (currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+            model.addAttribute(EshopConstants.SEARCH_ENTITY, searchEntity);
+        }
+        model.addAttribute(RequestParamsEnum.TOTAL_SEARCH_RESULTS.getValue(), count);
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
         model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
-        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(countOfAllProducts / EshopConstants.PAGE_SIZE.doubleValue()));
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(count / EshopConstants.PAGE_SIZE.doubleValue()));
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productList);
         return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
     }
