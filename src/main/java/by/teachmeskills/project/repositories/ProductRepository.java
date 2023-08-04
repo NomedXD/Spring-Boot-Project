@@ -11,4 +11,8 @@ public interface ProductRepository extends BaseRepository<Product> {
     Product getProductById(Integer id) throws EntityOperationException;
 
     List<Product> getSearchedProducts(String searchString) throws EntityOperationException;
+
+    Long getCountOfAllProducts() throws EntityOperationException;
+
+    List<Product> getProductsInRange(Integer first, Integer count) throws EntityOperationException;
 }

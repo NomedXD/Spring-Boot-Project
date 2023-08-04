@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -34,7 +34,7 @@
                     </div>
                     <input id="search" name="searchField" type="text" placeholder="Search..."/>
                     <div class="result-count">
-                        <span>${products.size()} </span>results
+                        <span>${totalSearchResults} </span>results
                     </div>
                 </div>
             </div>
@@ -136,7 +136,8 @@
                 </div>
                 <h6 class="text-success">Available</h6>
                 <div class="d-flex flex-column mt-4">
-                    <a class="btn btn-primary btn-sm" type="button" href="${contextPath}/product/${product.id}">More info</a>
+                    <a class="btn btn-primary btn-sm" type="button" href="${contextPath}/product/${product.id}">More
+                        info</a>
                     <button class="btn btn-outline-primary btn-sm mt-2" type="button">Add to wishlist</button>
                 </div>
             </div>
@@ -147,21 +148,45 @@
     <div class="paginationContainer">
         <nav class="pagination-outer" aria-label="Page navigation">
             <ul class="pagination">
-                <li class="page-item">
-                    <a href="#" class="page-link" aria-label="Previous">
-                        <span aria-hidden="true"><</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item active"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                <li class="page-item">
-                    <a href="#" class="page-link" aria-label="Next">
-                        <span aria-hidden="true">></span>
-                    </a>
-                </li>
+                <c:if test="${currentPage >= 2}">
+                    <li class="page-item">
+                        <a href="${contextPath}/search/${currentPage - 1}" class="page-link" aria-label="Previous">
+                            <span aria-hidden="true"><</span>
+                        </a>
+                    </li>
+                </c:if>
+                <c:choose>
+                    <c:when test="${currentPage <= totalPaginatedVisiblePages / 2 + 1}">
+                        <c:forEach begin="1" end="${lastPageNumber}" var="i">
+                            <c:choose>
+                                <c:when test="${i == currentPage}">
+                                    <li class="page-item active"><a class="page-link" href="${contextPath}/search/${currentPage}">${currentPage}</a></li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item"><a class="page-link" href="${contextPath}/search/${i}">${i}</a></li>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach begin="${currentPage - totalPaginatedVisiblePages / 2}"
+                                   end="${lastPageNumber}" var="j">
+                            <c:when test="${j == currentPage}">
+                                <li class="page-item active"><a class="page-link" href="${contextPath}/search/${currentPage}">${currentPage}</a></li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item"><a class="page-link" href="${contextPath}/search/${j}">${j}</a></li>
+                            </c:otherwise>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
+                <c:if test="${currentPage <= lastPageNumber - 1}">
+                    <li class="page-item">
+                        <a href="" class="page-link" aria-label="Next">
+                            <span aria-hidden="true">></span>
+                        </a>
+                    </li>
+                </c:if>
             </ul>
         </nav>
     </div>
@@ -177,17 +202,18 @@
             itemSelectText: '',
         });
     for (let i = 0; i < customSelects.length; i++) {
-        customSelects[i].addEventListener('addItem', function (event) {
-            if (event.detail.value) {
-                let parent = this.parentNode.parentNode
-                parent.classList.add('valid')
-                parent.classList.remove('invalid')
-            } else {
-                let parent = this.parentNode.parentNode
-                parent.classList.add('invalid')
-                parent.classList.remove('valid')
-            }
-        }, false);
+        -
+            customSelects[i].addEventListener('addItem', function (event) {
+                if (event.detail.value) {
+                    let parent = this.parentNode.parentNode
+                    parent.classList.add('valid')
+                    parent.classList.remove('invalid')
+                } else {
+                    let parent = this.parentNode.parentNode
+                    parent.classList.add('invalid')
+                    parent.classList.remove('valid')
+                }
+            }, false);
     }
     deleteBtn.addEventListener("click", function (e) {
         e.preventDefault()

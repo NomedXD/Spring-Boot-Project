@@ -1,6 +1,7 @@
 package by.teachmeskills.project.controllers;
 
 import by.teachmeskills.project.domain.Product;
+import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.EntityOperationException;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,11 +28,9 @@ public class SearchController {
         this.productService = productService;
     }
 
-    @GetMapping
-    public ModelAndView getSearchPage() throws EntityOperationException {
-        ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productService.read());
-        return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
+    @GetMapping("/{page}")
+    public ModelAndView getSearchPage(@PathVariable(name = "page") Integer currentPage) throws EntityOperationException {
+        return productService.getProductsInRange(currentPage);
     }
 
     @PostMapping

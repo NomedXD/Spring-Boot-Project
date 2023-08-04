@@ -98,4 +98,24 @@ public class ProductRepositoryImpl implements ProductRepository {
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }
+
+    @Override
+    public Long getCountOfAllProducts() throws EntityOperationException {
+        try(Session session = factory.unwrap(Session.class)) {
+            return session.createQuery("select count(*) from Product", Long.class).getSingleResultOrNull();
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while getting count of products. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
+        }
+    }
+
+    @Override
+    public List<Product> getProductsInRange(Integer first, Integer count) throws EntityOperationException {
+        try(Session session = factory.unwrap(Session.class)) {
+            return session.createQuery("from Product", Product.class).setFirstResult(first).setMaxResults(count).list();
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while getting count of products. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
+        }
+    }
 }
