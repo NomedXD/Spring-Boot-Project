@@ -1,7 +1,6 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.Category;
-import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.CategoryRepository;
 import jakarta.persistence.EntityManager;

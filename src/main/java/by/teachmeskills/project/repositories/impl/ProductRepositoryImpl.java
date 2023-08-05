@@ -68,10 +68,14 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
     }
 
+    /*
+        В этом методе можно читать из базы не продукт, а категорию(т е через OneToMany),
+        а потом просто вернуть List, который будет в этом объекте Category. Оставил пока так
+     */
     @Override
     public List<Product> getCategoryProducts(Integer categoryId) throws EntityOperationException {
         try (Session session = factory.unwrap(Session.class)) {
-            return session.createQuery("from Product p where p.categoryid =: categoryId", Product.class).
+            return session.createQuery("from Product p where p.category.id =: categoryId", Product.class).
                     setParameter("categoryId", categoryId).list();
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting products by category. Most likely request is wrong. Full message - " + e.getMessage());

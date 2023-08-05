@@ -3,7 +3,10 @@ package by.teachmeskills.project.domain;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +17,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -22,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Entity
 @Table(name = "products")
-public class Product extends BaseEntity{
+public class Product extends BaseEntity {
 
     @NotNull(message = "Field is null validation error")
     @Pattern(regexp = "[a-zA-Z ,.'-]+", message = "Field does not satisfy regexp")
@@ -39,22 +45,26 @@ public class Product extends BaseEntity{
     @Column(name = "description")
     private String description;
 
-    @NotNull(message = "Field is null validation error")
-    @PositiveOrZero(message = "Field must be positive or zero")
-    @Column(name = "categoryid")
-    private int categoryid;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @NotNull(message = "Field is null validation error")
     @Positive(message = "Field must be positive")
     @Column(name = "price")
     private float price;
 
-    public Product(Integer id, String name, Image image, String description, int categoryid, float price) {
+    @ManyToMany(mappedBy = "productList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Order> orders;
+
+    public Product(Integer id, String name, Image image, String description, Category category, float price) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.description = description;
-        this.categoryid = categoryid;
+        this.category = category;
         this.price = price;
     }
 }
