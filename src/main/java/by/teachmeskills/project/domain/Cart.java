@@ -3,12 +3,13 @@ package by.teachmeskills.project.domain;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Data
 public class Cart {
     /*
      *  Annotated for the future admin account in shop
@@ -50,16 +51,8 @@ public class Cart {
         return new ArrayList<>(products.values());
     }
 
-    public float getTotalPrice() {
-        return totalPrice;
-    }
-
     public int getTotalSize() {
         return products.size();
-    }
-
-    public void setTotalPrice(float totalPrice) {
-        this.totalPrice = totalPrice;
     }
 
     public void clear() {

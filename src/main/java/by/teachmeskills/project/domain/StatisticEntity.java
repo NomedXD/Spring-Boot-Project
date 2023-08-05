@@ -5,6 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@NoArgsConstructor
 @Entity
 @Table(name = "time_statistic")
 public class StatisticEntity extends BaseEntity{
@@ -13,19 +22,7 @@ public class StatisticEntity extends BaseEntity{
     @Column(name = "description")
     private String description;
 
-    public StatisticEntity(){
-
-    }
-
     public StatisticEntity(String description) {
         this.description = description;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

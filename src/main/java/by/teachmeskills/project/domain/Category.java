@@ -6,6 +6,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@NoArgsConstructor
 @Entity
 @Table(name = "categories")
 public class Category extends BaseEntity{
@@ -22,43 +31,10 @@ public class Category extends BaseEntity{
     @Size(min = 0, max = 45, message = "Out of validation bounds")
     @Column(name = "sometext")
     private String sometext;
-
-    public Category(){
-
-    }
-
     public Category(Integer id, String name, String imagepath, String sometext) {
         this.id = id;
         this.name = name;
         this.imagepath = imagepath;
-        this.sometext = sometext;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getImagepath() {
-        return imagepath;
-    }
-
-    public String getSometext() {
-        return sometext;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setImagepath(String imagepath) {
-        this.imagepath = imagepath;
-    }
-
-    public void setSometext(String sometext) {
         this.sometext = sometext;
     }
 }
