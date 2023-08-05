@@ -119,7 +119,7 @@
     <c:forEach items="${products}" var="product">
         <div class="row p-2 bg-white border rounded mt-2">
             <div class="col-md-3 mt-1"><img class="img-fluid img-responsive rounded product-image"
-                                            src="${contextPath}/${product.imagepath}"></div>
+                                            src="${contextPath}/${product.image.path}"></div>
             <div class="col-md-6 mt-1">
                 <h5>${product.name}</h5>
                 <div class="d-flex flex-row">

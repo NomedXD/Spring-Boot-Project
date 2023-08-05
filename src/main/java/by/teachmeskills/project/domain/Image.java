@@ -15,15 +15,16 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @Entity
-@Table(name = "time_statistic")
-public class StatisticEntity extends BaseEntity{
+@Table(name = "images")
+public class Image extends BaseEntity{
 
     @NotNull(message = "Field is null validation error")
     @Size(max = 45, message = "Out of validation bounds")
-    @Column(name = "description")
-    private String description;
+    @Column(name = "path")
+    private String path;
 
-    public StatisticEntity(String description) {
-        this.description = description;
+    public Image(Integer id, String path) {
+        this.id = id;
+        this.path = path;
     }
 }

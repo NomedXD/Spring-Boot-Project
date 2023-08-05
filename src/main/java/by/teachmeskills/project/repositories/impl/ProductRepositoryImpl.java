@@ -121,9 +121,8 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
     }
 
-    // Переместить функциональность этого метода в метод read !!!!!!!! НЕ ЗАБУДЬ!
     @Override
-    public List<Product> getAllOrderedProducts(Integer first, Integer count) throws EntityOperationException {
+    public List<Product> readOrderedByNameInRange(Integer first, Integer count) throws EntityOperationException {
         try(Session session = factory.unwrap(Session.class)) {
             return session.createQuery("from Product p order by p.name", Product.class).setFirstResult(first).setMaxResults(count).list();
         } catch (PersistenceException e) {

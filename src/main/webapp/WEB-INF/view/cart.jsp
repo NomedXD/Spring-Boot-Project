@@ -18,7 +18,7 @@
 <c:forEach items="${sessionScope.cart.products}" var="cartProduct">
     <div class="row p-2 bg-white border rounded mt-2">
         <div class="col-md-3 mt-1"><img class="img-fluid img-responsive rounded product-image"
-                                        src="${contextPath}/${cartProduct.imagepath}"></div>
+                                        src="${contextPath}/${cartProduct.image.path}"></div>
         <div class="col-md-6 mt-1">
             <h5>${cartProduct.name}</h5>
             <div class="d-flex flex-row">

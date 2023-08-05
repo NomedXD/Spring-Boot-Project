@@ -8,11 +8,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class RequestInterceptor implements HandlerInterceptor {
+    /*
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        if (request.getRequestURL().toString().contains("/search")){
-//                request.getSession().removeAttribute("searchEntity");
-//        }
+        if (request.getRequestURL().toString().contains("/search")){
+                request.getSession().removeAttribute("searchEntity");
+        }
         return true;
     }
+     */
 }

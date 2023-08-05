@@ -16,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @MappedSuperclass
 public class BaseEntity {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

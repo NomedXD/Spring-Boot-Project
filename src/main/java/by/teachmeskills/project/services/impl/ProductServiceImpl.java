@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList;
         if ((searchEntity == null) || (searchEntity.getSearchString() == null)) {
             count = getCountOfAllProducts();
-            productList = productRepository.getAllOrderedProducts((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+            productList = productRepository.readOrderedByNameInRange((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
         } else {
             count = getCountAppropriateProducts(searchEntity);
             productList = productRepository.getSearchedProducts(searchEntity, (currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);

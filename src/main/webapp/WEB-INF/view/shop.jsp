@@ -22,7 +22,7 @@
         <c:otherwise>
             <c:forEach items="${categories}" var="item">
                 <div class="content">
-                    <img class="shopImg" src="${contextPath}/${item.imagepath}" alt="${contextPath}/images/error-page.png">
+                    <img class="shopImg" src="${contextPath}/${item.image.path}" alt="${contextPath}/images/error-page.png">
                     <h3>${item.name}</h3>
                     <p>${item.sometext}</p>
                     <form action="${contextPath}/category/${item.id}" method="GET">

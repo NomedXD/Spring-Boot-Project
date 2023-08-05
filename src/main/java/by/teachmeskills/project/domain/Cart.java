@@ -15,7 +15,7 @@ public class Cart {
      *  Annotated for the future admin account in shop
      */
     @NotNull(message = "Field is null validation error")
-    @Size(min = 0, max = 100, message = "Out of validation bounds")
+    @Size(max = 100, message = "Out of validation bounds")
     private final Map<Integer, Product> products;
     @NotNull(message = "Field is null validation error")
     @PositiveOrZero(message = "Field must be positive or zero")
