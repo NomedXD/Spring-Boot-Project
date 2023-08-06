@@ -1,7 +1,9 @@
 package by.teachmeskills.project.controllers;
 
 import by.teachmeskills.project.domain.Cart;
+import by.teachmeskills.project.domain.Order;
 import by.teachmeskills.project.domain.Product;
+import by.teachmeskills.project.domain.SearchEntity;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
@@ -10,7 +12,9 @@ import by.teachmeskills.project.services.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -48,5 +52,15 @@ public class CartController {
         model.addAttribute(EshopConstants.SHOPPING_CART, Cart.checkCart(product, cart));
         model.addAttribute(RequestParamsEnum.PRODUCT.getValue(), product);
         return new ModelAndView(PagesPathEnum.PRODUCT_PAGE.getPath(), model);
+    }
+
+    @PostMapping("/checkout")
+    public ModelAndView submitCheckout(@ModelAttribute(name = EshopConstants.ORDER) Order order) {
+        return new ModelAndView();
+    }
+
+    @ModelAttribute(EshopConstants.ORDER)
+    public Order setUpOrder() {
+        return new Order();
     }
 }
