@@ -1,11 +1,10 @@
 package by.teachmeskills.project.controllers;
 
-import by.teachmeskills.project.domain.SearchEntity;
+import by.teachmeskills.project.domain.Search;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,7 +31,6 @@ public class SearchController {
         return productService.getSearchedProducts(null, 1);
     }
 
-    @GetMapping("/{page}")
     /* Заметка сумасшедшего:
     required = false В SessionAttribute здесь нужна, так как при любом первом обращении к контроллеру
     searchEntity добавится в модель для маппинга из формы, но не добавляется в сессию.
@@ -51,19 +49,21 @@ public class SearchController {
     получали продукты из базы тоже order by name. -15 ч. жизни на пагинацию и поиск/фильтр с пагинацией этих данных
     (＃￣ω￣) <------ я сейчас
 
-    Чтобы не было такой проблемы, можно передать в метод сразу Session session
+    Чтобы не было такой проблемы, можно ИНДЖЕКТИТЬ в метод сразу Session session и добавлять в сессию
+    searchEntity когда нужно, а не сразу + удалять можно. Мб поправить позже
      */
-    public ModelAndView changeSearchPage(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY , required = false) SearchEntity searchEntity, @PathVariable(name = "page") Integer currentPage) throws EntityOperationException {
-        return productService.getSearchedProducts(searchEntity, currentPage);
+    @GetMapping("/{page}")
+    public ModelAndView changeSearchPage(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY , required = false) Search search, @PathVariable(name = "page") Integer currentPage) throws EntityOperationException {
+        return productService.getSearchedProducts(search, currentPage);
     }
 
     @PostMapping
-    public ModelAndView submitSearch(@ModelAttribute(EshopConstants.SEARCH_ENTITY) SearchEntity searchEntity) throws EntityOperationException {
-        return productService.getSearchedProducts(searchEntity, 1);
+    public ModelAndView submitSearch(@ModelAttribute(EshopConstants.SEARCH_ENTITY) Search search) throws EntityOperationException {
+        return productService.getSearchedProducts(search, 1);
     }
 
     @ModelAttribute(EshopConstants.SEARCH_ENTITY)
-    public SearchEntity setUpSearchEntity() {
-        return new SearchEntity();
+    public Search setUpSearchEntity() {
+        return new Search();
     }
 }

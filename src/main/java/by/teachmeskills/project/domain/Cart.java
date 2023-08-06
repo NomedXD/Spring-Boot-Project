@@ -17,9 +17,12 @@ public class Cart {
     @NotNull(message = "Field is null validation error")
     @Size(max = 100, message = "Out of validation bounds")
     private final Map<Integer, Product> products;
+
     @NotNull(message = "Field is null validation error")
     @PositiveOrZero(message = "Field must be positive or zero")
     private float totalPrice;
+
+    // Здесь можно не делать отдельное поле, а сделать в теории обертку над Product, но муторно -_-
     @NotNull(message = "Field is null validation error")
     @Size(max = 100, message = "Out of validation bounds")
     private Map<Integer, Integer> productQuantities;
@@ -32,14 +35,14 @@ public class Cart {
 
     public void addProduct(Product product) {
         products.put(product.getId(), product);
-        totalPrice += product.getPrice();
         productQuantities.put(product.getId(), 1);
+        totalPrice += product.getPrice() * 1;
     }
 
     public void removeProduct(int productId) {
         Product product = products.get(productId);
         products.remove(productId);
-        totalPrice -= product.getPrice();
+        totalPrice -= product.getPrice() * productQuantities.get(productId);
         productQuantities.remove(productId);
     }
 

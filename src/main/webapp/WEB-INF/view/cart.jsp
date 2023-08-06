@@ -29,10 +29,17 @@
                                 <div class="p-5">
                                     <div class="d-flex justify-content-between align-items-center mb-5">
                                         <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
-                                        <form id="apply_quantity" action="${contextPath}/cart/apply_quantity" method="POST">
-                                            <button type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Apply quantity</button>
-                                        </form>
-                                        <h6 class="mb-0 text-muted">3 items</h6>
+                                        <c:choose>
+                                            <c:when test="${empty sessionScope.cart}">
+                                                <h6 class="mb-0 text-muted">0 items</h6>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form id="apply_quantity" action="${contextPath}/cart/apply_quantity" method="POST">
+                                                    <button type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Apply quantity</button>
+                                                </form>
+                                                <h6 class="mb-0 text-muted">${sessionScope.cart.getTotalSize()} items</h6>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                     <hr class="my-4">
                                     <c:forEach items="${sessionScope.cart.products}" var="cartProduct">
@@ -71,7 +78,7 @@
                                     </c:forEach>
                                     <hr class="my-4">
                                     <div class="pt-5">
-                                        <h6 class="mb-0"><a href="#" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
+                                        <h6 class="mb-0"><a href="${contextPath}/catalog" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Back to catalog</a></h6>
                                     </div>
                                 </div>
                             </div>
@@ -80,17 +87,28 @@
                                     <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
                                     <hr class="my-4">
                                     <div class="d-flex justify-content-between mb-4">
-                                        <h5 class="text-uppercase">items 3</h5>
+                                        <h5 class="text-uppercase">ITEMS = ${sessionScope.cart.getTotalSize()}</h5>
                                         <h5>€ 132.00</h5>
                                     </div>
                                     <form action="${contextPath}/checkout" method="POST">
                                         <h5 class="text-uppercase mb-3">Shipping</h5>
                                         <div class="mb-4 pb-2">
-                                            <select class="selectPicker" data-size="4">
-                                                <option value="shipping_city">shipping_city</option>
-                                                <option value="shipping_postcode">shipping_postcode</option>
-                                                <option value="shipping_country">shipping_country</option>
+                                            <select id="addressSelect" class="selectPicker" data-size="2" name="shipping">
+                                                <option value="0">Self pickup 0$</option>
+                                                <option value="10">Delivery by courier 10$</option>
                                             </select>
+                                        </div>
+                                        <h5 id="addressH5" class="text-uppercase mb-3" style="display: none">Address</h5>
+                                        <div id="addressDiv" class="mb-4 pb-2" style="display: none">
+                                            <input class="form-control form-control-lg" type="text" maxlength="60">
+                                        </div>
+                                        <h5 class="text-uppercase mb-3">Credit card</h5>
+                                        <div class="mb-5">
+                                            <div class="form-outline">
+                                                <input class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="16" placeholder="xxxx xxxx xxxx xxxx">
+                                                <input class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="6" placeholder="MM/YYYY">
+                                                <input class="form-control form-control-lg" type="password" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="3" placeholder="CVV">
+                                            </div>
                                         </div>
                                         <h5 class="text-uppercase mb-3">Give code</h5>
                                         <div class="mb-5">
@@ -99,10 +117,16 @@
                                                 <label class="form-label" for="form3Examplea2">Enter your code</label>
                                             </div>
                                         </div>
+                                        <h5 class="text-uppercase mb-3">Customer notes</h5>
+                                        <div class="mb-5">
+                                            <div class="form-outline">
+                                                <input class="form-control form-control-lg" type="text"  maxlength="100">
+                                            </div>
+                                        </div>
                                         <hr class="my-4">
                                         <div class="d-flex justify-content-between mb-5">
                                             <h5 class="text-uppercase">Total price</h5>
-                                            <h5 id="total">€ 137.00</h5>
+                                            <h5 id="total">${sessionScope.cart.totalPrice}</h5>
                                         </div>
                                         <button type="button" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Submit</button>
                                     </form>
@@ -114,18 +138,7 @@
             </div>
         </div>
     </div>
-    <script>
-        function calculateTotal() {
-            let singlePrices = document.getElementsByClassName('mb-0 singlePrice');
-            let productCounts = document.getElementsByClassName('form-control form-control-sm productCount');
-            let totalElement = document.getElementById('total');
-            let total = 0;
-            for (let i = 0; i < singlePrices.length; ++i) {
-                total = total + parseFloat(singlePrices[i].innerHTML) * parseInt(productCounts[i].value, 10);
-            }
-            totalElement.innerHTML = total.toString(10) + '$';
-        }
-    </script>
+    <script src="${contextPath}/jsp-scripts/cart.js"></script>
 </section>
 
 </body>

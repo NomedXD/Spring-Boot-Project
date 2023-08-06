@@ -16,14 +16,14 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Entity
 @Table(name = "time_statistic")
-public class StatisticEntity extends BaseEntity{
+public class Statistic extends BaseEntity{
 
     @NotNull(message = "Field is null validation error")
     @Size(max = 45, message = "Out of validation bounds")
     @Column(name = "description")
     private String description;
 
-    public StatisticEntity(String description) {
+    public Statistic(String description) {
         this.description = description;
     }
 }

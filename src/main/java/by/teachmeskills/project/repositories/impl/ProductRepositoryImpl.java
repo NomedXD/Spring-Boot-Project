@@ -1,7 +1,7 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.Product;
-import by.teachmeskills.project.domain.SearchEntity;
+import by.teachmeskills.project.domain.Search;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.ProductRepository;
 import jakarta.persistence.EntityManager;
@@ -94,10 +94,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> getSearchedProducts(SearchEntity searchEntity, Integer first, Integer count) throws EntityOperationException {
+    public List<Product> getSearchedProducts(Search search, Integer first, Integer count) throws EntityOperationException {
         try (Session session = factory.unwrap(Session.class)) {
             return session.createQuery("from Product p where p.name like :searchString or p.description like :searchString order by p.name", Product.class).
-                    setParameter("searchString","%" + searchEntity.getSearchString() + "%").setFirstResult(first).
+                    setParameter("searchString","%" + search.getSearchString() + "%").setFirstResult(first).
                     setMaxResults(count).list();
         } catch (PersistenceException e) {
             logger.warn("SQLException while searching products. Most likely request is wrong. Full message - " + e.getMessage());
@@ -116,9 +116,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Long getCountAppropriateProducts(SearchEntity searchEntity) throws EntityOperationException {
+    public Long getCountAppropriateProducts(Search search) throws EntityOperationException {
         try(Session session = factory.unwrap(Session.class)) {
-            return session.createQuery("select count(*) from Product p where p.name like :searchString or p.description like :searchString", Long.class).setParameter("searchString","%" + searchEntity.getSearchString() + "%").getSingleResultOrNull();
+            return session.createQuery("select count(*) from Product p where p.name like :searchString or p.description like :searchString", Long.class).setParameter("searchString","%" + search.getSearchString() + "%").getSingleResultOrNull();
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting count of products. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");

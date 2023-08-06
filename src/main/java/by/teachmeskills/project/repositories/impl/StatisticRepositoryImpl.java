@@ -1,6 +1,6 @@
 package by.teachmeskills.project.repositories.impl;
 
-import by.teachmeskills.project.domain.StatisticEntity;
+import by.teachmeskills.project.domain.Statistic;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.StatisticRepository;
 import jakarta.persistence.EntityManager;
@@ -28,7 +28,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     }
 
     @Override
-    public StatisticEntity create(StatisticEntity entity) throws EntityOperationException {
+    public Statistic create(Statistic entity) throws EntityOperationException {
         try (Session session = factory.unwrap(Session.class)) {
             session.persist(entity);
         } catch (PersistenceException e) {
@@ -39,9 +39,9 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     }
 
     @Override
-    public List<StatisticEntity> read() throws EntityOperationException {
+    public List<Statistic> read() throws EntityOperationException {
         try (Session session = factory.unwrap(Session.class)) {
-            return session.createQuery("from StatisticEntity", StatisticEntity.class).list();
+            return session.createQuery("from Statistic", Statistic.class).list();
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting statistics. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
@@ -49,7 +49,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     }
 
     @Override
-    public StatisticEntity update(StatisticEntity entity) throws EntityOperationException {
+    public Statistic update(Statistic entity) throws EntityOperationException {
         try (Session session = factory.unwrap(Session.class)) {
             return session.merge(entity);
         } catch (PersistenceException e) {
@@ -61,8 +61,8 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     @Override
     public void delete(Integer id) throws EntityOperationException {
         try (Session session = factory.unwrap(Session.class)) {
-            StatisticEntity statisticEntity = session.get(StatisticEntity.class, id);
-            session.remove(statisticEntity);
+            Statistic statistic = session.get(Statistic.class, id);
+            session.remove(statistic);
         } catch (PersistenceException e) {
             logger.warn("SQLException while deleting statistic. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
@@ -70,9 +70,9 @@ public class StatisticRepositoryImpl implements StatisticRepository {
     }
 
     @Override
-    public StatisticEntity getStatisticEntityById(Integer id) throws EntityOperationException {
+    public Statistic getStatisticEntityById(Integer id) throws EntityOperationException {
         try (Session session = factory.unwrap(Session.class)) {
-            return session.get(StatisticEntity.class, id);
+            return session.get(Statistic.class, id);
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting statistic by id. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");

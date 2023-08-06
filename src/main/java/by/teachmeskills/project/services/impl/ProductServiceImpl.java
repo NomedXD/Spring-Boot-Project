@@ -2,7 +2,7 @@ package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Cart;
 import by.teachmeskills.project.domain.Product;
-import by.teachmeskills.project.domain.SearchEntity;
+import by.teachmeskills.project.domain.Search;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
@@ -62,22 +62,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Long getCountAppropriateProducts(SearchEntity searchEntity) throws EntityOperationException {
-        return productRepository.getCountAppropriateProducts(searchEntity);
+    public Long getCountAppropriateProducts(Search search) throws EntityOperationException {
+        return productRepository.getCountAppropriateProducts(search);
     }
 
     @Override
-    public ModelAndView getSearchedProducts(SearchEntity searchEntity, Integer currentPage) throws EntityOperationException {
+    public ModelAndView getSearchedProducts(Search search, Integer currentPage) throws EntityOperationException {
         ModelMap model = new ModelMap();
         Long count;
         List<Product> productList;
-        if ((searchEntity == null) || (searchEntity.getSearchString() == null)) {
+        if ((search == null) || (search.getSearchString() == null)) {
             count = getCountOfAllProducts();
             productList = productRepository.readOrderedByNameInRange((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
         } else {
-            count = getCountAppropriateProducts(searchEntity);
-            productList = productRepository.getSearchedProducts(searchEntity, (currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
-            model.addAttribute(EshopConstants.SEARCH_ENTITY, searchEntity);
+            count = getCountAppropriateProducts(search);
+            productList = productRepository.getSearchedProducts(search, (currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+            model.addAttribute(EshopConstants.SEARCH_ENTITY, search);
         }
         model.addAttribute(RequestParamsEnum.TOTAL_SEARCH_RESULTS.getValue(), count);
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
@@ -87,11 +87,16 @@ public class ProductServiceImpl implements ProductService {
         return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
     }
 
+    /*
+      Внедрение конкретно HttpServletRequest, так как заранее неизвестно, сколько будет параметров в post запросе
+     */
     @Override
     public ModelAndView applyProductsQuantity(Cart cart, HttpServletRequest request) {
         for (Product product: cart.getProducts()) {
             String quantity = request.getParameter(product.getId()+"quantity");
             if(quantity!= null) {
+                Integer currentQuantity = cart.getProductQuantities().get(product.getId());
+                cart.setTotalPrice(cart.getTotalPrice() + product.getPrice() * (Integer.parseInt(quantity) - currentQuantity));
                 cart.getProductQuantities().replace(product.getId(), Integer.parseInt(quantity));
             }
         }
