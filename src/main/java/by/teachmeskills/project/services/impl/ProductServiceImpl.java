@@ -1,5 +1,6 @@
 package by.teachmeskills.project.services.impl;
 
+import by.teachmeskills.project.domain.Cart;
 import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.domain.SearchEntity;
 import by.teachmeskills.project.enums.EshopConstants;
@@ -8,6 +9,7 @@ import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.ProductRepository;
 import by.teachmeskills.project.services.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
@@ -83,5 +85,16 @@ public class ProductServiceImpl implements ProductService {
         model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(count / EshopConstants.PAGE_SIZE.doubleValue()));
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productList);
         return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
+    }
+
+    @Override
+    public ModelAndView applyProductsQuantity(Cart cart, HttpServletRequest request) {
+        for (Product product: cart.getProducts()) {
+            String quantity = request.getParameter(product.getId()+"quantity");
+            if(quantity!= null) {
+                cart.getProductQuantities().replace(product.getId(), Integer.parseInt(quantity));
+            }
+        }
+        return new ModelAndView(PagesPathEnum.CART_PAGE.getPath());
     }
 }

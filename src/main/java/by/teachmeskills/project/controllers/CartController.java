@@ -9,6 +9,9 @@ import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.boot.Banner;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,6 +60,11 @@ public class CartController {
     @PostMapping("/checkout")
     public ModelAndView submitCheckout(@ModelAttribute(name = EshopConstants.ORDER) Order order) {
         return new ModelAndView();
+    }
+
+    @PostMapping("/apply_quantity")
+    public ModelAndView applyQuantity(@SessionAttribute(name = EshopConstants.SHOPPING_CART) Cart cart, HttpServletRequest request) {
+        return productService.applyProductsQuantity(cart, request);
     }
 
     @ModelAttribute(EshopConstants.ORDER)

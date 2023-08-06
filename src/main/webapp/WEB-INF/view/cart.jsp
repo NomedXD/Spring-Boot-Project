@@ -29,6 +29,9 @@
                                 <div class="p-5">
                                     <div class="d-flex justify-content-between align-items-center mb-5">
                                         <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
+                                        <form id="apply_quantity" action="${contextPath}/cart/apply_quantity" method="POST">
+                                            <button type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Apply quantity</button>
+                                        </form>
                                         <h6 class="mb-0 text-muted">3 items</h6>
                                     </div>
                                     <hr class="my-4">
@@ -48,8 +51,8 @@
                                                     <i class="fas fa-minus"></i>
                                                 </button>
 
-                                                <input id="form1" min="0" name="quantity" value="1" type="number"
-                                                       class="form-control form-control-sm productCount" />
+                                                <input id="form1" min="0" name="${cartProduct.id}quantity" value="${sessionScope.cart.productQuantities[cartProduct.id]}" type="number"
+                                                       class="form-control form-control-sm productCount" form="apply_quantity"/>
 
                                                 <button class="btn btn-link px-2"
                                                         onclick="this.parentNode.querySelector('input[type=number]').stepUp(); calculateTotal();">

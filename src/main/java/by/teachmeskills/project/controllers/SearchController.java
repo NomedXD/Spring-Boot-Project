@@ -50,6 +50,8 @@ public class SearchController {
     объекты из базы, то есть = отмена фильтра по ключевой фразе), и в случае, когда SEARCH_ENTITY был null и мы просто
     получали продукты из базы тоже order by name. -15 ч. жизни на пагинацию и поиск/фильтр с пагинацией этих данных
     (＃￣ω￣) <------ я сейчас
+
+    Чтобы не было такой проблемы, можно передать в метод сразу Session session
      */
     public ModelAndView changeSearchPage(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY , required = false) SearchEntity searchEntity, @PathVariable(name = "page") Integer currentPage) throws EntityOperationException {
         return productService.getSearchedProducts(searchEntity, currentPage);

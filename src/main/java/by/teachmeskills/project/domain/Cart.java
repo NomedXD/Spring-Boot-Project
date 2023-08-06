@@ -20,21 +20,27 @@ public class Cart {
     @NotNull(message = "Field is null validation error")
     @PositiveOrZero(message = "Field must be positive or zero")
     private float totalPrice;
+    @NotNull(message = "Field is null validation error")
+    @Size(max = 100, message = "Out of validation bounds")
+    private Map<Integer, Integer> productQuantities;
 
     public Cart() {
         this.products = new HashMap<>();
         this.totalPrice = 0;
+        this.productQuantities = new HashMap<>();
     }
 
     public void addProduct(Product product) {
         products.put(product.getId(), product);
         totalPrice += product.getPrice();
+        productQuantities.put(product.getId(), 1);
     }
 
     public void removeProduct(int productId) {
         Product product = products.get(productId);
         products.remove(productId);
         totalPrice -= product.getPrice();
+        productQuantities.remove(productId);
     }
 
     public static Cart checkCart(Product product, Cart cart){
