@@ -34,7 +34,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void delete(int id) throws EntityOperationException {
+    public void delete(Integer id) throws EntityOperationException {
         statisticRepository.delete(id);
     }
 }

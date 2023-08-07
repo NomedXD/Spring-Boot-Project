@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void delete(int id) throws EntityOperationException {
+    public void delete(Integer id) throws EntityOperationException {
         productRepository.delete(id);
     }
 
@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ModelAndView getSearchedProducts(Search search, Integer currentPage) throws EntityOperationException {
+    public ModelAndView getPaginatedProducts(Search search, Integer currentPage) throws EntityOperationException {
         ModelMap model = new ModelMap();
         Long count;
         List<Product> productList;

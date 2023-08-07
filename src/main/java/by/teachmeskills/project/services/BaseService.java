@@ -12,5 +12,5 @@ public interface BaseService<T extends BaseEntity> {
 
     T update(T entity) throws EntityOperationException;
 
-    void delete(int id) throws EntityOperationException;
+    void delete(Integer id) throws EntityOperationException;
 }

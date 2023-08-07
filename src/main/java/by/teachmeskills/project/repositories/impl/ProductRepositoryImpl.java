@@ -132,7 +132,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         try(Session session = factory.unwrap(Session.class)) {
             return session.createQuery("from Product p order by p.name", Product.class).setFirstResult(first).setMaxResults(count).list();
         } catch (PersistenceException e) {
-            logger.warn("SQLException while getting all ordered products. Most likely request is wrong. Full message - " + e.getMessage());
+            logger.warn("SQLException while getting all products in name order. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }

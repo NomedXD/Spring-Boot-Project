@@ -34,29 +34,29 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> read() throws EntityOperationException {
-        return null;
+        return orderRepository.read();
     }
 
     @Override
     public Order update(Order entity) throws EntityOperationException {
-        return null;
+        return orderRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) throws EntityOperationException {
-
+    public void delete(Integer id) throws EntityOperationException {
+        orderRepository.delete(id);
     }
 
     @Override
     public ModelAndView applyOrder(Order order, Cart cart, User user) throws EntityOperationException {
-        buildOrder(order, cart, user);
+        preBuildOrder(order, cart, user);
         user.getOrders().add(create(order));
         user = userService.update(user);
         cart.clear();
         return new ModelAndView(PagesPathEnum.CART_PAGE.getPath());
     }
 
-    private void buildOrder(Order order, Cart cart, User user) {
+    private void preBuildOrder(Order order, Cart cart, User user) {
         order.setDate(LocalDate.now());
         order.setPrice(cart.getTotalPrice());
         String ccNumber = order.getCreditCardNumber();
