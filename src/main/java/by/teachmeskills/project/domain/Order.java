@@ -39,4 +39,22 @@ public class Order extends BaseEntity{
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Product> productList;
+
+    @Column(name = "cc_number")
+    private String creditCardNumber;
+
+    @Column(name = "shipping_type")
+    private String shippingType;
+
+    @Column(name = "shipping_cost")
+    private Float shippingCost;
+
+    @Column(name = "code")
+    private String code;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "customer_notes")
+    private String customerNotes;
 }

@@ -90,37 +90,38 @@
                                         <h5 class="text-uppercase">ITEMS = ${sessionScope.cart.getTotalSize()}</h5>
                                         <h5>€ 132.00</h5>
                                     </div>
-                                    <form action="${contextPath}/checkout" method="POST">
+                                    <form id="checkout" action="${contextPath}/cart/checkout" method="POST">
                                         <h5 class="text-uppercase mb-3">Shipping</h5>
                                         <div class="mb-4 pb-2">
-                                            <select id="addressSelect" class="selectPicker" data-size="2" name="shipping">
-                                                <option value="0">Self pickup 0$</option>
-                                                <option value="10">Delivery by courier 10$</option>
+                                            <select id="addressSelect" class="selectPicker" data-size="2" name="shippingType">
+                                                <option value="Self pickup">Self pickup 0$</option>
+                                                <option value="Delivery by courier">Delivery by courier 10$</option>
                                             </select>
                                         </div>
+                                        <input id="shippingCost" type="hidden" name="shippingCost" value="0">
                                         <h5 id="addressH5" class="text-uppercase mb-3" style="display: none">Address</h5>
                                         <div id="addressDiv" class="mb-4 pb-2" style="display: none">
-                                            <input class="form-control form-control-lg" type="text" maxlength="60">
+                                            <input id="addressInput" class="form-control form-control-lg" type="text" maxlength="60" name="address">
                                         </div>
                                         <h5 class="text-uppercase mb-3">Credit card</h5>
                                         <div class="mb-5">
                                             <div class="form-outline">
-                                                <input class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="16" placeholder="xxxx xxxx xxxx xxxx">
-                                                <input class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="6" placeholder="MM/YYYY">
-                                                <input class="form-control form-control-lg" type="password" inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="3" placeholder="CVV">
+                                                <input name="creditCardNumber" class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="[0-9\s]{16,19}" autocomplete="cc-number" maxlength="16" placeholder="xxxx xxxx xxxx xxxx">
+                                                <input class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="(\d{2,2}/\d{4,4})" autocomplete="cc-number" maxlength="7" placeholder="MM/YYYY">
+                                                <input class="form-control form-control-lg" type="password" inputmode="numeric" pattern="(\d{3,3})" autocomplete="cc-number" maxlength="3" placeholder="CVV">
                                             </div>
                                         </div>
                                         <h5 class="text-uppercase mb-3">Give code</h5>
                                         <div class="mb-5">
                                             <div class="form-outline">
-                                                <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
+                                                <input type="text" id="form3Examplea2" class="form-control form-control-lg" name="code" maxlength="10" />
                                                 <label class="form-label" for="form3Examplea2">Enter your code</label>
                                             </div>
                                         </div>
                                         <h5 class="text-uppercase mb-3">Customer notes</h5>
                                         <div class="mb-5">
                                             <div class="form-outline">
-                                                <input class="form-control form-control-lg" type="text"  maxlength="100">
+                                                <input class="form-control form-control-lg" type="text"  maxlength="100" name="customerNotes">
                                             </div>
                                         </div>
                                         <hr class="my-4">
@@ -128,7 +129,7 @@
                                             <h5 class="text-uppercase">Total price</h5>
                                             <h5 id="total">${sessionScope.cart.totalPrice}</h5>
                                         </div>
-                                        <button type="button" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Submit</button>
+                                        <button form="checkout" type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Submit</button>
                                     </form>
                                 </div>
                             </div>

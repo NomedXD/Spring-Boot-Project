@@ -70,6 +70,7 @@ public class UserServiceImpl implements UserService {
                 user.getDate(), user.getCurrentBalance(), params.get(RequestParamsEnum.MOBILE.getValue()), params.get(RequestParamsEnum.STREET.getValue()),
                 params.get(RequestParamsEnum.ACCOMMODATION_NUMBER.getValue()), params.get(RequestParamsEnum.FLAT_NUMBER.getValue()));
         ModelMap model = new ModelMap();
+        updatedUserFields.setOrders(user.getOrders());
         user = update(updatedUserFields);
         model.addAttribute(EshopConstants.USER, user);
         return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);

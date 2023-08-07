@@ -6,7 +6,6 @@ import by.teachmeskills.project.exception.EntityOperationException;
 import java.util.List;
 
 public interface BaseRepository<T extends BaseEntity> {
-    ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     T create(T entity) throws EntityOperationException;
 

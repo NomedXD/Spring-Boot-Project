@@ -66,6 +66,7 @@ public class Cart {
 
     public void clear() {
         products.clear();
+        productQuantities.clear();
     }
 
 }
