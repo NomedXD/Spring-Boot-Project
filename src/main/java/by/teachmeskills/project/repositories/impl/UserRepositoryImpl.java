@@ -33,12 +33,8 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = factory.unwrap(Session.class)) {
             session.persist(entity);
         } catch (PersistenceException e) {
-            if (e instanceof ConstraintViolationException) {
-                return null;
-            } else {
-                logger.warn("SQLException while getting users. Most likely request is wrong. Full message - " + e.getMessage());
-                throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
-            }
+            logger.warn("SQLException while getting users. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later", e);
         }
         return entity;
     }

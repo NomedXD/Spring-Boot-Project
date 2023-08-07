@@ -70,6 +70,10 @@ public class UserServiceImpl implements UserService {
                 user.getDate(), user.getCurrentBalance(), params.get(RequestParamsEnum.MOBILE.getValue()), params.get(RequestParamsEnum.STREET.getValue()),
                 params.get(RequestParamsEnum.ACCOMMODATION_NUMBER.getValue()), params.get(RequestParamsEnum.FLAT_NUMBER.getValue()));
         ModelMap model = new ModelMap();
+        /*
+            Здесь лучше извлечь заказы из базы, а не копировать из текущего пользователя, только непонятно, какой запрос
+            делать в базу...
+         */
         updatedUserFields.setOrders(user.getOrders());
         user = update(updatedUserFields);
         model.addAttribute(EshopConstants.USER, user);
@@ -107,15 +111,10 @@ public class UserServiceImpl implements UserService {
     public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) throws EntityOperationException {
         if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
             ModelMap model = new ModelMap();
-            User loggedUser = create(new User(user.getMail(), user.getPassword(), user.getName(), user.getSurname(), user.getDate(), 0));
-            if (loggedUser != null) {
-                user = loggedUser;
-                model.addAttribute(EshopConstants.USER, user);
-                model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
-                return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
-            } else {
-                throw new UserAlreadyExistException("User with such email already exist");
-            }
+            user = create(new User(user.getMail(), user.getPassword(), user.getName(), user.getSurname(), user.getDate(), 0));
+            model.addAttribute(EshopConstants.USER, user);
+            model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
+            return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
         }
         return new ModelAndView(PagesPathEnum.REGISTRATION_PAGE.getPath());
     }
