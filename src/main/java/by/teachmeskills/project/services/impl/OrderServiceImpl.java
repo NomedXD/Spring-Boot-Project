@@ -49,18 +49,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ModelAndView applyOrder(Order order, Cart cart, User user) throws EntityOperationException {
-        validateOrder(order);
-        order.setUser(user);
-        order.setProductList(cart.getProducts());
+        buildOrder(order, cart, user);
         user.getOrders().add(create(order));
         user = userService.update(user);
         cart.clear();
         return new ModelAndView(PagesPathEnum.CART_PAGE.getPath());
     }
 
-    private void validateOrder(Order order) {
+    private void buildOrder(Order order, Cart cart, User user) {
         order.setDate(LocalDate.now());
+        order.setPrice(cart.getTotalPrice());
         String ccNumber = order.getCreditCardNumber();
         order.setCreditCardNumber(ccNumber.substring(0, 5).concat(" **** **** ").concat(ccNumber.substring(12, 16)));
+        order.setUser(user);
+        order.setProductList(cart.getProducts());
     }
 }

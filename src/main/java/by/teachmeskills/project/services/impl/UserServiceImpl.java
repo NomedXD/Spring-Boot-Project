@@ -102,7 +102,8 @@ public class UserServiceImpl implements UserService {
         ModelMap model = new ModelMap();
         User loggedUser = getUserByCredentials(user.getMail(), user.getPassword());
         if (loggedUser != null) {
-            model.addAttribute(EshopConstants.USER, loggedUser);
+            user = loggedUser;
+            model.addAttribute(EshopConstants.USER, user);
             model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
             return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
         } else {
