@@ -4,10 +4,8 @@ import by.teachmeskills.project.domain.Statistic;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.StatisticRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +17,18 @@ import java.util.List;
 @Repository
 @Transactional
 public class StatisticRepositoryImpl implements StatisticRepository {
-    private final EntityManagerFactory factory;
+    @PersistenceContext
+    private final EntityManager entityManager;
     private final static Logger logger = LoggerFactory.getLogger(StatisticRepositoryImpl.class);
 
     @Autowired
-    public StatisticRepositoryImpl(EntityManagerFactory factory) {
-        this.factory = factory;
+    public StatisticRepositoryImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Override
     public Statistic create(Statistic entity) throws EntityOperationException {
-        try (EntityManager entityManager = factory.createEntityManager()) {
+        try {
             entityManager.persist(entity);
         } catch (PersistenceException e) {
             logger.warn("SQLException while creating statistics. Most likely request is wrong. Full message - " + e.getMessage());
@@ -40,7 +39,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
 
     @Override
     public List<Statistic> read() throws EntityOperationException {
-        try (EntityManager entityManager = factory.createEntityManager()) {
+        try {
             return entityManager.createQuery("from Statistic", Statistic.class).getResultList();
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting statistics. Most likely request is wrong. Full message - " + e.getMessage());
@@ -50,7 +49,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
 
     @Override
     public Statistic update(Statistic entity) throws EntityOperationException {
-        try (EntityManager entityManager = factory.createEntityManager()) {
+        try {
             return entityManager.merge(entity);
         } catch (PersistenceException e) {
             logger.warn("SQLException while updating statistic. Most likely request is wrong. Full message - " + e.getMessage());
@@ -60,7 +59,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
 
     @Override
     public void delete(Integer id) throws EntityOperationException {
-        try (EntityManager entityManager = factory.createEntityManager()) {
+        try {
             Statistic statistic = entityManager.find(Statistic.class, id);
             entityManager.remove(statistic);
         } catch (PersistenceException e) {
@@ -71,7 +70,7 @@ public class StatisticRepositoryImpl implements StatisticRepository {
 
     @Override
     public Statistic getStatisticEntityById(Integer id) throws EntityOperationException {
-        try (EntityManager entityManager = factory.createEntityManager()) {
+        try {
             return entityManager.find(Statistic.class, id);
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting statistic by id. Most likely request is wrong. Full message - " + e.getMessage());
