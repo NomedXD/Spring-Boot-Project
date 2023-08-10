@@ -3,7 +3,9 @@ package by.teachmeskills.project.repositories.impl;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.UserRepository;
+import by.teachmeskills.project.utils.JPAResultHelper;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
 import org.hibernate.Session;
@@ -19,19 +21,18 @@ import java.util.List;
 @Repository
 @Transactional
 public class UserRepositoryImpl implements UserRepository {
-    @PersistenceContext
-    private final EntityManager factory;
+    private final EntityManagerFactory factory;
     private final static Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
     @Autowired
-    public UserRepositoryImpl(EntityManager factory) {
+    public UserRepositoryImpl(EntityManagerFactory factory) {
         this.factory = factory;
     }
 
     @Override
     public User create(User entity) throws EntityOperationException {
-        try (Session session = factory.unwrap(Session.class)) {
-            session.persist(entity);
+        try (EntityManager entityManager = factory.createEntityManager()) {
+            entityManager.unwrap(Session.class).persist(entity);
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting users. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later", e);
@@ -41,8 +42,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> read() throws EntityOperationException {
-        try (Session session = factory.unwrap(Session.class)) {
-            return session.createQuery("from User", User.class).list();
+        try (EntityManager entityManager = factory.createEntityManager()) {
+            return entityManager.createQuery("select u from User u", User.class).getResultList();
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting users. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
@@ -51,8 +52,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User update(User entity) throws EntityOperationException {
-        try (Session session = factory.unwrap(Session.class)) {
-            return session.merge(entity);
+        try (EntityManager entityManager = factory.createEntityManager()) {
+            return entityManager.merge(entity);
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting users. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
@@ -61,9 +62,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(Integer id) throws EntityOperationException {
-        try (Session session = factory.unwrap(Session.class)) {
-            User user = session.get(User.class, id);
-            session.remove(user);
+        try (EntityManager entityManager = factory.createEntityManager()) {
+            User user = entityManager.find(User.class, id);
+            entityManager.remove(user);
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting users. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
@@ -72,9 +73,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUserByCredentials(String mail, String password) throws EntityOperationException {
-        try (Session session = factory.unwrap(Session.class)) {
-            return session.createQuery("from User u where u.mail =: mail and u.password =: password", User.class)
-                    .setParameter("mail", mail).setParameter("password", password).getSingleResultOrNull();
+        try (EntityManager entityManager = factory.createEntityManager()) {
+            return (User) JPAResultHelper.getSingleResultOrNull(entityManager.createQuery("select u from User u where u.mail =: mail and u.password =: password", User.class)
+                    .setParameter("mail", mail).setParameter("password", password));
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting users. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
