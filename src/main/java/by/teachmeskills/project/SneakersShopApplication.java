@@ -2,11 +2,14 @@ package by.teachmeskills.project;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication
 public class SneakersShopApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(SneakersShopApplication.class, args);
+        try {
+            SpringApplication.run(SneakersShopApplication.class, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

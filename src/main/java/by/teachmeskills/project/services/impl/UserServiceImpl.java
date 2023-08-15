@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(int id) throws EntityOperationException {
+    public void delete(Integer id) throws EntityOperationException {
         userRepository.delete(id);
     }
 
@@ -70,6 +70,11 @@ public class UserServiceImpl implements UserService {
                 user.getDate(), user.getCurrentBalance(), params.get(RequestParamsEnum.MOBILE.getValue()), params.get(RequestParamsEnum.STREET.getValue()),
                 params.get(RequestParamsEnum.ACCOMMODATION_NUMBER.getValue()), params.get(RequestParamsEnum.FLAT_NUMBER.getValue()));
         ModelMap model = new ModelMap();
+        /*
+            Здесь лучше извлечь заказы из базы, а не копировать из текущего пользователя, только непонятно, какой запрос
+            делать в базу...
+         */
+        updatedUserFields.setOrders(user.getOrders());
         user = update(updatedUserFields);
         model.addAttribute(EshopConstants.USER, user);
         return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
@@ -77,20 +82,12 @@ public class UserServiceImpl implements UserService {
 
     private void setInputs(Map<String, String> params, User user) {
         for (var entry : params.entrySet()) {
-            if (entry.getValue().equals("")) {
+            if (entry.getValue().isEmpty()) {
                 switch (entry.getKey()) {
-                    case "mobile" -> {
-                        entry.setValue(user.getMobile());
-                    }
-                    case "street" -> {
-                        entry.setValue(user.getStreet());
-                    }
-                    case "accommodationNumber" -> {
-                        entry.setValue(user.getAccommodationNumber());
-                    }
-                    case "flatNumber" -> {
-                        entry.setValue(user.getFlatNumber());
-                    }
+                    case "mobile" -> entry.setValue(user.getMobile());
+                    case "street" -> entry.setValue(user.getStreet());
+                    case "accommodationNumber" -> entry.setValue(user.getAccommodationNumber());
+                    case "flatNumber" -> entry.setValue(user.getFlatNumber());
                 }
             }
         }
@@ -101,7 +98,8 @@ public class UserServiceImpl implements UserService {
         ModelMap model = new ModelMap();
         User loggedUser = getUserByCredentials(user.getMail(), user.getPassword());
         if (loggedUser != null) {
-            model.addAttribute(EshopConstants.USER, loggedUser);
+            user = loggedUser;
+            model.addAttribute(EshopConstants.USER, user);
             model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
             return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
         } else {
@@ -113,14 +111,10 @@ public class UserServiceImpl implements UserService {
     public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) throws EntityOperationException {
         if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
             ModelMap model = new ModelMap();
-            User loggedUser = create(new User(user.getMail(), user.getPassword(), user.getName(), user.getSurname(), user.getDate(), 0));
-            if (loggedUser != null) {
-                model.addAttribute(EshopConstants.USER, loggedUser);
-                model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
-                return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
-            } else {
-                throw new UserAlreadyExistException("User with such email already exist");
-            }
+            user = create(new User(user.getMail(), user.getPassword(), user.getName(), user.getSurname(), user.getDate(), 0));
+            model.addAttribute(EshopConstants.USER, user);
+            model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
+            return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
         }
         return new ModelAndView(PagesPathEnum.REGISTRATION_PAGE.getPath());
     }

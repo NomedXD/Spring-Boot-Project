@@ -1,6 +1,7 @@
 package by.teachmeskills.project.exception;
 
 import by.teachmeskills.project.enums.PagesPathEnum;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,10 +41,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityOperationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ModelAndView handleEntityOperationException(EntityOperationException exception){
-        ModelMap modelMap = new ModelMap();
-        modelMap.addAttribute("SQLErrorMessage", exception.getMessage());
-        return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);
+    public ModelAndView handleEntityOperationException(EntityOperationException exception) {
+        if (exception.getException() instanceof ConstraintViolationException) {
+            return handleUserAlreadyExistException(new UserAlreadyExistException("User with such email already exist"));
+        } else {
+            ModelMap modelMap = new ModelMap();
+            modelMap.addAttribute("SQLErrorMessage", exception.getMessage());
+            return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);
+        }
     }
 }
 

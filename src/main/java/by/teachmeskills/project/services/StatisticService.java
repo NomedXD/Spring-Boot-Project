@@ -1,7 +1,7 @@
 package by.teachmeskills.project.services;
 
-import by.teachmeskills.project.domain.StatisticEntity;
+import by.teachmeskills.project.domain.Statistic;
 
-public interface StatisticService extends BaseService<StatisticEntity> {
+public interface StatisticService extends BaseService<Statistic> {
 
 }

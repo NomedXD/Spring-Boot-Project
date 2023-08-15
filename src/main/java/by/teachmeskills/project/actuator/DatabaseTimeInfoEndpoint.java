@@ -1,6 +1,6 @@
 package by.teachmeskills.project.actuator;
 
-import by.teachmeskills.project.domain.StatisticEntity;
+import by.teachmeskills.project.domain.Statistic;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.CategoryService;
@@ -32,9 +32,9 @@ public class DatabaseTimeInfoEndpoint {
         categoryService.getCategoryByName(categoryName);
         stopWatch.stop();
         ModelMap modelMap = new ModelMap();
-        StatisticEntity statisticEntity = statisticService.create(
-                new StatisticEntity(0, "Time to read category " + categoryName + " is " + stopWatch.getTotalTimeSeconds()));
-        modelMap.addAttribute("info", statisticEntity.getDescription());
+        Statistic statistic = statisticService.create(
+                new Statistic("Time to read category " + categoryName + " is " + stopWatch.getTotalTimeSeconds()));
+        modelMap.addAttribute("info", statistic.getDescription());
         return new ModelAndView(PagesPathEnum.DB_TIME_INFO_PAGE.getPath(), modelMap);
     }
 }

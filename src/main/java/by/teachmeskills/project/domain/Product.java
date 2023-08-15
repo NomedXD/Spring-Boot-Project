@@ -1,82 +1,69 @@
 package by.teachmeskills.project.domain;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-public class Product extends BaseEntity{
+import java.util.List;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@NoArgsConstructor
+@Entity
+@Table(name = "products")
+public class Product extends BaseEntity {
+
     @NotNull(message = "Field is null validation error")
     @Pattern(regexp = "[a-zA-Z ,.'-]+", message = "Field does not satisfy regexp")
-    @Size(min = 0, max = 45, message = "Out of validation bounds")
+    @Size(max = 45, message = "Out of validation bounds")
+    @Column(name = "name")
     private String name;
+
+    // Может быть OneToMany в будущем, если будет карусель картинок(тогда еще будет поле boolean primeImage)
+    @OneToOne(optional = false, orphanRemoval = true)
+    @JoinColumn(name = "image_id")
+    private Image image;
+
     @NotNull(message = "Field is null validation error")
-    @Size(min = 0, max = 45, message = "Out of validation bounds")
-    private String imagepath;
-    @NotNull(message = "Field is null validation error")
+    @Column(name = "description")
     private String description;
-    @NotNull(message = "Field is null validation error")
-    @PositiveOrZero(message = "Field must be positive or zero")
-    private int categoryid;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
     @NotNull(message = "Field is null validation error")
     @Positive(message = "Field must be positive")
+    @Column(name = "price")
     private float price;
 
-    public Product(){
+    @ManyToMany(mappedBy = "productList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Order> orders;
 
-    }
-
-    public Product(int id, String name, String imagepath, String description, int categoryid, float price) {
+    public Product(Integer id, String name, Image image, String description, Category category, float price) {
         this.id = id;
         this.name = name;
-        this.imagepath = imagepath;
+        this.image = image;
         this.description = description;
-        this.categoryid = categoryid;
-        this.price = price;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getImagepath() {
-        return imagepath;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getCategoryid() {
-        return categoryid;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setImagepath(String imagepath) {
-        this.imagepath = imagepath;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setCategoryid(int categoryid) {
-        this.categoryid = categoryid;
-    }
-
-    public void setPrice(float price) {
+        this.category = category;
         this.price = price;
     }
 }

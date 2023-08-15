@@ -1,6 +1,6 @@
 package by.teachmeskills.project.services.impl;
 
-import by.teachmeskills.project.domain.StatisticEntity;
+import by.teachmeskills.project.domain.Statistic;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.StatisticRepository;
 import by.teachmeskills.project.services.StatisticService;
@@ -19,22 +19,22 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public StatisticEntity create(StatisticEntity entity) throws EntityOperationException {
+    public Statistic create(Statistic entity) throws EntityOperationException {
         return statisticRepository.create(entity);
     }
 
     @Override
-    public List<StatisticEntity> read() throws EntityOperationException {
+    public List<Statistic> read() throws EntityOperationException {
         return statisticRepository.read();
     }
 
     @Override
-    public StatisticEntity update(StatisticEntity entity) throws EntityOperationException {
+    public Statistic update(Statistic entity) throws EntityOperationException {
         return statisticRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) throws EntityOperationException {
+    public void delete(Integer id) throws EntityOperationException {
         statisticRepository.delete(id);
     }
 }

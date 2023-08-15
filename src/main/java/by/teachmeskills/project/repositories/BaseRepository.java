@@ -6,7 +6,6 @@ import by.teachmeskills.project.exception.EntityOperationException;
 import java.util.List;
 
 public interface BaseRepository<T extends BaseEntity> {
-    ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     T create(T entity) throws EntityOperationException;
 
@@ -14,5 +13,5 @@ public interface BaseRepository<T extends BaseEntity> {
 
     T update(T entity) throws EntityOperationException;
 
-    void delete(int id) throws EntityOperationException;
+    void delete(Integer id) throws EntityOperationException;
 }
