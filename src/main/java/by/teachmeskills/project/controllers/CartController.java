@@ -39,8 +39,8 @@ public class CartController {
         return new ModelAndView(PagesPathEnum.CART_PAGE.getPath());
     }
 
-    @GetMapping("/remove/{productid}")
-    public ModelAndView deleteProductFromCart(@PathVariable(name = "productid") Integer productId,
+    @GetMapping("/remove/{productId}")
+    public ModelAndView deleteProductFromCart(@PathVariable(name = "productId") Integer productId,
                                               @SessionAttribute(EshopConstants.SHOPPING_CART) Cart cart) {
         ModelMap model = new ModelMap();
         cart.removeProduct(productId);
@@ -48,8 +48,8 @@ public class CartController {
         return new ModelAndView(PagesPathEnum.CART_PAGE.getPath(), model);
     }
 
-    @GetMapping("/add/{productid}")
-    public ModelAndView addProductToCart(@PathVariable(name = "productid") Integer productId,
+    @GetMapping("/add/{productId}")
+    public ModelAndView addProductToCart(@PathVariable(name = "productId") Integer productId,
                                          @SessionAttribute(name = EshopConstants.SHOPPING_CART, required = false) Cart cart) throws EntityOperationException {
         ModelMap model = new ModelMap();
         Product product = productService.getProductById(productId);

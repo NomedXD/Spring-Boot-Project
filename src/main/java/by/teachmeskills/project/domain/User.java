@@ -16,7 +16,6 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -70,34 +69,4 @@ public class User extends BaseEntity{
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Order> orders;
-
-    public User(Integer id, String mail, String password, String name, String surname, LocalDate date, float currentBalance, String mobile, String street, String accommodationNumber, String flatNumber) {
-        this.id = id;
-        this.mail = mail;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.date = date;
-        this.currentBalance = currentBalance;
-        this.mobile = mobile;
-        this.street = street;
-        this.accommodationNumber = accommodationNumber;
-        this.flatNumber = flatNumber;
-    }
-
-    public User(String mail, String password, String name, String surname, LocalDate date, float currentBalance){
-        this.mail = mail;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.date = date;
-        this.currentBalance = currentBalance;
-        /*
-            В этом моменте не сильно разобрался. Если стоит на поле orders cascade = CascadeType.ALL, то при persist
-            user в базу данных метод не вернет пользователя вместе с заказами(их у него нет, то есть размер списка = 0,
-            в поле orders все еще будет null. И при обновлении user с помощью merge(),
-            если поле будет все еще null получаем exception. Поэтому здесь сразу и инициализирую это поле
-         */
-        this.orders = new ArrayList<>();
-    }
 }

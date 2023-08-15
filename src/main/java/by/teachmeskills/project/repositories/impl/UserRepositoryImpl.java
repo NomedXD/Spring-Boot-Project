@@ -1,5 +1,6 @@
 package by.teachmeskills.project.repositories.impl;
 
+import by.teachmeskills.project.domain.Order;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.UserRepository;
@@ -76,6 +77,17 @@ public class UserRepositoryImpl implements UserRepository {
                     .setParameter("mail", mail).setParameter("password", password));
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting users. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
+        }
+    }
+
+    @Override
+    public List<Order> getUserOrders(Integer id) throws EntityOperationException {
+        try {
+            return entityManager.createQuery("select o from Order o where o.user.id =: id", Order.class).
+                    setParameter("id", id).getResultList();
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while getting orders by user id. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }
