@@ -7,7 +7,6 @@ import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.NoSuchUserException;
 import by.teachmeskills.project.exception.EntityOperationException;
-import by.teachmeskills.project.exception.UserAlreadyExistException;
 import by.teachmeskills.project.repositories.UserRepository;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.UserService;
@@ -18,6 +17,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,11 +54,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByCredentials(String mail, String password) throws EntityOperationException {
-        return userRepository.getUserByCredentials(mail, password);
-    }
-
-    @Override
     public ModelAndView updateAccountData(User updatedUserFields, User user) throws EntityOperationException {
         Map<String, String> params = new HashMap<>();
         params.put(RequestParamsEnum.MOBILE.getValue(), updatedUserFields.getMobile());
@@ -66,15 +61,13 @@ public class UserServiceImpl implements UserService {
         params.put(RequestParamsEnum.ACCOMMODATION_NUMBER.getValue(), updatedUserFields.getAccommodationNumber());
         params.put(RequestParamsEnum.FLAT_NUMBER.getValue(), updatedUserFields.getFlatNumber());
         setInputs(params, user);
-        updatedUserFields = new User(user.getId(), user.getMail(), user.getPassword(), user.getName(), user.getSurname(),
-                user.getDate(), user.getCurrentBalance(), params.get(RequestParamsEnum.MOBILE.getValue()), params.get(RequestParamsEnum.STREET.getValue()),
-                params.get(RequestParamsEnum.ACCOMMODATION_NUMBER.getValue()), params.get(RequestParamsEnum.FLAT_NUMBER.getValue()));
+        updatedUserFields = User.builder().id(user.getId()).mail(user.getMail()).password(user.getPassword()).
+                name(user.getName()).surname(user.getSurname()).date(user.getDate()).currentBalance(user.getCurrentBalance()).
+                mobile(params.get(RequestParamsEnum.MOBILE.getValue())).street(params.get(RequestParamsEnum.STREET.getValue())).
+                accommodationNumber(params.get(RequestParamsEnum.ACCOMMODATION_NUMBER.getValue())).
+                flatNumber(params.get(RequestParamsEnum.FLAT_NUMBER.getValue())).build();
         ModelMap model = new ModelMap();
-        /*
-            Здесь лучше извлечь заказы из базы, а не копировать из текущего пользователя, только непонятно, какой запрос
-            делать в базу...
-         */
-        updatedUserFields.setOrders(user.getOrders());
+        updatedUserFields.setOrders(userRepository.getUserOrders(user.getId()));
         user = update(updatedUserFields);
         model.addAttribute(EshopConstants.USER, user);
         return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
@@ -96,7 +89,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ModelAndView logIn(User user) throws EntityOperationException {
         ModelMap model = new ModelMap();
-        User loggedUser = getUserByCredentials(user.getMail(), user.getPassword());
+        User loggedUser = userRepository.getUserByCredentials(user.getMail(), user.getPassword());
         if (loggedUser != null) {
             user = loggedUser;
             model.addAttribute(EshopConstants.USER, user);
@@ -111,7 +104,8 @@ public class UserServiceImpl implements UserService {
     public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) throws EntityOperationException {
         if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
             ModelMap model = new ModelMap();
-            user = create(new User(user.getMail(), user.getPassword(), user.getName(), user.getSurname(), user.getDate(), 0));
+            user = userRepository.create(User.builder().mail(user.getMail()).password(user.getPassword()).name(user.getName()).
+                    surname(user.getSurname()).date(user.getDate()).currentBalance(0f).orders(new ArrayList<>()).build());
             model.addAttribute(EshopConstants.USER, user);
             model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
             return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);

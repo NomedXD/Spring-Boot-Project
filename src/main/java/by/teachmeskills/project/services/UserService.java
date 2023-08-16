@@ -6,8 +6,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
 public interface UserService extends BaseService<User> {
-    User getUserByCredentials(String mail, String password) throws EntityOperationException;
-
     ModelAndView updateAccountData(User updatedUserFields, User user) throws EntityOperationException;
 
     ModelAndView logIn(User user) throws EntityOperationException;
