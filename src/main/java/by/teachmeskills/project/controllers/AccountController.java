@@ -3,8 +3,12 @@ package by.teachmeskills.project.controllers;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
+import by.teachmeskills.project.exception.CSVExportException;
+import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +38,16 @@ public class AccountController {
     @PostMapping("/update")
     public ModelAndView updateAccountData(@ModelAttribute("updatedUserFields") User updatedUserFields, @SessionAttribute(EshopConstants.USER) User user) throws EntityOperationException {
         return userService.updateAccountData(updatedUserFields, user);
+    }
+
+    @GetMapping("/export")
+    public ModelAndView exportUserOrders(@SessionAttribute(EshopConstants.USER) User user) throws CSVExportException {
+        return userService.exportUserOrders(user);
+    }
+
+    @PostMapping("/import")
+    public ModelAndView importUserOrders(@SessionAttribute(EshopConstants.USER) User user) throws CSVImportException {
+        return userService.importUserOrders(user);
     }
 
     @ModelAttribute("updatedUserFields")

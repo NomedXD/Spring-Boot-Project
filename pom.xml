@@ -86,7 +86,12 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>3.1.2</version>
         </dependency>
-
+        <!-- CSV -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.4</version>
+        </dependency>
     </dependencies>
 
     <build>

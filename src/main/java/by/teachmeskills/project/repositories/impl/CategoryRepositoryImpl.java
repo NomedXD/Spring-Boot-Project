@@ -1,6 +1,7 @@
 package by.teachmeskills.project.repositories.impl;
 
 import by.teachmeskills.project.domain.Category;
+import by.teachmeskills.project.domain.Image;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.CategoryRepository;
 import jakarta.persistence.EntityManager;
@@ -75,6 +76,16 @@ public class CategoryRepositoryImpl implements CategoryRepository {
                     setParameter("name", name).getSingleResult();
         } catch (PersistenceException e) {
             logger.warn("SQLException while getting category by it's name. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
+        }
+    }
+
+    @Override
+    public Category getCategoryById(Integer id) throws EntityOperationException {
+        try {
+            return entityManager.find(Category.class, id);
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while getting category by it's id. Most likely request is wrong. Full message - " + e.getMessage());
             throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
         }
     }

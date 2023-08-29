@@ -42,4 +42,9 @@ public class CategoryServiceImpl implements CategoryService {
     public void getCategoryByName(String name) throws EntityOperationException {
         categoryRepository.getCategoryByName(name);
     }
+
+    @Override
+    public Category getCategoryById(Integer id) throws EntityOperationException {
+        return categoryRepository.getCategoryById(id);
+    }
 }

@@ -139,6 +139,11 @@
 
 <!--Orders details below-->
 <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center py-3">
+        <a href="${contextPath}/account/export" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Export orders</a>
+        <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
+        <a href="${contextPath}/account/import" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Import orders</a>
+    </div>
     <c:if test="${not empty sessionScope.user.orders}">
         <c:forEach items="${sessionScope.user.orders}" var="order">
             <div class="container">

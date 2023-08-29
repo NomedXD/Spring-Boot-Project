@@ -1,22 +1,37 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Category;
+import by.teachmeskills.project.domain.Order;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
+import by.teachmeskills.project.exception.CSVExportException;
+import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.exception.NoSuchUserException;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.UserRepository;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.UserService;
+import by.teachmeskills.project.domain.OrderProductCsv;
+import by.teachmeskills.project.utils.OrderProductCsvConverter;
 import by.teachmeskills.project.validator.ValidatorUtils;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,11 +41,13 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CategoryService categoryService;
+    private final OrderProductCsvConverter orderConverter;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService) {
+    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService, @Lazy OrderProductCsvConverter orderConverter) {
         this.userRepository = userRepository;
         this.categoryService = categoryService;
+        this.orderConverter = orderConverter;
     }
 
     @Override
@@ -51,6 +68,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Integer id) throws EntityOperationException {
         userRepository.delete(id);
+    }
+
+    @Override
+    public User getUserById(Integer id) throws EntityOperationException {
+        return userRepository.getUserById(id);
     }
 
     @Override
@@ -123,5 +145,31 @@ public class UserServiceImpl implements UserService {
         } else {
             return new ModelAndView(PagesPathEnum.LOG_IN_PAGE.getPath(), model);
         }
+    }
+
+    @Override
+    public ModelAndView exportUserOrders(User user) throws CSVExportException {
+        writeCsv(user);
+        ModelMap model = new ModelMap();
+        model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulExportMessage);
+        return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
+    }
+
+    private void writeCsv(User user) throws CSVExportException {
+        List<Order> orderList = user.getOrders();
+        List<OrderProductCsv> orderProductCsvList = orderConverter.convertInto(orderList);
+        try (Writer ordersProductsWriter = Files.newBufferedWriter(Paths.get("src/main/resources/user_" + user.getId() + "_orders_products.csv"))) {
+            StatefulBeanToCsv<OrderProductCsv> ordersProductsSbc = new StatefulBeanToCsvBuilder<OrderProductCsv>(ordersProductsWriter)
+                    .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+                    .build();
+            ordersProductsSbc.write(orderProductCsvList);
+        } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
+            throw new CSVExportException(EshopConstants.errorOrdersExportMessage);
+        }
+    }
+
+    @Override
+    public ModelAndView importUserOrders(User user) throws CSVImportException {
+        return null;
     }
 }
