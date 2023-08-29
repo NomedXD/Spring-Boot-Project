@@ -12,7 +12,6 @@ import by.teachmeskills.project.exception.NoSuchUserException;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.UserRepository;
 import by.teachmeskills.project.services.CategoryService;
-import by.teachmeskills.project.services.OrderService;
 import by.teachmeskills.project.services.UserService;
 import by.teachmeskills.project.domain.OrderProductCsv;
 import by.teachmeskills.project.utils.OrderProductCsvConverter;
@@ -49,14 +48,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CategoryService categoryService;
-    private final OrderService orderService;
     private final OrderProductCsvConverter orderConverter;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService, @Lazy OrderService orderService, @Lazy OrderProductCsvConverter orderConverter) {
+    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService, @Lazy OrderProductCsvConverter orderConverter) {
         this.userRepository = userRepository;
         this.categoryService = categoryService;
-        this.orderService = orderService;
         this.orderConverter = orderConverter;
     }
 
