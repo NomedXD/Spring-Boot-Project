@@ -139,6 +139,7 @@
 
 <!--Orders details below-->
 <div class="container-fluid">
+    <!--Export/import-->
     <div class="d-flex justify-content-between align-items-center py-3">
         <a href="${contextPath}/account/export" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Export orders</a>
         <c:if test="${not empty eiMessage}">${eiMessage}</c:if>

@@ -3,7 +3,6 @@ package by.teachmeskills.project.utils;
 import by.teachmeskills.project.domain.Order;
 import by.teachmeskills.project.domain.OrderProductCsv;
 import by.teachmeskills.project.domain.Product;
-import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.ImageService;
 import by.teachmeskills.project.services.UserService;
@@ -50,10 +49,10 @@ public class OrderProductCsvConverter {
     }
 
     public List<Order> convertFrom(List<OrderProductCsv> orderProductCsvList) {
-        return createOrderDtoList(orderProductCsvList);
+        return map(orderProductCsvList);
     }
 
-    private List<Order> createOrderDtoList(List<OrderProductCsv> orderProductCsvList) {
+    private List<Order> map(List<OrderProductCsv> orderProductCsvList) {
         Map<Integer, Order> orderMap = new HashMap<>();
         orderProductCsvList.forEach(orderProductCsv -> {
             if (!orderMap.containsKey(orderProductCsv.getOrderId())) {
