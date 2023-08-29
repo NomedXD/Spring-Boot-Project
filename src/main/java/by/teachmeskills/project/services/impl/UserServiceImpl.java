@@ -181,12 +181,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public ModelAndView importUserOrders(MultipartFile file, User user) throws CSVImportException {
         List<Order> orderList = parseCsv(file);
+        User finalUser = user;
         orderList.forEach(order -> {
             order.setId(0); // Чтобы создавался новый заказ, а не обновлялся этот же, если что - удалить
-            orderService.update(order); // Update, так как заказы отделены от контекста сохранения и persist выбросит исключение
+            finalUser.getOrders().add(order);
         });
-        user = userRepository.update(user);
+        user = userRepository.update(finalUser);
         ModelMap model = new ModelMap();
+        model.addAttribute(EshopConstants.USER, user);
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);
         return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
     }
