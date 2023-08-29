@@ -5,6 +5,7 @@ import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.exception.EntityOperationException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 public interface UserService extends BaseService<User> {
@@ -20,5 +21,5 @@ public interface UserService extends BaseService<User> {
 
     ModelAndView exportUserOrders(User user) throws CSVExportException;
 
-    ModelAndView importUserOrders(User user) throws CSVImportException;
+    ModelAndView importUserOrders(MultipartFile file, User user) throws CSVImportException;
 }

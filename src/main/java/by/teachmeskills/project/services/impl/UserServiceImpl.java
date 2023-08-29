@@ -12,11 +12,14 @@ import by.teachmeskills.project.exception.NoSuchUserException;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.UserRepository;
 import by.teachmeskills.project.services.CategoryService;
+import by.teachmeskills.project.services.OrderService;
 import by.teachmeskills.project.services.UserService;
 import by.teachmeskills.project.domain.OrderProductCsv;
 import by.teachmeskills.project.utils.OrderProductCsvConverter;
 import by.teachmeskills.project.validator.ValidatorUtils;
 import com.opencsv.CSVWriter;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
@@ -26,9 +29,13 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,17 +43,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CategoryService categoryService;
+    private final OrderService orderService;
     private final OrderProductCsvConverter orderConverter;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService, @Lazy OrderProductCsvConverter orderConverter) {
+    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService, @Lazy OrderService orderService, @Lazy OrderProductCsvConverter orderConverter) {
         this.userRepository = userRepository;
         this.categoryService = categoryService;
+        this.orderService = orderService;
         this.orderConverter = orderConverter;
     }
 
@@ -164,12 +174,38 @@ public class UserServiceImpl implements UserService {
                     .build();
             ordersProductsSbc.write(orderProductCsvList);
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            throw new CSVExportException(EshopConstants.errorOrdersExportMessage);
+            throw new CSVExportException(EshopConstants.errorOrdersExportMessage, PagesPathEnum.ACCOUNT_PAGE.getPath());
         }
     }
 
     @Override
-    public ModelAndView importUserOrders(User user) throws CSVImportException {
-        return null;
+    public ModelAndView importUserOrders(MultipartFile file, User user) throws CSVImportException {
+        List<Order> orderList = parseCsv(file);
+        orderList.forEach(order -> {
+            order.setId(0); // Чтобы создавался новый заказ, а не обновлялся этот же, если что - удалить
+            orderService.update(order); // Update, так как заказы отделены от контекста сохранения и persist выбросит исключение
+        });
+        user = userRepository.update(user);
+        ModelMap model = new ModelMap();
+        model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);
+        return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
+    }
+
+    private List<Order> parseCsv(MultipartFile file) throws CSVImportException {
+        if (Optional.ofNullable(file).isPresent()) {
+            try (Reader ordersProdcutsReader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+                CsvToBean<OrderProductCsv> ordersProductsCtb = new CsvToBeanBuilder<OrderProductCsv>(ordersProdcutsReader)
+                        .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+                        .withType(OrderProductCsv.class)
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .build();
+                List<OrderProductCsv> orderProductCsvList = ordersProductsCtb.parse();
+                return orderConverter.convertFrom(orderProductCsvList);
+            } catch (IOException e) {
+                throw new CSVImportException(EshopConstants.errorOrdersImportMessage, PagesPathEnum.ACCOUNT_PAGE.getPath());
+            }
+        } else {
+            throw new CSVImportException(EshopConstants.errorFileNullMessage, PagesPathEnum.ACCOUNT_PAGE.getPath());
+        }
     }
 }

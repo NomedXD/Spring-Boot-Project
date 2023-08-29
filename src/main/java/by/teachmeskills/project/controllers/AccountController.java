@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -46,8 +48,8 @@ public class AccountController {
     }
 
     @PostMapping("/import")
-    public ModelAndView importUserOrders(@SessionAttribute(EshopConstants.USER) User user) throws CSVImportException {
-        return userService.importUserOrders(user);
+    public ModelAndView importUserOrders(@RequestParam(name = "file") MultipartFile file, @SessionAttribute(EshopConstants.USER) User user) throws CSVImportException {
+        return userService.importUserOrders(file, user);
     }
 
     @ModelAttribute("updatedUserFields")
