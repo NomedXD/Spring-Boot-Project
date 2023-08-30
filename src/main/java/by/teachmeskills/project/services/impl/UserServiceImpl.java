@@ -48,13 +48,13 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CategoryService categoryService;
-    private final OrderProductCsvConverter orderConverter;
+    private final OrderProductCsvConverter orderProductCsvConverter;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService, @Lazy OrderProductCsvConverter orderConverter) {
+    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService, @Lazy OrderProductCsvConverter orderProductCsvConverter) {
         this.userRepository = userRepository;
         this.categoryService = categoryService;
-        this.orderConverter = orderConverter;
+        this.orderProductCsvConverter = orderProductCsvConverter;
     }
 
     @Override
@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
 
     private void writeCsv(User user) throws CSVExportException {
         List<Order> orderList = user.getOrders();
-        List<OrderProductCsv> orderProductCsvList = orderConverter.convertInto(orderList);
+        List<OrderProductCsv> orderProductCsvList = orderProductCsvConverter.convertInto(orderList);
         try (Writer ordersProductsWriter = Files.newBufferedWriter(Paths.get("src/main/resources/user_" + user.getId() + "_orders_products.csv"))) {
             StatefulBeanToCsv<OrderProductCsv> ordersProductsSbc = new StatefulBeanToCsvBuilder<OrderProductCsv>(ordersProductsWriter)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
@@ -199,7 +199,7 @@ public class UserServiceImpl implements UserService {
                         .withIgnoreLeadingWhiteSpace(true)
                         .build();
                 List<OrderProductCsv> orderProductCsvList = ordersProductsCtb.parse();
-                return orderConverter.convertFrom(orderProductCsvList);
+                return orderProductCsvConverter.convertFrom(orderProductCsvList);
             } catch (IOException e) {
                 throw new CSVImportException(EshopConstants.errorOrdersImportMessage, PagesPathEnum.ACCOUNT_PAGE.getPath());
             }

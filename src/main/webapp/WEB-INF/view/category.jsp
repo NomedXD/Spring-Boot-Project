@@ -19,6 +19,16 @@
         <div class="bar warn">No products found. Try later</div>
     </c:when>
     <c:otherwise>
+        <!--Export/import-->
+        <div class="container-fluid">
+            <a href="${contextPath}/category/export/${products[0].category.id}" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark">Export products</a>
+            <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
+            <form action="${contextPath}/category/import/${products[0].category.id}" method="POST" enctype="multipart/form-data" id="importProducts">
+                <input type="file" class="file-input" name="file"
+                       aria-describedby="inputGroupFileAddon01" required>
+            </form>
+            <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark" form="importProducts">Import products</button>
+        </div>
         <c:forEach items="${products}" var="product">
             <div class="row p-2 bg-white border rounded mt-2">
                 <div class="col-md-3 mt-1"><img class="img-fluid img-responsive rounded product-image"

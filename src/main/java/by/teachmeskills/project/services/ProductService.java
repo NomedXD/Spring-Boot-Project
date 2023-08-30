@@ -3,8 +3,11 @@ package by.teachmeskills.project.services;
 import by.teachmeskills.project.domain.Cart;
 import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.domain.Search;
+import by.teachmeskills.project.exception.CSVExportException;
+import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.exception.EntityOperationException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -21,4 +24,8 @@ public interface ProductService extends BaseService<Product> {
     Long getCountAppropriateProducts(Search search) throws EntityOperationException;
 
     ModelAndView applyProductsQuantity(Cart cart, HttpServletRequest request);
+
+    ModelAndView exportCategoryProducts(Integer categoryId) throws CSVExportException;
+
+    ModelAndView importCategoryProducts(MultipartFile file, Integer categoryId) throws CSVImportException;
 }

@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class CategoryCsv {
+public class ProductCsv {
 
     @CsvBindByName
     private Integer id;
@@ -20,5 +20,11 @@ public class CategoryCsv {
     private Integer imageId;
 
     @CsvBindByName
-    private String sometext;
+    private String description;
+
+    @CsvBindByName
+    private Integer categoryId;
+
+    @CsvBindByName
+    private float price;
 }

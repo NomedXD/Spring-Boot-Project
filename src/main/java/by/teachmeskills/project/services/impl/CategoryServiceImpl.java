@@ -79,9 +79,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ModelAndView exportCategories() throws CSVExportException {
         writeCsv();
-        List<Category> categoryList = categoryRepository.read();
         ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryList);
+        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.read());
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulExportMessage);
         return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
     }
@@ -105,9 +104,8 @@ public class CategoryServiceImpl implements CategoryService {
             category.setId(null);
             categoryRepository.create(category);
         });
-        categoryList = categoryRepository.read();
         ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryList);
+        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.read());
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);
         return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
     }
