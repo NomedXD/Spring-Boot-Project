@@ -21,6 +21,7 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,20 +127,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ModelAndView exportCategoryProducts(Integer categoryId) throws CSVExportException {
-        writeCsv(categoryId);
-        ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productRepository.getCategoryProducts(categoryId));
-        model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulExportMessage);
-        return new ModelAndView(PagesPathEnum.CATEGORY_PAGE.getPath(), model);
+    public void exportCategoryProducts(Integer categoryId, HttpServletResponse response) throws CSVExportException {
+        writeCsv(categoryId, response);
     }
 
-    private void writeCsv(Integer categoryId) throws CSVExportException {
+    private void writeCsv(Integer categoryId, HttpServletResponse response) throws CSVExportException {
         List<ProductCsv> productCsvList = productCsvConverter.convertInto(productRepository.getCategoryProducts(categoryId));
-        try (Writer productsWriter = Files.newBufferedWriter(Paths.get("src/main/resources/category_" + categoryId + "_products.csv"))) {
+        try (Writer productsWriter = new OutputStreamWriter(response.getOutputStream())) {
             StatefulBeanToCsv<ProductCsv> productsSbc = new StatefulBeanToCsvBuilder<ProductCsv>(productsWriter)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
                     .build();
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition", "attachment; filename=" + "category_" + categoryId + "_products.csv");
             productsSbc.write(productCsvList);
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
             throw new CSVExportException(EshopConstants.errorProductsExportMessage, PagesPathEnum.CATEGORY_PAGE.getPath());
@@ -150,10 +148,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ModelAndView importCategoryProducts(MultipartFile file, Integer categoryId) throws CSVImportException {
         List<Product> productList = parseCsv(file);
-        productList.forEach(product -> {
-            product.setId(null);
-            productRepository.create(product);
-        });
+        productList.forEach(productRepository::create);
         ModelMap model = new ModelMap();
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productRepository.getCategoryProducts(categoryId));
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);

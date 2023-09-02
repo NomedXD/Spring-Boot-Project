@@ -57,7 +57,7 @@ public class OrderProductCsvConverter {
         orderProductCsvList.forEach(orderProductCsv -> {
             if (!orderMap.containsKey(orderProductCsv.getOrderId())) {
                 Order order = Order.builder()
-                        .id(orderProductCsv.getOrderId())
+                        .id(0) // Здесь обязательно нужен 0, иначе не сохранится из-за вложенных объектов :(
                         .price(orderProductCsv.getTotalOrderPrice())
                         .date(orderProductCsv.getOrderDate())
                         .user(userService.getUserById(orderProductCsv.getUserId()))

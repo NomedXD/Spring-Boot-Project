@@ -23,6 +23,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -34,10 +35,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -155,20 +155,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView exportUserOrders(User user) throws CSVExportException {
-        writeCsv(user);
-        ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulExportMessage);
-        return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
+    public void exportUserOrders(User user, HttpServletResponse response) throws CSVExportException {
+        writeCsv(user, response);
     }
 
-    private void writeCsv(User user) throws CSVExportException {
+    private void writeCsv(User user, HttpServletResponse response) throws CSVExportException {
         List<Order> orderList = user.getOrders();
         List<OrderProductCsv> orderProductCsvList = orderProductCsvConverter.convertInto(orderList);
-        try (Writer ordersProductsWriter = Files.newBufferedWriter(Paths.get("src/main/resources/user_" + user.getId() + "_orders_products.csv"))) {
+        try (Writer ordersProductsWriter = new OutputStreamWriter(response.getOutputStream())) {
             StatefulBeanToCsv<OrderProductCsv> ordersProductsSbc = new StatefulBeanToCsvBuilder<OrderProductCsv>(ordersProductsWriter)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
                     .build();
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition", "attachment; filename=" + "user_" + user.getId() + "_orders_products.csv");
             ordersProductsSbc.write(orderProductCsvList);
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
             throw new CSVExportException(EshopConstants.errorOrdersExportMessage, PagesPathEnum.ACCOUNT_PAGE.getPath());
@@ -179,10 +178,7 @@ public class UserServiceImpl implements UserService {
     public ModelAndView importUserOrders(MultipartFile file, User user) throws CSVImportException {
         List<Order> orderList = parseCsv(file);
         User finalUser = user;
-        orderList.forEach(order -> {
-            order.setId(0); // Чтобы создавался новый заказ, а не обновлялся этот же, если что - удалить
-            finalUser.getOrders().add(order);
-        });
+        orderList.forEach(order -> finalUser.getOrders().add(order));
         user = userRepository.update(finalUser);
         ModelMap model = new ModelMap();
         model.addAttribute(EshopConstants.USER, user);

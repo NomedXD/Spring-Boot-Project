@@ -35,7 +35,6 @@ public class CategoryCsvConverter {
     private List<Category> map(List<CategoryCsv> categoryCsvList) {
         List<Category> categoryList = new ArrayList<>();
         categoryCsvList.forEach(categoryCsv -> categoryList.add(Category.builder()
-                .id(categoryCsv.getId())
                 .name(categoryCsv.getName())
                 .image(imageService.getImageById(categoryCsv.getImageId()))
                 .sometext(categoryCsv.getSometext())

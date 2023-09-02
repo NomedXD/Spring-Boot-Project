@@ -18,6 +18,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,20 +77,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ModelAndView exportCategories() throws CSVExportException {
-        writeCsv();
-        ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.read());
-        model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulExportMessage);
-        return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
+    public void exportCategories(HttpServletResponse response) throws CSVExportException {
+        writeCsv(response);
     }
 
-    private void writeCsv() throws CSVExportException {
+    private void writeCsv(HttpServletResponse response) throws CSVExportException {
         List<CategoryCsv> categoryCsvList = categoryCsvConverter.convertInto(categoryRepository.read());
-        try (Writer categoriesWriter = Files.newBufferedWriter(Paths.get("src/main/resources/categories.csv"))) {
+        try (Writer categoriesWriter = new OutputStreamWriter(response.getOutputStream())) {
             StatefulBeanToCsv<CategoryCsv> categoriesSbc = new StatefulBeanToCsvBuilder<CategoryCsv>(categoriesWriter)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
                     .build();
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition", "attachment; filename=" + "categories.csv");
             categoriesSbc.write(categoryCsvList);
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
             throw new CSVExportException(EshopConstants.errorCategoriesExportMessage, PagesPathEnum.SHOP_PAGE.getPath());
@@ -100,10 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ModelAndView importCategories(MultipartFile file) throws CSVImportException {
         List<Category> categoryList = parseCsv(file);
-        categoryList.forEach(category -> {
-            category.setId(null);
-            categoryRepository.create(category);
-        });
+        categoryList.forEach(categoryRepository::create);
         ModelMap model = new ModelMap();
         model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.read());
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);

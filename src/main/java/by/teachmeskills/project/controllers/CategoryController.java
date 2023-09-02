@@ -6,6 +6,7 @@ import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.ProductService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -35,8 +36,8 @@ public class CategoryController {
     }
 
     @GetMapping("/export/{categoryId}")
-    public ModelAndView exportCategoryProducts(@PathVariable(name = "categoryId") Integer categoryId) throws CSVExportException {
-        return productService.exportCategoryProducts(categoryId);
+    public void exportCategoryProducts(@PathVariable(name = "categoryId") Integer categoryId, HttpServletResponse response) throws CSVExportException {
+        productService.exportCategoryProducts(categoryId, response);
     }
 
     @PostMapping("/import/{categoryId}")

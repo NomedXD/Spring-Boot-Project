@@ -7,6 +7,7 @@ import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +36,8 @@ public class HomeController {
     }
 
     @GetMapping("/export")
-    public ModelAndView exportCategories() throws CSVExportException {
-        return categoryService.exportCategories();
+    public void exportCategories(HttpServletResponse response) throws CSVExportException {
+        categoryService.exportCategories(response);
     }
 
     @PostMapping("/import")

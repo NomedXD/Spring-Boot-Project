@@ -24,7 +24,6 @@ public class ProductCsvConverter {
     public List<ProductCsv> convertInto(List<Product> productList) {
         List<ProductCsv> productCsvList = new ArrayList<>();
         productList.forEach(product -> productCsvList.add(ProductCsv.builder()
-                .id(product.getId())
                 .name(product.getName())
                 .imageId(product.getImage().getId())
                 .description(product.getDescription())

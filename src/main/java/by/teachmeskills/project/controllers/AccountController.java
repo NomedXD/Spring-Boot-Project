@@ -7,8 +7,7 @@ import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,8 +42,8 @@ public class AccountController {
     }
 
     @GetMapping("/export")
-    public ModelAndView exportUserOrders(@SessionAttribute(EshopConstants.USER) User user) throws CSVExportException {
-        return userService.exportUserOrders(user);
+    public void exportUserOrders(@SessionAttribute(EshopConstants.USER) User user, HttpServletResponse response) throws CSVExportException {
+        userService.exportUserOrders(user, response);
     }
 
     @PostMapping("/import")
