@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
             return handleUserAlreadyExistException(new UserAlreadyExistException("User with such email already exist"));
         } else {
             ModelMap modelMap = new ModelMap();
-            modelMap.addAttribute("SQLErrorMessage", exception.getMessage());
+            modelMap.addAttribute("errorMessage", exception.getMessage());
             return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);
         }
     }
@@ -58,6 +58,15 @@ public class GlobalExceptionHandler {
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), exception.getMessage());
         return new ModelAndView(exception.getReturnPath(), modelMap);
+    }
+
+    @ExceptionHandler(NoSuchProductException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView handleNoSuchProductException(NoSuchProductException exception) {
+        logger.error(String.format("Product was not found by id %d. Check database", exception.getProductId()));
+        ModelMap modelMap = new ModelMap();
+        modelMap.addAttribute("errorMessage", exception.getMessage());
+        return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);
     }
 }
 

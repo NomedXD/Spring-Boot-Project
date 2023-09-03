@@ -9,10 +9,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Optional;
+
 public interface CategoryService extends BaseService<Category>{
     void getCategoryByName(String name) throws EntityOperationException;
 
-    Category getCategoryById(Integer id) throws EntityOperationException;
+    Optional<Category> getCategoryById(Integer id) throws EntityOperationException;
 
     void exportCategories(HttpServletResponse response) throws CSVExportException;
 

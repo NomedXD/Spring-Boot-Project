@@ -48,22 +48,22 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category create(Category entity) throws EntityOperationException {
-        return categoryRepository.create(entity);
+        return categoryRepository.save(entity);
     }
 
     @Override
     public List<Category> read() throws EntityOperationException {
-        return categoryRepository.read();
+        return categoryRepository.findAll();
     }
 
     @Override
     public Category update(Category entity) throws EntityOperationException {
-        return categoryRepository.update(entity);
+        return categoryRepository.save(entity);
     }
 
     @Override
     public void delete(Integer id) throws EntityOperationException {
-        categoryRepository.delete(id);
+        categoryRepository.deleteById(id);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategoryById(Integer id) throws EntityOperationException {
-        return categoryRepository.getCategoryById(id);
+    public Optional<Category> getCategoryById(Integer id) throws EntityOperationException {
+        return categoryRepository.findById(id);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private void writeCsv(HttpServletResponse response) throws CSVExportException {
-        List<CategoryCsv> categoryCsvList = categoryCsvConverter.convertInto(categoryRepository.read());
+        List<CategoryCsv> categoryCsvList = categoryCsvConverter.convertInto(categoryRepository.findAll());
         try (Writer categoriesWriter = new OutputStreamWriter(response.getOutputStream())) {
             StatefulBeanToCsv<CategoryCsv> categoriesSbc = new StatefulBeanToCsvBuilder<CategoryCsv>(categoriesWriter)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
@@ -98,9 +98,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ModelAndView importCategories(MultipartFile file) throws CSVImportException {
         List<Category> categoryList = parseCsv(file);
-        categoryList.forEach(categoryRepository::create);
+        categoryRepository.saveAll(categoryList);
         ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.read());
+        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.findAll());
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);
         return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
     }

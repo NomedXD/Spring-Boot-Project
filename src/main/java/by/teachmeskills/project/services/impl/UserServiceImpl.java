@@ -59,27 +59,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User entity) throws EntityOperationException {
-        return userRepository.create(entity);
+        return userRepository.save(entity);
     }
 
     @Override
     public List<User> read() throws EntityOperationException {
-        return userRepository.read();
+        return userRepository.findAll();
     }
 
     @Override
     public User update(User entity) throws EntityOperationException {
-        return userRepository.update(entity);
+        return userRepository.save(entity);
     }
 
     @Override
     public void delete(Integer id) throws EntityOperationException {
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 
     @Override
-    public User getUserById(Integer id) throws EntityOperationException {
-        return userRepository.getUserById(id);
+    public Optional<User> getUserById(Integer id) throws EntityOperationException {
+        return userRepository.findById(id);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
                 accommodationNumber(params.get(RequestParamsEnum.ACCOMMODATION_NUMBER.getValue())).
                 flatNumber(params.get(RequestParamsEnum.FLAT_NUMBER.getValue())).build();
         ModelMap model = new ModelMap();
-        updatedUserFields.setOrders(userRepository.getUserOrders(user.getId()));
+        updatedUserFields.setOrders(userRepository.findOrdersByUserId(user.getId()));
         user = update(updatedUserFields);
         model.addAttribute(EshopConstants.USER, user);
         return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
@@ -118,9 +118,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public ModelAndView logIn(User user) throws EntityOperationException {
         ModelMap model = new ModelMap();
-        User loggedUser = userRepository.getUserByCredentials(user.getMail(), user.getPassword());
-        if (loggedUser != null) {
-            user = loggedUser;
+        Optional<User> loggedUser = userRepository.findUserByMailAndPassword(user.getMail(), user.getPassword());
+        if (loggedUser.isPresent()) {
+            user = loggedUser.get();
             model.addAttribute(EshopConstants.USER, user);
             model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
             return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
     public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) throws EntityOperationException {
         if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
             ModelMap model = new ModelMap();
-            user = userRepository.create(User.builder().mail(user.getMail()).password(user.getPassword()).name(user.getName()).
+            user = userRepository.save(User.builder().mail(user.getMail()).password(user.getPassword()).name(user.getName()).
                     surname(user.getSurname()).date(user.getDate()).currentBalance(0f).orders(new ArrayList<>()).build());
             model.addAttribute(EshopConstants.USER, user);
             model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
         List<Order> orderList = parseCsv(file);
         User finalUser = user;
         orderList.forEach(order -> finalUser.getOrders().add(order));
-        user = userRepository.update(finalUser);
+        user = userRepository.save(finalUser);
         ModelMap model = new ModelMap();
         model.addAttribute(EshopConstants.USER, user);
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);

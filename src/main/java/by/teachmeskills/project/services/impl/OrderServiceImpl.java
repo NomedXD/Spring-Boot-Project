@@ -29,22 +29,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order create(Order entity) throws EntityOperationException {
-        return orderRepository.create(entity);
+        return orderRepository.save(entity);
     }
 
     @Override
     public List<Order> read() throws EntityOperationException {
-        return orderRepository.read();
+        return orderRepository.findAll();
     }
 
     @Override
     public Order update(Order entity) throws EntityOperationException {
-        return orderRepository.update(entity);
+        return orderRepository.save(entity);
     }
 
     @Override
     public void delete(Integer id) throws EntityOperationException {
-        orderRepository.delete(id);
+        orderRepository.deleteById(id);
     }
 
     @Override

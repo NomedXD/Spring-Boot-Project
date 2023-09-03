@@ -12,11 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService extends BaseService<Product> {
     List<Product> getCategoryProducts(int categoryId) throws EntityOperationException;
 
-    Product getProductById(int id) throws EntityOperationException;
+    Optional<Product> getProductById(int id) throws EntityOperationException;
 
     ModelAndView getPaginatedProducts(Search search, Integer currentPage) throws EntityOperationException;
 

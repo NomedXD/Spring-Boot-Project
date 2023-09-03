@@ -24,10 +24,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.data.domain.Pageable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,42 +54,42 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product create(Product entity) throws EntityOperationException {
-        return productRepository.create(entity);
+        return productRepository.save(entity);
     }
 
     @Override
     public List<Product> read() throws EntityOperationException {
-        return productRepository.read();
+        return productRepository.findAll();
     }
 
     @Override
     public Product update(Product entity) throws EntityOperationException {
-        return productRepository.update(entity);
+        return productRepository.save(entity);
     }
 
     @Override
     public void delete(Integer id) throws EntityOperationException {
-        productRepository.delete(id);
+        productRepository.deleteById(id);
     }
 
     @Override
     public List<Product> getCategoryProducts(int categoryId) throws EntityOperationException {
-        return productRepository.getCategoryProducts(categoryId);
+        return productRepository.findAllByCategoryId(categoryId);
     }
 
     @Override
-    public Product getProductById(int id) throws EntityOperationException {
-        return productRepository.getProductById(id);
+    public Optional<Product> getProductById(int id) throws EntityOperationException {
+        return productRepository.findById(id);
     }
 
     @Override
     public Long getCountOfAllProducts() throws EntityOperationException {
-        return productRepository.getCountOfAllProducts();
+        return productRepository.count();
     }
 
     @Override
     public Long getCountAppropriateProducts(Search search) throws EntityOperationException {
-        return productRepository.getCountAppropriateProducts(search);
+        return productRepository.countAllByNameContainingAndDescriptionContaining(search.getSearchString(), search.getSearchString());
     }
 
     @Override
@@ -96,10 +99,13 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList;
         if ((search == null) || (search.getSearchString() == null)) {
             count = getCountOfAllProducts();
-            productList = productRepository.readOrderedByNameInRange((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+            Pageable pageable = PageRequest.of((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE,
+                    Sort.by("name"));
+            productList = productRepository.findAll(pageable).getContent();
         } else {
             count = getCountAppropriateProducts(search);
-            productList = productRepository.getSearchedProducts(search, (currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+            Pageable pageable = PageRequest.of((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+            productList = productRepository.findAllByNameContainingAndDescriptionContainingOrderByName(search.getSearchString(), search.getSearchString(), pageable);
             model.addAttribute(EshopConstants.SEARCH_ENTITY, search);
         }
         model.addAttribute(RequestParamsEnum.TOTAL_SEARCH_RESULTS.getValue(), count);
@@ -132,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void writeCsv(Integer categoryId, HttpServletResponse response) throws CSVExportException {
-        List<ProductCsv> productCsvList = productCsvConverter.convertInto(productRepository.getCategoryProducts(categoryId));
+        List<ProductCsv> productCsvList = productCsvConverter.convertInto(productRepository.findAllByCategoryId(categoryId));
         try (Writer productsWriter = new OutputStreamWriter(response.getOutputStream())) {
             StatefulBeanToCsv<ProductCsv> productsSbc = new StatefulBeanToCsvBuilder<ProductCsv>(productsWriter)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
@@ -148,9 +154,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ModelAndView importCategoryProducts(MultipartFile file, Integer categoryId) throws CSVImportException {
         List<Product> productList = parseCsv(file);
-        productList.forEach(productRepository::create);
+        productRepository.saveAll(productList);
         ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productRepository.getCategoryProducts(categoryId));
+        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productRepository.findAllByCategoryId(categoryId));
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);
         return new ModelAndView(PagesPathEnum.CATEGORY_PAGE.getPath(), model);
     }

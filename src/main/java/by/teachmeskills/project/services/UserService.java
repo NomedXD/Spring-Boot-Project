@@ -9,8 +9,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Optional;
+
 public interface UserService extends BaseService<User> {
-    User getUserById(Integer id) throws EntityOperationException;
+    Optional<User> getUserById(Integer id) throws EntityOperationException;
 
     ModelAndView updateAccountData(User updatedUserFields, User user) throws EntityOperationException;
 

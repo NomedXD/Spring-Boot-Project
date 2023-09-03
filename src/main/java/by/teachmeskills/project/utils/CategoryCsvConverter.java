@@ -36,7 +36,7 @@ public class CategoryCsvConverter {
         List<Category> categoryList = new ArrayList<>();
         categoryCsvList.forEach(categoryCsv -> categoryList.add(Category.builder()
                 .name(categoryCsv.getName())
-                .image(imageService.getImageById(categoryCsv.getImageId()))
+                .image(imageService.getImageById(categoryCsv.getImageId()).orElse(null))
                 .sometext(categoryCsv.getSometext())
                 .productList(new ArrayList<>()).build()));
         return categoryList;

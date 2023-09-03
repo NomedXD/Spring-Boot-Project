@@ -8,8 +8,8 @@
   </div>
   <div class="central-body">
     <img class="image-404" src="http://salehriaz.com/404Page/img/404.svg" width="300px">
-    <c:if test="${not empty SQLErrorMessage}">
-      <a class="btn-go-home">${SQLErrorMessage}</a>
+    <c:if test="${not empty errorMessage}">
+      <a class="btn-go-home">${errorMessage}</a>
     </c:if>
     <a href="${contextPath}/catalog" class="btn-go-home" target="_blank">GO BACK HOME</a>
   </div>

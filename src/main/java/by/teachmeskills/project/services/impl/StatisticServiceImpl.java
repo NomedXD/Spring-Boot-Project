@@ -20,21 +20,21 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Statistic create(Statistic entity) throws EntityOperationException {
-        return statisticRepository.create(entity);
+        return statisticRepository.save(entity);
     }
 
     @Override
     public List<Statistic> read() throws EntityOperationException {
-        return statisticRepository.read();
+        return statisticRepository.findAll();
     }
 
     @Override
     public Statistic update(Statistic entity) throws EntityOperationException {
-        return statisticRepository.update(entity);
+        return statisticRepository.save(entity);
     }
 
     @Override
-    public void delete(Integer id) throws EntityOperationException {
-        statisticRepository.delete(id);
+    public void delete(Integer id) {
+        statisticRepository.deleteById(id);
     }
 }

@@ -8,6 +8,7 @@ import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.EntityOperationException;
+import by.teachmeskills.project.exception.NoSuchProductException;
 import by.teachmeskills.project.services.OrderService;
 import by.teachmeskills.project.services.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,7 +53,7 @@ public class CartController {
     public ModelAndView addProductToCart(@PathVariable(name = "productId") Integer productId,
                                          @SessionAttribute(name = EshopConstants.SHOPPING_CART, required = false) Cart cart) throws EntityOperationException {
         ModelMap model = new ModelMap();
-        Product product = productService.getProductById(productId);
+        Product product = productService.getProductById(productId).orElseThrow(() -> new NoSuchProductException("Product not found. How you even get there?", productId));
         model.addAttribute(EshopConstants.SHOPPING_CART, Cart.checkCart(product, cart));
         model.addAttribute(RequestParamsEnum.PRODUCT.getValue(), product);
         return new ModelAndView(PagesPathEnum.PRODUCT_PAGE.getPath(), model);

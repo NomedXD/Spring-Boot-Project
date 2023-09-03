@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -20,26 +21,26 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Image create(Image entity) throws EntityOperationException {
-        return imageRepository.create(entity);
+        return imageRepository.save(entity);
     }
 
     @Override
     public List<Image> read() throws EntityOperationException {
-        return imageRepository.read();
+        return imageRepository.findAll();
     }
 
     @Override
     public Image update(Image entity) throws EntityOperationException {
-        return imageRepository.update(entity);
+        return imageRepository.save(entity);
     }
 
     @Override
     public void delete(Integer id) throws EntityOperationException {
-        imageRepository.delete(id);
+        imageRepository.deleteById(id);
     }
 
     @Override
-    public Image getImageById(Integer id) throws EntityOperationException {
-        return imageRepository.getImageById(id);
+    public Optional<Image> getImageById(Integer id) throws EntityOperationException {
+        return imageRepository.findById(id);
     }
 }
