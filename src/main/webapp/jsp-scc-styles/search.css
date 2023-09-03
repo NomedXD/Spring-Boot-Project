@@ -13,7 +13,6 @@ html {
  * Remove the margin in all browsers (opinionated).
  */
 .body {
-    height: 1000px;
     background-image: url(../images/background.jpg);
     background-size: cover;
     position: relative;

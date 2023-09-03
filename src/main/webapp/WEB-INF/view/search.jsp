@@ -171,12 +171,14 @@
                     <c:otherwise>
                         <c:forEach begin="${currentPage - totalPaginatedVisiblePages / 2}"
                                    end="${lastPageNumber}" var="j">
-                            <c:when test="${j == currentPage}">
-                                <li class="page-item active"><a class="page-link" href="${contextPath}/search/${currentPage}">${currentPage}</a></li>
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item"><a class="page-link" href="${contextPath}/search/${j}">${j}</a></li>
-                            </c:otherwise>
+                            <c:choose>
+                                <c:when test="${j == currentPage}">
+                                    <li class="page-item active"><a class="page-link" href="${contextPath}/search/${currentPage}">${currentPage}</a></li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item"><a class="page-link" href="${contextPath}/search/${j}">${j}</a></li>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>
                     </c:otherwise>
                 </c:choose>
