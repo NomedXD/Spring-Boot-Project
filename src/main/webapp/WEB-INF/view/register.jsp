@@ -42,6 +42,9 @@
                 <div class="bar error">${registrationErrorMessage}</div>
             </div>
         </c:if>
+        <div class="form-group">
+            <a class="btn btn-primary btn-block" href="${contextPath}/login">Login</a>
+        </div>
     </form>
 </div>
 <script src="${contextPath}/jsp-scripts/script.js"></script>

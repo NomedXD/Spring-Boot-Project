@@ -89,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Long getCountAppropriateProducts(Search search) throws EntityOperationException {
-        return productRepository.countAllByNameContainingAndDescriptionContaining(search.getSearchString(), search.getSearchString());
+        return productRepository.countAllByNameContainingOrDescriptionContaining(search.getSearchString(), search.getSearchString());
     }
 
     @Override
@@ -99,13 +99,13 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList;
         if ((search == null) || (search.getSearchString() == null)) {
             count = getCountOfAllProducts();
-            Pageable pageable = PageRequest.of((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE,
+            Pageable pageable = PageRequest.of((currentPage - 1), EshopConstants.PAGE_SIZE,
                     Sort.by("name"));
             productList = productRepository.findAll(pageable).getContent();
         } else {
             count = getCountAppropriateProducts(search);
-            Pageable pageable = PageRequest.of((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
-            productList = productRepository.findAllByNameContainingAndDescriptionContainingOrderByName(search.getSearchString(), search.getSearchString(), pageable);
+            Pageable pageable = PageRequest.of((currentPage - 1), EshopConstants.PAGE_SIZE);
+            productList = productRepository.findAllByNameContainingOrDescriptionContainingOrderByName(search.getSearchString(), search.getSearchString(), pageable);
             model.addAttribute(EshopConstants.SEARCH_ENTITY, search);
         }
         model.addAttribute(RequestParamsEnum.TOTAL_SEARCH_RESULTS.getValue(), count);

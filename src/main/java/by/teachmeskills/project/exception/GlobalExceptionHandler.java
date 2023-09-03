@@ -5,6 +5,7 @@ import by.teachmeskills.project.enums.RequestParamsEnum;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -43,13 +44,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityOperationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ModelAndView handleEntityOperationException(EntityOperationException exception) {
-        if (exception.getException() instanceof ConstraintViolationException) {
-            return handleUserAlreadyExistException(new UserAlreadyExistException("User with such email already exist"));
-        } else {
-            ModelMap modelMap = new ModelMap();
-            modelMap.addAttribute("errorMessage", exception.getMessage());
-            return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);
-        }
+        ModelMap modelMap = new ModelMap();
+        modelMap.addAttribute("errorMessage", exception.getMessage());
+        return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);
     }
 
     @ExceptionHandler({CSVExportException.class, CSVImportException.class})
@@ -67,6 +64,17 @@ public class GlobalExceptionHandler {
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute("errorMessage", exception.getMessage());
         return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ModelAndView handleNoSuchProductException(DataIntegrityViolationException exception) {
+        if (exception.getCause() instanceof ConstraintViolationException constraintViolationException) {
+            if (constraintViolationException.getConstraintName().equals("users.mail")) {
+                return handleUserAlreadyExistException(new UserAlreadyExistException("User with such email already exist"));
+            }
+        }
+        return handleEntityOperationException(new EntityOperationException("How you even get there?"));
     }
 }
 

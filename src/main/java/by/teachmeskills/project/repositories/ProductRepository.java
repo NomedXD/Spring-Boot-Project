@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findAllByCategoryId(Integer categoryId);
-    List<Product> findAllByNameContainingAndDescriptionContainingOrderByName(String name, String description, Pageable pageable);
-    Long countAllByNameContainingAndDescriptionContaining(String name, String description);
+    List<Product> findAllByNameContainingOrDescriptionContainingOrderByName(String name, String description, Pageable pageable);
+    Long countAllByNameContainingOrDescriptionContaining(String name, String description);
 }

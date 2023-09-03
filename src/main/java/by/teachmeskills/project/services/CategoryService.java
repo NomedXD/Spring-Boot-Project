@@ -1,7 +1,6 @@
 package by.teachmeskills.project.services;
 
 import by.teachmeskills.project.domain.Category;
-import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.exception.EntityOperationException;
