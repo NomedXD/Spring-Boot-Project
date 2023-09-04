@@ -1,5 +1,8 @@
 package by.teachmeskills.project.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum RequestParamsEnum {
     SHOPPING_CART_PRODUCTS("cartProductsList"),
     CATEGORIES("categories"),
@@ -22,8 +25,5 @@ public enum RequestParamsEnum {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 }
 

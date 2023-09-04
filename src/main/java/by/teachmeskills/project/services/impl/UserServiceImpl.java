@@ -1,6 +1,5 @@
 package by.teachmeskills.project.services.impl;
 
-import by.teachmeskills.project.domain.Category;
 import by.teachmeskills.project.domain.Order;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;

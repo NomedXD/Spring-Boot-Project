@@ -10,6 +10,9 @@ import lombok.experimental.SuperBuilder;
 public class Search {
     // Additional fields while filtering in search page
     private String searchString;
+    private Float priceFrom;
+    private Float priceTo;
+    private String categoryName;
 
     public Search(String searchString) {
         this.searchString = searchString;

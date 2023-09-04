@@ -7,7 +7,6 @@ public interface EshopConstants {
     String ORDER = "order";
     Integer MIN_PAGE_SIZE = 5;
     Integer TOTAL_PAGINATED_VISIBLE_PAGES = 5;
-    String successfulExportMessage = "Successful exported";
     String successfulImportMessage = "Successful imported";
     String errorOrdersExportMessage = "Cannot export orders to file";
     String errorOrdersImportMessage = "Cannot import orders from file";

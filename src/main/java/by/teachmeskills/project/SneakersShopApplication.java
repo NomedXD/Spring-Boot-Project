@@ -8,10 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "by")
 public class SneakersShopApplication {
     public static void main(String[] args) {
-        try {
-            SpringApplication.run(SneakersShopApplication.class, args);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SpringApplication.run(SneakersShopApplication.class, args);
     }
 }
