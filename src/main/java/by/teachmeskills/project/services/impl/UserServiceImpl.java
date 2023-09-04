@@ -117,13 +117,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ModelAndView logIn(User user) throws EntityOperationException {
-        ModelMap model = new ModelMap();
         Optional<User> loggedUser = userRepository.findUserByMailAndPassword(user.getMail(), user.getPassword());
         if (loggedUser.isPresent()) {
             user = loggedUser.get();
-            model.addAttribute(EshopConstants.USER, user);
-            model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
-            return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
+            ModelAndView modelAndView = categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE);
+            modelAndView.getModelMap().addAttribute(EshopConstants.USER, user);
+            return modelAndView;
         } else {
             throw new NoSuchUserException("Wrong email or password. Try again");
         }
@@ -146,9 +145,7 @@ public class UserServiceImpl implements UserService {
     public ModelAndView checkIfLoggedInUser(User user) throws EntityOperationException {
         ModelMap model = new ModelMap();
         if (user != null) {
-            List<Category> categoriesList = categoryService.read();
-            model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoriesList);
-            return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
+            return categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE);
         } else {
             return new ModelAndView(PagesPathEnum.LOG_IN_PAGE.getPath(), model);
         }

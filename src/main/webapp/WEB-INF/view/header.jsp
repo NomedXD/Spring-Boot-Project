@@ -3,6 +3,9 @@
 <!DOCTYPE html>
 <header>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+    <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
+    <script src="https://kit.fontawesome.com/4ac4b6b525.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     <div class="container-fluid">
 
         <div class="navb-logo">
@@ -52,7 +55,7 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <img src="../../images/logo.png" alt="Logo">
+                        <img src="${contextPath}/images/logo.png" alt="Logo">
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
                                 class="fa-solid fa-xmark"></i></button>
                     </div>
@@ -90,5 +93,4 @@
         </div>
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
 </header>

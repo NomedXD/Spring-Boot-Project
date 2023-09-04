@@ -93,32 +93,44 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ModelAndView getPaginatedProducts(Search search, Integer currentPage) throws EntityOperationException {
+    public ModelAndView getSearchedPaginatedProducts(Search search, Integer currentPage) throws EntityOperationException {
         ModelMap model = new ModelMap();
         Long count;
         List<Product> productList;
         if ((search == null) || (search.getSearchString() == null)) {
             count = getCountOfAllProducts();
-            Pageable pageable = PageRequest.of((currentPage - 1), EshopConstants.PAGE_SIZE,
+            Pageable pageable = PageRequest.of((currentPage - 1), EshopConstants.MIN_PAGE_SIZE,
                     Sort.by("name"));
             productList = productRepository.findAll(pageable).getContent();
         } else {
             count = getCountAppropriateProducts(search);
-            Pageable pageable = PageRequest.of((currentPage - 1), EshopConstants.PAGE_SIZE);
+            Pageable pageable = PageRequest.of((currentPage - 1), EshopConstants.MIN_PAGE_SIZE);
             productList = productRepository.findAllByNameContainingOrDescriptionContainingOrderByName(search.getSearchString(), search.getSearchString(), pageable);
             model.addAttribute(EshopConstants.SEARCH_ENTITY, search);
         }
         model.addAttribute(RequestParamsEnum.TOTAL_SEARCH_RESULTS.getValue(), count);
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
         model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
-        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(count / EshopConstants.PAGE_SIZE.doubleValue()));
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(count / EshopConstants.MIN_PAGE_SIZE.doubleValue()));
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productList);
         return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
     }
 
+    @Override
+    public ModelAndView getPaginatedProductsByCategoryId(Integer categoryId, Integer currentPage, Integer pageSize) {
+        Pageable pageable = PageRequest.of((currentPage - 1), pageSize);
+        ModelMap model = new ModelMap();
+        model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
+        model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
+        model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(productRepository.countAllByCategoryId(categoryId) / EshopConstants.MIN_PAGE_SIZE.doubleValue()));
+        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productRepository.findAllByCategoryIdOrderByName(categoryId, pageable));
+        return new ModelAndView(PagesPathEnum.CATEGORY_PAGE.getPath(), model);
+    }
+
     /*
-      Внедрение конкретно HttpServletRequest, так как заранее неизвестно, сколько будет параметров в post запросе
-     */
+          Внедрение конкретно HttpServletRequest, так как заранее неизвестно, сколько будет параметров в post запросе
+         */
     @Override
     public ModelAndView applyProductsQuantity(Cart cart, HttpServletRequest request) {
         for (Product product : cart.getProducts()) {

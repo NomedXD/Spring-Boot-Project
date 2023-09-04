@@ -28,7 +28,7 @@ public class SearchController {
 
     @GetMapping
     public ModelAndView getSearchPage() throws EntityOperationException {
-        return productService.getPaginatedProducts(null, 1);
+        return productService.getSearchedPaginatedProducts(null, 1);
     }
 
     /* Заметка сумасшедшего:
@@ -54,12 +54,12 @@ public class SearchController {
      */
     @GetMapping("/{page}")
     public ModelAndView changeSearchPage(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY , required = false) Search search, @PathVariable(name = "page") Integer currentPage) throws EntityOperationException {
-        return productService.getPaginatedProducts(search, currentPage);
+        return productService.getSearchedPaginatedProducts(search, currentPage);
     }
 
     @PostMapping
     public ModelAndView submitSearch(@ModelAttribute(EshopConstants.SEARCH_ENTITY) Search search) throws EntityOperationException {
-        return productService.getPaginatedProducts(search, 1);
+        return productService.getSearchedPaginatedProducts(search, 1);
     }
 
     @ModelAttribute(EshopConstants.SEARCH_ENTITY)

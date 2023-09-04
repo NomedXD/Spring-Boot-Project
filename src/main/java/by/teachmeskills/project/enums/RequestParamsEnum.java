@@ -12,6 +12,7 @@ public enum RequestParamsEnum {
     FLAT_NUMBER("flatNumber"),
     TOTAL_PAGINATED_VISIBLE_PAGES("totalPaginatedVisiblePages"),
     CURRENT_PAGE("currentPage"),
+    PAGE_SIZE("pageSize"),
     TOTAL_SEARCH_RESULTS("totalSearchResults"),
     LAST_PAGE_NUMBER("lastPageNumber"),
     EXPORT_IMPORT_MESSAGE("eiMessage");

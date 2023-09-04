@@ -21,6 +21,9 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,6 +77,18 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<Category> getCategoryById(Integer id) throws EntityOperationException {
         return categoryRepository.findById(id);
+    }
+
+    @Override
+    public ModelAndView getPaginatedCategories(Integer currentPage, Integer pageSize) {
+        Pageable pageable = PageRequest.of((currentPage - 1), pageSize, Sort.by("name"));
+        ModelMap model = new ModelMap();
+        model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
+        model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
+        model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(categoryRepository.count() / EshopConstants.MIN_PAGE_SIZE.doubleValue()));
+        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.findAll(pageable).getContent());
+        return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
     }
 
     @Override

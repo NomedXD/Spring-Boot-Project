@@ -203,7 +203,7 @@
                                                                     ${product.name}
                                                             </a>
                                                         </h6>
-                                                        <span class="small">${product.category}</span>
+                                                        <span class="small">${product.category.name}</span>
                                                     </div>
                                                 </div>
                                             </td>

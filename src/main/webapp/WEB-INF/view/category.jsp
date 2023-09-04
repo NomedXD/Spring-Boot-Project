@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/header.css">
-    <link href="${contextPath}/jsp-scc-styles/search.css" rel="stylesheet"/>
+    <link href="${contextPath}/jsp-scc-styles/pagination.css" rel="stylesheet"/>
 </head>
 <body class="body">
 <jsp:include page="header.jsp"/>
@@ -21,7 +21,7 @@
     </c:when>
     <c:otherwise>
         <!--Export/import-->
-        <div class="container-fluid">
+        <div class="container-fluid mt-2">
             <a href="${contextPath}/category/export/${products[0].category.id}" class="btn btn-dark btn-lg"
                data-mdb-ripple-color="dark">Export products</a>
             <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
@@ -34,25 +34,28 @@
                 products
             </button>
         </div>
-        <div class="s007 container">
-            <form action="${contextPath}/search" method="POST">
-                <div class="inner-form">
-                    <div class="basic-search">
-                        <div class="input-field">
-                            <div class="icon-wrap">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                     viewBox="0 0 20 20">
-                                    <path d="M18.869 19.162l-5.943-6.484c1.339-1.401 2.075-3.233 2.075-5.178 0-2.003-0.78-3.887-2.197-5.303s-3.3-2.197-5.303-2.197-3.887 0.78-5.303 2.197-2.197 3.3-2.197 5.303 0.78 3.887 2.197 5.303 3.3 2.197 5.303 2.197c1.726 0 3.362-0.579 4.688-1.645l5.943 6.483c0.099 0.108 0.233 0.162 0.369 0.162 0.121 0 0.242-0.043 0.338-0.131 0.204-0.187 0.217-0.503 0.031-0.706zM1 7.5c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5-2.916 6.5-6.5 6.5-6.5-2.916-6.5-6.5z"></path>
-                                </svg>
-                            </div>
-                            <input id="search" name="searchString" type="text" placeholder="Search..."/>
-                            <div class="result-count">
-                                <span>${totalSearchResults} </span>results
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+        <div class="row p-2 rounded mt-2">
+            <div class="dropdown">
+                <button type="button" class="btn btn-dark dropdown-toggle float-end" data-bs-toggle="dropdown">
+                    Page size
+                </button>
+                <ul class="dropdown-menu">
+                    <c:choose>
+                        <c:when test="${pageSize == 5}">
+                            <li><a class="dropdown-item disabled" href="${contextPath}/category/${products[0].category.id}/sized?size=5">5 is current</a></li>
+                        </c:when>
+                        <c:otherwise><li><a class="dropdown-item" href="${contextPath}/category/${products[0].category.id}/sized?size=5">5</a></li></c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${pageSize == 10}"><li disabled><a class="dropdown-item disabled" href="${contextPath}/category/${products[0].category.id}/sized?size=10">10 is current</a></li></c:when>
+                        <c:otherwise><li><a class="dropdown-item" href="${contextPath}/category/${products[0].category.id}/sized?size=10">10</a></li></c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${pageSize == 15}"><li disabled><a class="dropdown-item disabled" href="${contextPath}/category/${products[0].category.id}/sized?size=15">15 is current</a></li></c:when>
+                        <c:otherwise><li><a class="dropdown-item" href="${contextPath}/category/${products[0].category.id}/sized?size=15">15</a></li></c:otherwise>
+                    </c:choose>
+                </ul>
+            </div>
         </div>
         <c:forEach items="${products}" var="product">
             <div class="row p-2 bg-white border rounded mt-2">
@@ -87,7 +90,8 @@
                     <ul class="pagination">
                         <c:if test="${currentPage >= 2}">
                             <li class="page-item">
-                                <a href="${contextPath}/search/${currentPage - 1}" class="page-link" aria-label="Previous">
+                                <a href="${contextPath}/category/${products[0].category.id}/page/${currentPage - 1}?size=${pageSize}" class="page-link"
+                                   aria-label="Previous">
                                     <span aria-hidden="true"><</span>
                                 </a>
                             </li>
@@ -97,10 +101,13 @@
                                 <c:forEach begin="1" end="${lastPageNumber}" var="i">
                                     <c:choose>
                                         <c:when test="${i == currentPage}">
-                                            <li class="page-item active"><a class="page-link" href="${contextPath}/search/${currentPage}">${currentPage}</a></li>
+                                            <li class="page-item active"><a class="page-link"
+                                                                            href="${contextPath}/category/${products[0].category.id}/page/${currentPage}?size=${pageSize}">${currentPage}</a>
+                                            </li>
                                         </c:when>
                                         <c:otherwise>
-                                            <li class="page-item"><a class="page-link" href="${contextPath}/search/${i}">${i}</a></li>
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="${contextPath}/category/${products[0].category.id}/page/${i}?size=${pageSize}">${i}</a></li>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:forEach>
@@ -110,10 +117,13 @@
                                            end="${lastPageNumber}" var="j">
                                     <c:choose>
                                         <c:when test="${j == currentPage}">
-                                            <li class="page-item active"><a class="page-link" href="${contextPath}/search/${currentPage}">${currentPage}</a></li>
+                                            <li class="page-item active"><a class="page-link"
+                                                                            href="${contextPath}/category/${products[0].category.id}/page/${currentPage}?size=${pageSize}">${currentPage}</a>
+                                            </li>
                                         </c:when>
                                         <c:otherwise>
-                                            <li class="page-item"><a class="page-link" href="${contextPath}/search/${j}">${j}</a></li>
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="${contextPath}/category/${products[0].category.id}/page/${j}?size=${pageSize}">${j}</a></li>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:forEach>
@@ -121,7 +131,7 @@
                         </c:choose>
                         <c:if test="${currentPage <= lastPageNumber - 1}">
                             <li class="page-item">
-                                <a href="${contextPath}/search/${currentPage + 1}" class="page-link" aria-label="Next">
+                                <a href="${contextPath}/category/${products[0].category.id}/page/${currentPage + 1}?size=${pageSize}" class="page-link" aria-label="Next">
                                     <span aria-hidden="true">></span>
                                 </a>
                             </li>

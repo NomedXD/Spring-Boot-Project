@@ -17,5 +17,7 @@ public interface CategoryService extends BaseService<Category>{
 
     void exportCategories(HttpServletResponse response) throws CSVExportException;
 
+    ModelAndView getPaginatedCategories(Integer currentPage, Integer pageSize);
+
     ModelAndView importCategories(MultipartFile file) throws CSVImportException;
 }

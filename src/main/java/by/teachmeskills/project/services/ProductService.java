@@ -19,7 +19,9 @@ public interface ProductService extends BaseService<Product> {
 
     Optional<Product> getProductById(int id) throws EntityOperationException;
 
-    ModelAndView getPaginatedProducts(Search search, Integer currentPage) throws EntityOperationException;
+    ModelAndView getSearchedPaginatedProducts(Search search, Integer currentPage) throws EntityOperationException;
+
+    ModelAndView getPaginatedProductsByCategoryId(Integer categoryId, Integer currentPage, Integer pageSize);
 
     Long getCountOfAllProducts() throws EntityOperationException;
 

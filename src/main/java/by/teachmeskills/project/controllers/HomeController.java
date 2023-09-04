@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,8 +32,19 @@ public class HomeController {
     }
 
     @GetMapping
-    public ModelAndView getShopPage(@SessionAttribute(name = EshopConstants.USER, required = false) User user) throws EntityOperationException {
+    public ModelAndView getHomePage(@SessionAttribute(name = EshopConstants.USER, required = false) User user) throws EntityOperationException {
         return userService.checkIfLoggedInUser(user);
+    }
+
+    @GetMapping("/page/{page}")
+    public ModelAndView changeHomePage(@PathVariable(name = "page") Integer currentPage,
+                                       @RequestParam(name = "size") Integer pageSize) throws EntityOperationException {
+        return categoryService.getPaginatedCategories(currentPage, pageSize);
+    }
+
+    @GetMapping("/sized")
+    public ModelAndView changeCategoryPageSize(@RequestParam(name = "size") Integer pageSize) {
+        return categoryService.getPaginatedCategories(1, pageSize);
     }
 
     @GetMapping("/export")
