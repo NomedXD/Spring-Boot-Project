@@ -71,6 +71,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User getUserById(Integer id) throws EntityOperationException {
+        try {
+            return entityManager.find(User.class, id);
+        } catch (PersistenceException e) {
+            logger.warn("SQLException while getting user. Most likely request is wrong. Full message - " + e.getMessage());
+            throw new EntityOperationException("Unexpected error on the site. How do you get here?\nCheck us later");
+        }
+    }
+
+    @Override
     public User getUserByCredentials(String mail, String password) throws EntityOperationException {
         try {
             return (User) JPAResultHelper.getSingleResultOrNull(entityManager.createQuery("select u from User u where u.mail =: mail and u.password =: password", User.class)

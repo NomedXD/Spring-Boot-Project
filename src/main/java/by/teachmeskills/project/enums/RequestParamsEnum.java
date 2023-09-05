@@ -13,7 +13,8 @@ public enum RequestParamsEnum {
     TOTAL_PAGINATED_VISIBLE_PAGES("totalPaginatedVisiblePages"),
     CURRENT_PAGE("currentPage"),
     TOTAL_SEARCH_RESULTS("totalSearchResults"),
-    LAST_PAGE_NUMBER("lastPageNumber");
+    LAST_PAGE_NUMBER("lastPageNumber"),
+    EXPORT_IMPORT_MESSAGE("eiMessage");
     private final String value;
 
     RequestParamsEnum(String value) {

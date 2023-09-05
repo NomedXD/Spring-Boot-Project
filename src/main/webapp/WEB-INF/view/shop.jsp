@@ -20,6 +20,16 @@
             <div class="bar warn">No categories found. Try later</div>
         </c:when>
         <c:otherwise>
+            <!--Export/import-->
+            <div class="container-fluid">
+                <a href="${contextPath}/catalog/export" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark">Export categories</a>
+                <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
+                <form action="${contextPath}/catalog/import" method="POST" enctype="multipart/form-data" id="importCategories">
+                    <input type="file" class="file-input" name="file"
+                           aria-describedby="inputGroupFileAddon01" required>
+                </form>
+                <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark" form="importCategories">Import categories</button>
+            </div>
             <c:forEach items="${categories}" var="item">
                 <div class="content">
                     <img class="shopImg" src="${contextPath}/${item.image.path}" alt="${contextPath}/images/error-page.png">

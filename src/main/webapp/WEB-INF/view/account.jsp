@@ -139,6 +139,16 @@
 
 <!--Orders details below-->
 <div class="container-fluid">
+    <!--Export/import-->
+    <div class="d-flex justify-content-between align-items-center py-3">
+        <a href="${contextPath}/account/export" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Export orders</a>
+        <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
+        <form action="${contextPath}/account/import" method="POST" enctype="multipart/form-data">
+            <input type="file" class="custom-file-input" name="file"
+                   aria-describedby="inputGroupFileAddon01" required>
+            <button type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Import orders</button>
+        </form>
+    </div>
     <c:if test="${not empty sessionScope.user.orders}">
         <c:forEach items="${sessionScope.user.orders}" var="order">
             <div class="container">

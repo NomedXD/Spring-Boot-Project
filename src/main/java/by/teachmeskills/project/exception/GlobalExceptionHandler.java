@@ -1,6 +1,7 @@
 package by.teachmeskills.project.exception;
 
 import by.teachmeskills.project.enums.PagesPathEnum;
+import by.teachmeskills.project.enums.RequestParamsEnum;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,14 @@ public class GlobalExceptionHandler {
             modelMap.addAttribute("SQLErrorMessage", exception.getMessage());
             return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);
         }
+    }
+
+    @ExceptionHandler({CSVExportException.class, CSVImportException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView handleCSVExportImportException(CSVExportException exception) {
+        ModelMap modelMap = new ModelMap();
+        modelMap.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), exception.getMessage());
+        return new ModelAndView(exception.getReturnPath(), modelMap);
     }
 }
 
