@@ -7,7 +7,6 @@ import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.CategoryRepository;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.utils.CategoryCsvConverter;
@@ -50,32 +49,32 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category create(Category entity) throws EntityOperationException {
+    public Category create(Category entity) {
         return categoryRepository.save(entity);
     }
 
     @Override
-    public List<Category> read() throws EntityOperationException {
+    public List<Category> read() {
         return categoryRepository.findAll();
     }
 
     @Override
-    public Category update(Category entity) throws EntityOperationException {
+    public Category update(Category entity) {
         return categoryRepository.save(entity);
     }
 
     @Override
-    public void delete(Integer id) throws EntityOperationException {
+    public void delete(Integer id) {
         categoryRepository.deleteById(id);
     }
 
     @Override
-    public void getCategoryByName(String name) throws EntityOperationException {
+    public void getCategoryByName(String name) {
         categoryRepository.getCategoryByName(name);
     }
 
     @Override
-    public Optional<Category> getCategoryById(Integer id) throws EntityOperationException {
+    public Optional<Category> getCategoryById(Integer id) {
         return categoryRepository.findById(id);
     }
 
@@ -86,7 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
         model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
         model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
-        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(categoryRepository.count() / EshopConstants.MIN_PAGE_SIZE.doubleValue()));
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(categoryRepository.count() / pageSize.doubleValue()));
         model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.findAll(pageable).getContent());
         return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
     }

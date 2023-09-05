@@ -838,7 +838,6 @@ legend {
     background: #fff;
     display: block;
     width: 100%;
-    padding: 10px 32px 10px 70px;
     font-size: 18px;
     border-radius: 3px;
     height: 70px;
@@ -995,7 +994,7 @@ legend {
 }
 
 .s007 form .inner-form .advance-search .input-select {
-    height: 40px;
+    height: 25px;
 }
 
 .s007 form .inner-form .advance-search .choices__inner {

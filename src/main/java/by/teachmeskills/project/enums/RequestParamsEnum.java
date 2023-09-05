@@ -9,6 +9,7 @@ public enum RequestParamsEnum {
     PRODUCT("product"),
     PRODUCTS("products"),
     CURRENT_USER("currentUser"),
+    ORDERS("orders"),
     MOBILE("mobile"),
     STREET("street"),
     ACCOMMODATION_NUMBER("accommodationNumber"),

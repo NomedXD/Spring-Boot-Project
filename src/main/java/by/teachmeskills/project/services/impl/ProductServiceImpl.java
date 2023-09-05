@@ -9,8 +9,8 @@ import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.ProductRepository;
+import by.teachmeskills.project.repositories.ProductSearchSpecification;
 import by.teachmeskills.project.services.ProductService;
 import by.teachmeskills.project.utils.ProductCsvConverter;
 import com.opencsv.CSVWriter;
@@ -53,65 +53,66 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product create(Product entity) throws EntityOperationException {
+    public Product create(Product entity) {
         return productRepository.save(entity);
     }
 
     @Override
-    public List<Product> read() throws EntityOperationException {
+    public List<Product> read() {
         return productRepository.findAll();
     }
 
     @Override
-    public Product update(Product entity) throws EntityOperationException {
+    public Product update(Product entity) {
         return productRepository.save(entity);
     }
 
     @Override
-    public void delete(Integer id) throws EntityOperationException {
+    public void delete(Integer id) {
         productRepository.deleteById(id);
     }
 
     @Override
-    public List<Product> getCategoryProducts(int categoryId) throws EntityOperationException {
+    public List<Product> getCategoryProducts(int categoryId) {
         return productRepository.findAllByCategoryId(categoryId);
     }
 
     @Override
-    public Optional<Product> getProductById(int id) throws EntityOperationException {
+    public Optional<Product> getProductById(int id) {
         return productRepository.findById(id);
     }
 
     @Override
-    public Long getCountOfAllProducts() throws EntityOperationException {
+    public Long getCountOfAllProducts() {
         return productRepository.count();
     }
 
     @Override
-    public Long getCountAppropriateProducts(Search search) throws EntityOperationException {
-        return productRepository.countAllByNameContainingOrDescriptionContaining(search.getSearchString(), search.getSearchString());
+    public Long getCountAppropriateProducts(Search search) {
+        return productRepository.count(new ProductSearchSpecification(search));
     }
 
     @Override
-    public ModelAndView getSearchedPaginatedProducts(Search search, Integer currentPage) throws EntityOperationException {
+    public ModelAndView getSearchedPaginatedProducts(Search search, Integer currentPage, Integer pageSize) {
         ModelMap model = new ModelMap();
         Long count;
         List<Product> productList;
         if ((search == null) || (search.getSearchString() == null)) {
             count = getCountOfAllProducts();
-            Pageable pageable = PageRequest.of((currentPage - 1), EshopConstants.MIN_PAGE_SIZE,
+            Pageable pageable = PageRequest.of((currentPage - 1), pageSize,
                     Sort.by("name"));
             productList = productRepository.findAll(pageable).getContent();
         } else {
             count = getCountAppropriateProducts(search);
-            Pageable pageable = PageRequest.of((currentPage - 1), EshopConstants.MIN_PAGE_SIZE);
-            productList = productRepository.findAllByNameContainingOrDescriptionContainingOrderByName(search.getSearchString(), search.getSearchString(), pageable);
+            Pageable pageable = PageRequest.of((currentPage - 1), pageSize, Sort.by("name"));
+            productList = productRepository.findAll(new ProductSearchSpecification(search), pageable).getContent();
             model.addAttribute(EshopConstants.SEARCH_ENTITY, search);
         }
         model.addAttribute(RequestParamsEnum.TOTAL_SEARCH_RESULTS.getValue(), count);
+        model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
         model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
-        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(count / EshopConstants.MIN_PAGE_SIZE.doubleValue()));
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(count / pageSize.doubleValue()));
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productList);
         return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
     }
@@ -123,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
         model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
         model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
-        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(productRepository.countAllByCategoryId(categoryId) / EshopConstants.MIN_PAGE_SIZE.doubleValue()));
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(productRepository.countAllByCategoryId(categoryId) / pageSize.doubleValue()));
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productRepository.findAllByCategoryIdOrderByName(categoryId, pageable));
         return new ModelAndView(PagesPathEnum.CATEGORY_PAGE.getPath(), model);
     }

@@ -4,7 +4,6 @@ import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,13 +31,13 @@ public class HomeController {
     }
 
     @GetMapping
-    public ModelAndView getHomePage(@SessionAttribute(name = EshopConstants.USER, required = false) User user) throws EntityOperationException {
+    public ModelAndView getHomePage(@SessionAttribute(name = EshopConstants.USER, required = false) User user) {
         return userService.checkIfLoggedInUser(user);
     }
 
     @GetMapping("/page/{page}")
     public ModelAndView changeHomePage(@PathVariable(name = "page") Integer currentPage,
-                                       @RequestParam(name = "size") Integer pageSize) throws EntityOperationException {
+                                       @RequestParam(name = "size") Integer pageSize) {
         return categoryService.getPaginatedCategories(currentPage, pageSize);
     }
 

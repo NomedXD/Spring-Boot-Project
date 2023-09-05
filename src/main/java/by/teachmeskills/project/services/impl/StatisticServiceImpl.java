@@ -1,7 +1,6 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Statistic;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.StatisticRepository;
 import by.teachmeskills.project.services.StatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +18,17 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public Statistic create(Statistic entity) throws EntityOperationException {
+    public Statistic create(Statistic entity) {
         return statisticRepository.save(entity);
     }
 
     @Override
-    public List<Statistic> read() throws EntityOperationException {
+    public List<Statistic> read() {
         return statisticRepository.findAll();
     }
 
     @Override
-    public Statistic update(Statistic entity) throws EntityOperationException {
+    public Statistic update(Statistic entity) {
         return statisticRepository.save(entity);
     }
 

@@ -32,11 +32,11 @@ public class ProductSearchSpecification implements Specification<Product> {
                             criteriaBuilder.like(root.get("description"), "%" + search.getSearchString() + "%")));
         }
 
-        if (search.getPriceFrom() > 0) {
+        if (Optional.ofNullable(search.getPriceFrom()).isPresent() && search.getPriceFrom() > 0) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), search.getPriceFrom()));
         }
 
-        if (search.getPriceTo() > 0) {
+        if (Optional.ofNullable(search.getPriceTo()).isPresent() && search.getPriceTo() > 0) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), search.getPriceTo()));
         }
 

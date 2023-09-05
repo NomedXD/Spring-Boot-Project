@@ -3,7 +3,6 @@ package by.teachmeskills.project.controllers;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +31,15 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}/page/{page}")
-    public ModelAndView changeCategoryPage(@PathVariable(name = "categoryId") Integer categoryId, @PathVariable(name = "page") Integer currentPage,
-                                         @RequestParam(name = "size") Integer pageSize) throws EntityOperationException {
+    public ModelAndView changeCategoryPage(@PathVariable(name = "categoryId") Integer categoryId,
+                                           @PathVariable(name = "page") Integer currentPage,
+                                           @RequestParam(name = "size") Integer pageSize) {
         return productService.getPaginatedProductsByCategoryId(categoryId, currentPage, pageSize);
     }
 
     @GetMapping("/{categoryId}/sized")
-    public ModelAndView changeCategoryPageSize(@PathVariable(name = "categoryId") Integer categoryId, @RequestParam(name = "size") Integer pageSize) {
+    public ModelAndView changeCategoryPageSize(@PathVariable(name = "categoryId") Integer categoryId,
+                                               @RequestParam(name = "size") Integer pageSize) {
         return productService.getPaginatedProductsByCategoryId(categoryId, 1, pageSize);
     }
 
@@ -48,7 +49,8 @@ public class CategoryController {
     }
 
     @PostMapping("/import/{categoryId}")
-    public ModelAndView importCategoryProducts(@RequestParam(name = "file") MultipartFile file, @PathVariable(name = "categoryId") Integer categoryId) throws CSVImportException {
+    public ModelAndView importCategoryProducts(@RequestParam(name = "file") MultipartFile file,
+                                               @PathVariable(name = "categoryId") Integer categoryId) throws CSVImportException {
         return productService.importCategoryProducts(file, categoryId);
     }
 }

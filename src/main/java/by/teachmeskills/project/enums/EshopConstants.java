@@ -5,6 +5,7 @@ public interface EshopConstants {
     String USER = "user";
     String SEARCH_ENTITY = "searchEntity";
     String ORDER = "order";
+    String ORDERS = "orders";
     Integer MIN_PAGE_SIZE = 5;
     Integer TOTAL_PAGINATED_VISIBLE_PAGES = 5;
     String successfulImportMessage = "Successful imported";

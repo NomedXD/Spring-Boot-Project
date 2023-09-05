@@ -13,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/header.css">
+    <link href="${contextPath}/jsp-scc-styles/pagination.css" rel="stylesheet"/>
 </head>
 <body class="body">
 <jsp:include page="header.jsp"/>
@@ -67,7 +68,7 @@
                             </div>
                         </div>
                         <hr>
-                        <form action="${contextPath}/account/update" method="POST" id="updateUser">
+                        <form action="${contextPath}/account/update/page/${currentPage}?size=${pageSize}" method="POST" id="updateUser">
                             <div class="row">
                                 <div class="col-sm-3">
                                     <h6 class="mb-0">Mobile</h6>
@@ -149,8 +150,31 @@
             <button type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Import orders</button>
         </form>
     </div>
-    <c:if test="${not empty sessionScope.user.orders}">
-        <c:forEach items="${sessionScope.user.orders}" var="order">
+    <c:if test="${not empty orders}">
+        <div class="row p-2 rounded mt-2">
+            <div class="dropdown">
+                <button type="button" class="btn btn-dark dropdown-toggle float-end" data-bs-toggle="dropdown">
+                    Page size
+                </button>
+                <ul class="dropdown-menu">
+                    <c:choose>
+                        <c:when test="${pageSize == 5}">
+                            <li><a class="dropdown-item disabled" href="${contextPath}/account/sized?size=5">5 is current</a></li>
+                        </c:when>
+                        <c:otherwise><li><a class="dropdown-item" href="${contextPath}/account/sized?size=5">5</a></li></c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${pageSize == 10}"><li disabled><a class="dropdown-item disabled" href="${contextPath}/account/sized?size=10">10 is current</a></li></c:when>
+                        <c:otherwise><li><a class="dropdown-item" href="${contextPath}/account/sized?size=10">10</a></li></c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${pageSize == 15}"><li disabled><a class="dropdown-item disabled" href="${contextPath}/account/sized?size=15">15 is current</a></li></c:when>
+                        <c:otherwise><li><a class="dropdown-item" href="${contextPath}/account/sized?size=15">15</a></li></c:otherwise>
+                    </c:choose>
+                </ul>
+            </div>
+        </div>
+        <c:forEach items="${orders}" var="order">
             <div class="container">
                 <!-- Title -->
                 <div class="d-flex justify-content-between align-items-center py-3">
@@ -281,6 +305,65 @@
                 </div>
             </div>
         </c:forEach>
+        <div class="container">
+            <div class="paginationContainer">
+                <nav class="pagination-outer" aria-label="Page navigation">
+                    <ul class="pagination">
+                        <c:if test="${currentPage >= 2}">
+                            <li class="page-item">
+                                <a href="${contextPath}/account/page/${currentPage - 1}?size=${pageSize}"
+                                   class="page-link"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true"><</span>
+                                </a>
+                            </li>
+                        </c:if>
+                        <c:choose>
+                            <c:when test="${currentPage <= totalPaginatedVisiblePages / 2 + 1}">
+                                <c:forEach begin="1" end="${lastPageNumber}" var="i">
+                                    <c:choose>
+                                        <c:when test="${i == currentPage}">
+                                            <li class="page-item active"><a class="page-link" href="${contextPath}/account/page/${currentPage}?size=${pageSize}">${currentPage}</a>
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="${contextPath}/account/page/${i}?size=${pageSize}">${i}</a>
+                                            </li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach begin="${currentPage - totalPaginatedVisiblePages / 2}"
+                                           end="${lastPageNumber}" var="j">
+                                    <c:choose>
+                                        <c:when test="${j == currentPage}">
+                                            <li class="page-item active"><a class="page-link"
+                                                                            href="${contextPath}/account/page/${currentPage}?size=${pageSize}">${currentPage}</a>
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="${contextPath}/account/page/${j}?size=${pageSize}">${j}</a>
+                                            </li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:if test="${currentPage <= lastPageNumber - 1}">
+                            <li class="page-item">
+                                <a href="${contextPath}/account/page/${currentPage + 1}?size=${pageSize}"
+                                   class="page-link" aria-label="Next">
+                                    <span aria-hidden="true">></span>
+                                </a>
+                            </li>
+                        </c:if>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </c:if>
 
 

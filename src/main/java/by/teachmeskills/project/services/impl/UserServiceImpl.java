@@ -8,9 +8,9 @@ import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.exception.NoSuchUserException;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.UserRepository;
 import by.teachmeskills.project.services.CategoryService;
+import by.teachmeskills.project.services.OrderService;
 import by.teachmeskills.project.services.UserService;
 import by.teachmeskills.project.domain.OrderProductCsv;
 import by.teachmeskills.project.utils.OrderProductCsvConverter;
@@ -48,41 +48,55 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CategoryService categoryService;
     private final OrderProductCsvConverter orderProductCsvConverter;
+    private final OrderService orderService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService, @Lazy OrderProductCsvConverter orderProductCsvConverter) {
+    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService,
+                           @Lazy OrderProductCsvConverter orderProductCsvConverter, @Lazy OrderService orderService) {
         this.userRepository = userRepository;
         this.categoryService = categoryService;
         this.orderProductCsvConverter = orderProductCsvConverter;
+        this.orderService = orderService;
     }
 
     @Override
-    public User create(User entity) throws EntityOperationException {
+    public User create(User entity) {
         return userRepository.save(entity);
     }
 
     @Override
-    public List<User> read() throws EntityOperationException {
+    public List<User> read() {
         return userRepository.findAll();
     }
 
     @Override
-    public User update(User entity) throws EntityOperationException {
+    public User update(User entity) {
         return userRepository.save(entity);
     }
 
     @Override
-    public void delete(Integer id) throws EntityOperationException {
+    public void delete(Integer id) {
         userRepository.deleteById(id);
     }
 
     @Override
-    public Optional<User> getUserById(Integer id) throws EntityOperationException {
+    public Optional<User> getUserById(Integer id) {
         return userRepository.findById(id);
     }
 
     @Override
-    public ModelAndView updateAccountData(User updatedUserFields, User user) throws EntityOperationException {
+    public ModelAndView getAccount(Integer userId, Integer currentPage, Integer pageSize) {
+        ModelMap model = new ModelMap();
+        model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
+        model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
+        model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(orderService.getCountUserOrders(userId) / pageSize.doubleValue()));
+        model.addAttribute(RequestParamsEnum.ORDERS.getValue(), orderService.getPaginatedOrders(currentPage, pageSize, userId));
+        return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
+    }
+
+    @Override
+    public ModelAndView updateAccountData(User updatedUserFields, User user, Integer currentPage, Integer pageSize){
         Map<String, String> params = new HashMap<>();
         params.put(RequestParamsEnum.MOBILE.getValue(), updatedUserFields.getMobile());
         params.put(RequestParamsEnum.STREET.getValue(), updatedUserFields.getStreet());
@@ -97,7 +111,12 @@ public class UserServiceImpl implements UserService {
         ModelMap model = new ModelMap();
         updatedUserFields.setOrders(userRepository.findOrdersByUserId(user.getId()));
         user = update(updatedUserFields);
+        model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
+        model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
+        model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(orderService.getCountUserOrders(user.getId()) / pageSize.doubleValue()));
         model.addAttribute(EshopConstants.USER, user);
+        model.addAttribute(EshopConstants.ORDERS, orderService.getPaginatedOrders(currentPage, pageSize, user.getId()));
         return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
     }
 
@@ -115,7 +134,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView logIn(User user) throws EntityOperationException {
+    public ModelAndView logIn(User user) {
         Optional<User> loggedUser = userRepository.findUserByMailAndPassword(user.getMail(), user.getPassword());
         if (loggedUser.isPresent()) {
             user = loggedUser.get();
@@ -128,7 +147,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) throws EntityOperationException {
+    public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) {
         if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
             ModelMap model = new ModelMap();
             user = userRepository.save(User.builder().mail(user.getMail()).password(user.getPassword()).name(user.getName()).
@@ -141,7 +160,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView checkIfLoggedInUser(User user) throws EntityOperationException {
+    public ModelAndView checkIfLoggedInUser(User user) {
         ModelMap model = new ModelMap();
         if (user != null) {
             return categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE);
