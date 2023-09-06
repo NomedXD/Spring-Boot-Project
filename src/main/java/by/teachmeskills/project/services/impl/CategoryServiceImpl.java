@@ -1,7 +1,7 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Category;
-import by.teachmeskills.project.domain.CategoryCsv;
+import by.teachmeskills.project.dto.CategoryCsv;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;

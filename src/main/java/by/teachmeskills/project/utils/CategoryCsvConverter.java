@@ -1,7 +1,7 @@
 package by.teachmeskills.project.utils;
 
 import by.teachmeskills.project.domain.Category;
-import by.teachmeskills.project.domain.CategoryCsv;
+import by.teachmeskills.project.dto.CategoryCsv;
 import by.teachmeskills.project.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

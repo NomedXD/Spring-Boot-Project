@@ -12,7 +12,7 @@ import by.teachmeskills.project.repositories.UserRepository;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.OrderService;
 import by.teachmeskills.project.services.UserService;
-import by.teachmeskills.project.domain.OrderProductCsv;
+import by.teachmeskills.project.dto.OrderProductCsv;
 import by.teachmeskills.project.utils.OrderProductCsvConverter;
 import by.teachmeskills.project.validator.ValidatorUtils;
 import com.opencsv.CSVWriter;
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView updateAccountData(User updatedUserFields, User user, Integer currentPage, Integer pageSize){
+    public ModelAndView updateAccountData(User updatedUserFields, User user, Integer currentPage, Integer pageSize) {
         Map<String, String> params = new HashMap<>();
         params.put(RequestParamsEnum.MOBILE.getValue(), updatedUserFields.getMobile());
         params.put(RequestParamsEnum.STREET.getValue(), updatedUserFields.getStreet());

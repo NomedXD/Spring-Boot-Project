@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ModelAndView handleNoSuchProductException(DataIntegrityViolationException exception) {
+    public ModelAndView handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
         if (exception.getCause() instanceof ConstraintViolationException constraintViolationException) {
             if (constraintViolationException.getConstraintName().equals("users.mail")) {
                 return handleUserAlreadyExistException(new UserAlreadyExistException("User with such email already exist"));

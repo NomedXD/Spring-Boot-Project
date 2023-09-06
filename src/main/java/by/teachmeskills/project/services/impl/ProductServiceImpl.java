@@ -2,7 +2,7 @@ package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Cart;
 import by.teachmeskills.project.domain.Product;
-import by.teachmeskills.project.domain.ProductCsv;
+import by.teachmeskills.project.dto.ProductCsv;
 import by.teachmeskills.project.domain.Search;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;

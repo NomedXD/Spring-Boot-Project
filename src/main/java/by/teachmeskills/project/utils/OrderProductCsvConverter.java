@@ -1,7 +1,7 @@
 package by.teachmeskills.project.utils;
 
 import by.teachmeskills.project.domain.Order;
-import by.teachmeskills.project.domain.OrderProductCsv;
+import by.teachmeskills.project.dto.OrderProductCsv;
 import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.ImageService;
