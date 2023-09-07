@@ -38,12 +38,6 @@ public class SearchController {
         return productService.getSearchedPaginatedProducts(search, currentPage, pageSize);
     }
 
-    /*
-        Не забыть уменьшить, если это возможно количество эндпоинтов. Это можно сделать, если объединить в каждом
-        контроллере методы getSearchPage и changeSearchPageSize. В таком случае оставляем getSearchPage, но
-        передаем дополнительно все параметры эндпоинта changeSearchPageSize вместе с размером страницы как
-        @RequestParam
-     */
     @GetMapping("/sized")
     public ModelAndView changeSearchPageSize(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY, required = false) Search search,
                                              @RequestParam(name = "size") Integer pageSize) {

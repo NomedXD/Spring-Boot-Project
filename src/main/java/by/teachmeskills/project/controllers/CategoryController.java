@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/category")
 public class CategoryController {
@@ -26,15 +28,21 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public ModelAndView getCategoryPage(@PathVariable(name = "categoryId") Integer categoryId) {
-        return productService.getPaginatedProductsByCategoryId(categoryId, 1, EshopConstants.MIN_PAGE_SIZE);
+    public ModelAndView getCategoryPage(@PathVariable(name = "categoryId") Integer categoryId,
+                                        @RequestParam(name = "page", required = false) Integer currentPage,
+                                        @RequestParam(name = "size", required = false) Integer pageSize) {
+        if (Optional.ofNullable(currentPage).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
+            return productService.getPaginatedProductsByCategoryId(categoryId, currentPage, pageSize);
+        } else {
+            return productService.getPaginatedProductsByCategoryId(categoryId, 1, EshopConstants.MIN_PAGE_SIZE);
+        }
     }
-
+    /*
     @GetMapping("/{categoryId}/page/{page}")
     public ModelAndView changeCategoryPage(@PathVariable(name = "categoryId") Integer categoryId,
                                            @PathVariable(name = "page") Integer currentPage,
                                            @RequestParam(name = "size") Integer pageSize) {
-        return productService.getPaginatedProductsByCategoryId(categoryId, currentPage, pageSize);
+
     }
 
     @GetMapping("/{categoryId}/sized")
@@ -42,6 +50,7 @@ public class CategoryController {
                                                @RequestParam(name = "size") Integer pageSize) {
         return productService.getPaginatedProductsByCategoryId(categoryId, 1, pageSize);
     }
+     */
 
     @GetMapping("/export/{categoryId}")
     public void exportCategoryProducts(@PathVariable(name = "categoryId") Integer categoryId, HttpServletResponse response) throws CSVExportException {

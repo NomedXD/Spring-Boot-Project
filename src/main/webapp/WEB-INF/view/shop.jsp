@@ -77,7 +77,7 @@
                          alt="${contextPath}/images/error-page.png">
                     <h3>${item.name}</h3>
                     <p>${item.sometext}</p>
-                    <form action="${contextPath}/category/${item.id}" method="GET">
+                    <form action="${contextPath}/category/${item.id}?page=1&size=5" method="GET">
                         <button class="buy-1">Buy now</button>
                     </form>
                 </div>

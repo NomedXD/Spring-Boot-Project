@@ -21,7 +21,7 @@ public interface UserService extends BaseService<User> {
 
     ModelAndView register(User user, BindingResult bindingResult, String repeatPassword);
 
-    ModelAndView checkIfLoggedInUser(User user);
+    Boolean checkIfLoggedInUser(User user);
 
     void exportUserOrders(User user, HttpServletResponse response) throws CSVExportException;
 

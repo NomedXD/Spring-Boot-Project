@@ -15,7 +15,7 @@
         <div class="navb-items d-none d-xl-flex">
 
             <div class="item">
-                <a href="${contextPath}/catalog">Home</a>
+                <a href="${contextPath}/catalog?page=1&size=5">Home</a>
             </div>
 
             <div class="item">
@@ -29,7 +29,7 @@
             </div>
 
             <div class="item">
-                <a href="${contextPath}/account">Account</a>
+                <a href="${contextPath}/account?page=1&size=5">Account</a>
             </div>
 
             <div class="item">

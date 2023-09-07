@@ -153,20 +153,15 @@ public class UserServiceImpl implements UserService {
             user = userRepository.save(User.builder().mail(user.getMail()).password(user.getPassword()).name(user.getName()).
                     surname(user.getSurname()).date(user.getDate()).currentBalance(0f).orders(new ArrayList<>()).build());
             model.addAttribute(EshopConstants.USER, user);
-            model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.read());
+            model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE));
             return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
         }
         return new ModelAndView(PagesPathEnum.REGISTRATION_PAGE.getPath());
     }
 
     @Override
-    public ModelAndView checkIfLoggedInUser(User user) {
-        ModelMap model = new ModelMap();
-        if (user != null) {
-            return categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE);
-        } else {
-            return new ModelAndView(PagesPathEnum.LOG_IN_PAGE.getPath(), model);
-        }
+    public Boolean checkIfLoggedInUser(User user) {
+        return user != null;
     }
 
     @Override
