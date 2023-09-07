@@ -1,16 +1,15 @@
 package by.teachmeskills.project.services;
 
 import by.teachmeskills.project.domain.BaseEntity;
-import by.teachmeskills.project.exception.EntityOperationException;
 
 import java.util.List;
 
 public interface BaseService<T extends BaseEntity> {
-    T create(T entity) throws EntityOperationException;
+    T create(T entity);
 
-    List<T> read() throws EntityOperationException;
+    List<T> read();
 
-    T update(T entity) throws EntityOperationException;
+    T update(T entity);
 
-    void delete(Integer id) throws EntityOperationException;
+    void delete(Integer id);
 }

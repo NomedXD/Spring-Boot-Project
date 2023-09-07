@@ -1,7 +1,7 @@
 package by.teachmeskills.project.utils;
 
 import by.teachmeskills.project.domain.Order;
-import by.teachmeskills.project.domain.OrderProductCsv;
+import by.teachmeskills.project.dto.OrderProductCsv;
 import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.ImageService;
@@ -60,7 +60,7 @@ public class OrderProductCsvConverter {
                         .id(0) // Здесь обязательно нужен 0, иначе не сохранится из-за вложенных объектов :(
                         .price(orderProductCsv.getTotalOrderPrice())
                         .date(orderProductCsv.getOrderDate())
-                        .user(userService.getUserById(orderProductCsv.getUserId()))
+                        .user(userService.getUserById(orderProductCsv.getUserId()).orElse(null))
                         .productList(new ArrayList<>())
                         .creditCardNumber(orderProductCsv.getCreditCardNumber())
                         .shippingType(orderProductCsv.getShippingType())
@@ -71,9 +71,9 @@ public class OrderProductCsvConverter {
                 Product product = Product.builder()
                         .id(orderProductCsv.getProductId())
                         .name(orderProductCsv.getProductName())
-                        .image(imageService.getImageById(orderProductCsv.getProductImageId()))
+                        .image(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))
                         .description(orderProductCsv.getProductDescription())
-                        .category(categoryService.getCategoryById(orderProductCsv.getCategoryId()))
+                        .category(categoryService.getCategoryById(orderProductCsv.getCategoryId()).orElse(null))
                         .price(orderProductCsv.getProductPrice()).build();
                 order.getProductList().add(product);
                 orderMap.put(orderProductCsv.getOrderId(), order);
@@ -82,9 +82,9 @@ public class OrderProductCsvConverter {
                         Product.builder()
                         .id(orderProductCsv.getProductId())
                         .name(orderProductCsv.getProductName())
-                        .image(imageService.getImageById(orderProductCsv.getProductImageId()))
+                        .image(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))
                         .description(orderProductCsv.getProductDescription())
-                        .category(categoryService.getCategoryById(orderProductCsv.getCategoryId()))
+                        .category(categoryService.getCategoryById(orderProductCsv.getCategoryId()).orElse(null))
                         .price(orderProductCsv.getProductPrice()).build());
             }
         });

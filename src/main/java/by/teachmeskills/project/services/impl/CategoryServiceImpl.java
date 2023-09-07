@@ -1,13 +1,12 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Category;
-import by.teachmeskills.project.domain.CategoryCsv;
+import by.teachmeskills.project.dto.CategoryCsv;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.CategoryRepository;
 import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.utils.CategoryCsvConverter;
@@ -21,6 +20,9 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,33 +49,45 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category create(Category entity) throws EntityOperationException {
-        return categoryRepository.create(entity);
+    public Category create(Category entity) {
+        return categoryRepository.save(entity);
     }
 
     @Override
-    public List<Category> read() throws EntityOperationException {
-        return categoryRepository.read();
+    public List<Category> read() {
+        return categoryRepository.findAll();
     }
 
     @Override
-    public Category update(Category entity) throws EntityOperationException {
-        return categoryRepository.update(entity);
+    public Category update(Category entity) {
+        return categoryRepository.save(entity);
     }
 
     @Override
-    public void delete(Integer id) throws EntityOperationException {
-        categoryRepository.delete(id);
+    public void delete(Integer id) {
+        categoryRepository.deleteById(id);
     }
 
     @Override
-    public void getCategoryByName(String name) throws EntityOperationException {
+    public void getCategoryByName(String name) {
         categoryRepository.getCategoryByName(name);
     }
 
     @Override
-    public Category getCategoryById(Integer id) throws EntityOperationException {
-        return categoryRepository.getCategoryById(id);
+    public Optional<Category> getCategoryById(Integer id) {
+        return categoryRepository.findById(id);
+    }
+
+    @Override
+    public ModelAndView getPaginatedCategories(Integer currentPage, Integer pageSize) {
+        Pageable pageable = PageRequest.of((currentPage - 1), pageSize, Sort.by("name"));
+        ModelMap model = new ModelMap();
+        model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
+        model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
+        model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(categoryRepository.count() / pageSize.doubleValue()));
+        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.findAll(pageable).getContent());
+        return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
     }
 
     @Override
@@ -82,7 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private void writeCsv(HttpServletResponse response) throws CSVExportException {
-        List<CategoryCsv> categoryCsvList = categoryCsvConverter.convertInto(categoryRepository.read());
+        List<CategoryCsv> categoryCsvList = categoryCsvConverter.convertInto(categoryRepository.findAll());
         try (Writer categoriesWriter = new OutputStreamWriter(response.getOutputStream())) {
             StatefulBeanToCsv<CategoryCsv> categoriesSbc = new StatefulBeanToCsvBuilder<CategoryCsv>(categoriesWriter)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
@@ -98,9 +112,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ModelAndView importCategories(MultipartFile file) throws CSVImportException {
         List<Category> categoryList = parseCsv(file);
-        categoryList.forEach(categoryRepository::create);
+        categoryRepository.saveAll(categoryList);
         ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.read());
+        model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryRepository.findAll());
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);
         return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
     }

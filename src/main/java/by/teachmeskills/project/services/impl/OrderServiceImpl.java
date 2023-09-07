@@ -4,11 +4,12 @@ import by.teachmeskills.project.domain.Cart;
 import by.teachmeskills.project.domain.Order;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.PagesPathEnum;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.OrderRepository;
 import by.teachmeskills.project.services.OrderService;
 import by.teachmeskills.project.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,27 +29,38 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order create(Order entity) throws EntityOperationException {
-        return orderRepository.create(entity);
+    public Order create(Order entity) {
+        return orderRepository.save(entity);
     }
 
     @Override
-    public List<Order> read() throws EntityOperationException {
-        return orderRepository.read();
+    public List<Order> read() {
+        return orderRepository.findAll();
     }
 
     @Override
-    public Order update(Order entity) throws EntityOperationException {
-        return orderRepository.update(entity);
+    public Order update(Order entity) {
+        return orderRepository.save(entity);
     }
 
     @Override
-    public void delete(Integer id) throws EntityOperationException {
-        orderRepository.delete(id);
+    public void delete(Integer id) {
+        orderRepository.deleteById(id);
     }
 
     @Override
-    public ModelAndView applyOrder(Order order, Cart cart, User user) throws EntityOperationException {
+    public List<Order> getPaginatedOrders(Integer currentPage, Integer pageSize, Integer userId) {
+        Pageable pageable = PageRequest.of((currentPage - 1), pageSize);
+        return orderRepository.findAllByUserId(userId, pageable);
+    }
+
+    @Override
+    public Long getCountUserOrders(Integer userId) {
+        return orderRepository.countAllByUserId(userId);
+    }
+
+    @Override
+    public ModelAndView applyOrder(Order order, Cart cart, User user) {
         preBuildOrder(order, cart, user);
         user.getOrders().add(create(order));
         user = userService.update(user);

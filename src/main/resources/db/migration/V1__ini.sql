@@ -1,7 +1,3 @@
-DROP SCHEMA IF EXISTS tmsdb;
-CREATE SCHEMA IF NOT EXISTS tmsdb;
-USE tmsdb;
-
 DROP TABLE IF EXISTS categories;
 CREATE TABLE categories
 (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, name VARCHAR(45) DEFAULT (NULL),
@@ -36,7 +32,7 @@ VALUES
     (800,'2023-08-07', 1, '11111 **** **** 1111', 'Delivery by courier', 10.00, 'code', 'Rokossovskogo', 'Notes');
 
 DROP TABLE IF EXISTS orders_products;
-CREATE TABLE orders_products(order_id INT PRIMARY KEY NOT NULL, product_id INT PRIMARY KEY NOT NULL);
+CREATE TABLE orders_products(order_id INT PRIMARY KEY NOT NULL, product_id INT NOT NULL);
 INSERT INTO orders_products(order_id, product_id)
 VALUES
     (1,1);

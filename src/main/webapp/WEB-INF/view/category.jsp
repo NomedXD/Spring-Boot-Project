@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/header.css">
+    <link href="${contextPath}/jsp-scc-styles/pagination.css" rel="stylesheet"/>
 </head>
 <body class="body">
 <jsp:include page="header.jsp"/>
@@ -20,14 +21,41 @@
     </c:when>
     <c:otherwise>
         <!--Export/import-->
-        <div class="container-fluid">
-            <a href="${contextPath}/category/export/${products[0].category.id}" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark">Export products</a>
+        <div class="container-fluid mt-2">
+            <a href="${contextPath}/category/export/${products[0].category.id}" class="btn btn-dark btn-lg"
+               data-mdb-ripple-color="dark">Export products</a>
             <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
-            <form action="${contextPath}/category/import/${products[0].category.id}" method="POST" enctype="multipart/form-data" id="importProducts">
+            <form action="${contextPath}/category/import/${products[0].category.id}" method="POST"
+                  enctype="multipart/form-data" id="importProducts">
                 <input type="file" class="file-input" name="file"
                        aria-describedby="inputGroupFileAddon01" required>
             </form>
-            <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark" form="importProducts">Import products</button>
+            <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark" form="importProducts">Import
+                products
+            </button>
+        </div>
+        <div class="row p-2 rounded mt-2">
+            <div class="dropdown">
+                <button type="button" class="btn btn-dark dropdown-toggle float-end" data-bs-toggle="dropdown">
+                    Page size
+                </button>
+                <ul class="dropdown-menu">
+                    <c:choose>
+                        <c:when test="${pageSize == 5}">
+                            <li><a class="dropdown-item disabled" href="${contextPath}/category/${products[0].category.id}?page=1&size=5">5 is current</a></li>
+                        </c:when>
+                        <c:otherwise><li><a class="dropdown-item" href="${contextPath}/category/${products[0].category.id}?page=1&size=5">5</a></li></c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${pageSize == 10}"><li disabled><a class="dropdown-item disabled" href="${contextPath}/category/${products[0].category.id}/?page=1&size=10">10 is current</a></li></c:when>
+                        <c:otherwise><li><a class="dropdown-item" href="${contextPath}/category/${products[0].category.id}?page=1&size=10">10</a></li></c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${pageSize == 15}"><li disabled><a class="dropdown-item disabled" href="${contextPath}/category/${products[0].category.id}?page=1&size=15">15 is current</a></li></c:when>
+                        <c:otherwise><li><a class="dropdown-item" href="${contextPath}/category/${products[0].category.id}?page=1&size=15">15</a></li></c:otherwise>
+                    </c:choose>
+                </ul>
+            </div>
         </div>
         <c:forEach items="${products}" var="product">
             <div class="row p-2 bg-white border rounded mt-2">
@@ -36,7 +64,8 @@
                 <div class="col-md-6 mt-1">
                     <h5>${product.name}</h5>
                     <div class="d-flex flex-row">
-                        <div class="ratings mr-2"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                        <div class="ratings mr-2"><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                class="fa fa-star"></i><i
                                 class="fa fa-star"></i></div>
                         <span>310</span>
                     </div>
@@ -48,12 +77,69 @@
                     </div>
                     <h6 class="text-success">Available</h6>
                     <div class="d-flex flex-column mt-4">
-                        <a class="btn btn-primary btn-sm" type="button" href="${pageContext.request.contextPath}/product/${product.id}">More info</a>
+                        <a class="btn btn-primary btn-sm" type="button"
+                           href="${pageContext.request.contextPath}/product/${product.id}">More info</a>
                         <button class="btn btn-outline-primary btn-sm mt-2" type="button">Add to wishlist</button>
                     </div>
                 </div>
             </div>
         </c:forEach>
+        <div class="container">
+            <div class="paginationContainer">
+                <nav class="pagination-outer" aria-label="Page navigation">
+                    <ul class="pagination">
+                        <c:if test="${currentPage >= 2}">
+                            <li class="page-item">
+                                <a href="${contextPath}/category/${products[0].category.id}?page=${currentPage - 1}&size=${pageSize}" class="page-link"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true"><</span>
+                                </a>
+                            </li>
+                        </c:if>
+                        <c:choose>
+                            <c:when test="${currentPage <= totalPaginatedVisiblePages / 2 + 1}">
+                                <c:forEach begin="1" end="${lastPageNumber}" var="i">
+                                    <c:choose>
+                                        <c:when test="${i == currentPage}">
+                                            <li class="page-item active"><a class="page-link"
+                                                                            href="${contextPath}/category/${products[0].category.id}?page=${currentPage}&size=${pageSize}">${currentPage}</a>
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="${contextPath}/category/${products[0].category.id}?page=${i}&size=${pageSize}">${i}</a></li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach begin="${currentPage - totalPaginatedVisiblePages / 2}"
+                                           end="${lastPageNumber}" var="j">
+                                    <c:choose>
+                                        <c:when test="${j == currentPage}">
+                                            <li class="page-item active"><a class="page-link"
+                                                                            href="${contextPath}/category/${products[0].category.id}?page=${currentPage}&size=${pageSize}">${currentPage}</a>
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="${contextPath}/category/${products[0].category.id}?page=${j}&size=${pageSize}">${j}</a></li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:if test="${currentPage <= lastPageNumber - 1}">
+                            <li class="page-item">
+                                <a href="${contextPath}/category/${products[0].category.id}?page=${currentPage + 1}&size=${pageSize}" class="page-link" aria-label="Next">
+                                    <span aria-hidden="true">></span>
+                                </a>
+                            </li>
+                        </c:if>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </c:otherwise>
 </c:choose>
 </body>

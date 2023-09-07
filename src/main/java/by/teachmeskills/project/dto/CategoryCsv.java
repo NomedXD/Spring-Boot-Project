@@ -1,4 +1,4 @@
-package by.teachmeskills.project.domain;
+package by.teachmeskills.project.dto;
 
 import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class ProductCsv {
+public class CategoryCsv {
 
     @CsvBindByName
     private Integer id;
@@ -20,11 +20,5 @@ public class ProductCsv {
     private Integer imageId;
 
     @CsvBindByName
-    private String description;
-
-    @CsvBindByName
-    private Integer categoryId;
-
-    @CsvBindByName
-    private float price;
+    private String sometext;
 }

@@ -3,7 +3,6 @@ package by.teachmeskills.project.controllers;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,8 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public ModelAndView register(@Valid @ModelAttribute(EshopConstants.USER) User user, BindingResult bindingResult, @RequestParam(name = "repeatPasswordParam") String repeatPassword) throws EntityOperationException {
+    public ModelAndView register(@Valid @ModelAttribute(EshopConstants.USER) User user, BindingResult bindingResult,
+                                 @RequestParam(name = "repeatPasswordParam") String repeatPassword) {
         return userService.register(user, bindingResult, repeatPassword);
     }
 

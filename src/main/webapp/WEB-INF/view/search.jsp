@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -11,19 +11,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="author" content="colorlib.com">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
     <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
     <link href="${contextPath}/jsp-scc-styles/search.css" rel="stylesheet"/>
+    <link href="${contextPath}/jsp-scc-styles/pagination.css" rel="stylesheet"/>
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/header.css">
 </head>
 <body class="body">
 <jsp:include page="header.jsp"/>
 <div class="s007 container">
-    <form action="${contextPath}/search" method="POST">
+    <form action="${contextPath}/search?size=${pageSize}" method="POST">
         <div class="inner-form">
             <div class="basic-search">
                 <div class="input-field">
@@ -44,66 +41,25 @@
                 <div class="row">
                     <div class="input-field">
                         <div class="input-select">
-                            <select data-trigger="" name="choices-single-defaul">
-                                <option placeholder="" value="">ACCESSORIES</option>
-                                <option>ACCESSORIES</option>
-                                <option>SUBJECT B</option>
-                                <option>SUBJECT C</option>
-                            </select>
+                            <input placeholder="Price from" name="priceFrom"
+                                   class="form-control border-success" style="color: #4ea63f" type="number">
                         </div>
                     </div>
                     <div class="input-field">
                         <div class="input-select">
-                            <select data-trigger="" name="choices-single-defaul">
-                                <option placeholder="" value="">COLOR</option>
-                                <option>GREEN</option>
-                                <option>SUBJECT B</option>
-                                <option>SUBJECT C</option>
-                            </select>
+                            <input placeholder="Price to" name="priceTo"
+                                   class="form-control border-success" style="color: #4ea63f" type="number">
                         </div>
                     </div>
                     <div class="input-field">
                         <div class="input-select">
-                            <select data-trigger="" name="choices-single-defaul">
-                                <option placeholder="" value="">SIZE</option>
-                                <option>SIZE</option>
-                                <option>SUBJECT B</option>
-                                <option>SUBJECT C</option>
-                            </select>
+                            <input placeholder="Category name" name="categoryName"
+                                   class="form-control border-success" style="color: #4ea63f" type="text"
+                                   maxlength="15">
                         </div>
                     </div>
                 </div>
                 <div class="row second">
-                    <div class="input-field">
-                        <div class="input-select">
-                            <select data-trigger="" name="choices-single-defaul">
-                                <option placeholder="" value="">SALE</option>
-                                <option>SALE</option>
-                                <option>SUBJECT B</option>
-                                <option>SUBJECT C</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="input-field">
-                        <div class="input-select">
-                            <select data-trigger="" name="choices-single-defaul">
-                                <option placeholder="" value="">TIME</option>
-                                <option>THIS WEEK</option>
-                                <option>SUBJECT B</option>
-                                <option>SUBJECT C</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="input-field">
-                        <div class="input-select">
-                            <select data-trigger="" name="choices-single-defaul">
-                                <option placeholder="" value="">TYPE</option>
-                                <option>TYPE</option>
-                                <option>SUBJECT B</option>
-                                <option>SUBJECT C</option>
-                            </select>
-                        </div>
-                    </div>
                 </div>
                 <div class="row third">
                     <div class="input-field">
@@ -114,6 +70,29 @@
             </div>
         </div>
     </form>
+</div>
+<div class="row p-2 rounded mt-2">
+    <div class="dropdown">
+        <button type="button" class="btn btn-dark dropdown-toggle float-end" data-bs-toggle="dropdown">
+            Page size
+        </button>
+        <ul class="dropdown-menu">
+            <c:choose>
+                <c:when test="${pageSize == 5}">
+                    <li><a class="dropdown-item disabled" href="${contextPath}/search?page=1&size=5">5 is current</a></li>
+                </c:when>
+                <c:otherwise><li><a class="dropdown-item" href="${contextPath}/search?page=1&size=5">5</a></li></c:otherwise>
+            </c:choose>
+            <c:choose>
+                <c:when test="${pageSize == 10}"><li disabled><a class="dropdown-item disabled" href="${contextPath}/search?page=1&size=10">10 is current</a></li></c:when>
+                <c:otherwise><li><a class="dropdown-item" href="${contextPath}/search?page=1&size=10">10</a></li></c:otherwise>
+            </c:choose>
+            <c:choose>
+                <c:when test="${pageSize == 15}"><li disabled><a class="dropdown-item disabled" href="${contextPath}/search?page=1&size=15">15 is current</a></li></c:when>
+                <c:otherwise><li><a class="dropdown-item" href="${contextPath}/search?page=1&size=15">15</a></li></c:otherwise>
+            </c:choose>
+        </ul>
+    </div>
 </div>
 <div class="container">
     <c:forEach items="${products}" var="product">
@@ -150,7 +129,7 @@
             <ul class="pagination">
                 <c:if test="${currentPage >= 2}">
                     <li class="page-item">
-                        <a href="${contextPath}/search/${currentPage - 1}" class="page-link" aria-label="Previous">
+                        <a href="${contextPath}/search?page=${currentPage - 1}&size=${pageSize}" class="page-link" aria-label="Previous">
                             <span aria-hidden="true"><</span>
                         </a>
                     </li>
@@ -160,10 +139,13 @@
                         <c:forEach begin="1" end="${lastPageNumber}" var="i">
                             <c:choose>
                                 <c:when test="${i == currentPage}">
-                                    <li class="page-item active"><a class="page-link" href="${contextPath}/search/${currentPage}">${currentPage}</a></li>
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="${contextPath}/search?page=${currentPage}&size=${pageSize}">${currentPage}</a>
+                                    </li>
                                 </c:when>
                                 <c:otherwise>
-                                    <li class="page-item"><a class="page-link" href="${contextPath}/search/${i}">${i}</a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="${contextPath}/search?page=${i}&size=${pageSize}">${i}</a></li>
                                 </c:otherwise>
                             </c:choose>
                         </c:forEach>
@@ -171,18 +153,23 @@
                     <c:otherwise>
                         <c:forEach begin="${currentPage - totalPaginatedVisiblePages / 2}"
                                    end="${lastPageNumber}" var="j">
-                            <c:when test="${j == currentPage}">
-                                <li class="page-item active"><a class="page-link" href="${contextPath}/search/${currentPage}">${currentPage}</a></li>
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item"><a class="page-link" href="${contextPath}/search/${j}">${j}</a></li>
-                            </c:otherwise>
+                            <c:choose>
+                                <c:when test="${j == currentPage}">
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="${contextPath}/search?page=${currentPage}&size=${pageSize}">${currentPage}</a>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="${contextPath}/search?page=${j}&size=${pageSize}">${j}</a></li>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>
                     </c:otherwise>
                 </c:choose>
                 <c:if test="${currentPage <= lastPageNumber - 1}">
                     <li class="page-item">
-                        <a href="${contextPath}/search/${currentPage + 1}" class="page-link" aria-label="Next">
+                        <a href="${contextPath}/search?page=${currentPage + 1}&size=${pageSize}" class="page-link" aria-label="Next">
                             <span aria-hidden="true">></span>
                         </a>
                     </li>
@@ -191,37 +178,5 @@
         </nav>
     </div>
 </div>
-<script src="${contextPath}/jsp-scripts/choices.js"></script>
-<script>
-    const customSelects = document.querySelectorAll("select");
-    const deleteBtn = document.getElementById('delete')
-    const choices = new Choices('select',
-        {
-            searchEnabled: false,
-            removeItemButton: true,
-            itemSelectText: '',
-        });
-    for (let i = 0; i < customSelects.length; i++) {
-        -
-            customSelects[i].addEventListener('addItem', function (event) {
-                if (event.detail.value) {
-                    let parent = this.parentNode.parentNode
-                    parent.classList.add('valid')
-                    parent.classList.remove('invalid')
-                } else {
-                    let parent = this.parentNode.parentNode
-                    parent.classList.add('invalid')
-                    parent.classList.remove('valid')
-                }
-            }, false);
-    }
-    deleteBtn.addEventListener("click", function (e) {
-        e.preventDefault()
-        const deleteAll = document.querySelectorAll('.choices__button')
-        for (let i = 0; i < deleteAll.length; i++) {
-            deleteAll[i].click();
-        }
-    });
-</script>
 </body>
 </html>

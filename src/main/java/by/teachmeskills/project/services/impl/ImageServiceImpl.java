@@ -1,13 +1,13 @@
 package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Image;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.ImageRepository;
 import by.teachmeskills.project.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -19,27 +19,27 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image create(Image entity) throws EntityOperationException {
-        return imageRepository.create(entity);
+    public Image create(Image entity) {
+        return imageRepository.save(entity);
     }
 
     @Override
-    public List<Image> read() throws EntityOperationException {
-        return imageRepository.read();
+    public List<Image> read() {
+        return imageRepository.findAll();
     }
 
     @Override
-    public Image update(Image entity) throws EntityOperationException {
-        return imageRepository.update(entity);
+    public Image update(Image entity) {
+        return imageRepository.save(entity);
     }
 
     @Override
-    public void delete(Integer id) throws EntityOperationException {
-        imageRepository.delete(id);
+    public void delete(Integer id) {
+        imageRepository.deleteById(id);
     }
 
     @Override
-    public Image getImageById(Integer id) throws EntityOperationException {
-        return imageRepository.getImageById(id);
+    public Optional<Image> getImageById(Integer id) {
+        return imageRepository.findById(id);
     }
 }

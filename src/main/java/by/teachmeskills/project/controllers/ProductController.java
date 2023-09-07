@@ -2,7 +2,7 @@ package by.teachmeskills.project.controllers;
 
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
-import by.teachmeskills.project.exception.EntityOperationException;
+import by.teachmeskills.project.exception.NoSuchProductException;
 import by.teachmeskills.project.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,10 +22,10 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/{productid}")
-    public ModelAndView getProductPage(@PathVariable("productid") Integer productId) throws EntityOperationException {
+    @GetMapping("/{productId}")
+    public ModelAndView getProductPage(@PathVariable("productId") Integer productId) {
         ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.PRODUCT.getValue(), productService.getProductById(productId));
+        model.addAttribute(RequestParamsEnum.PRODUCT.getValue(), productService.getProductById(productId).orElseThrow(() -> new NoSuchProductException("Product not found. How you even get there?", productId)));
         return new ModelAndView(PagesPathEnum.PRODUCT_PAGE.getPath(), model);
     }
 }

@@ -1,7 +1,7 @@
 package by.teachmeskills.project.utils;
 
 import by.teachmeskills.project.domain.Category;
-import by.teachmeskills.project.domain.CategoryCsv;
+import by.teachmeskills.project.dto.CategoryCsv;
 import by.teachmeskills.project.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,7 +36,7 @@ public class CategoryCsvConverter {
         List<Category> categoryList = new ArrayList<>();
         categoryCsvList.forEach(categoryCsv -> categoryList.add(Category.builder()
                 .name(categoryCsv.getName())
-                .image(imageService.getImageById(categoryCsv.getImageId()))
+                .image(imageService.getImageById(categoryCsv.getImageId()).orElse(null))
                 .sometext(categoryCsv.getSometext())
                 .productList(new ArrayList<>()).build()));
         return categoryList;

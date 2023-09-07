@@ -1,4 +1,4 @@
-package by.teachmeskills.project.domain;
+package by.teachmeskills.project.dto;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;

@@ -1,15 +1,12 @@
 package by.teachmeskills.project.controllers;
 
-import by.teachmeskills.project.enums.PagesPathEnum;
-import by.teachmeskills.project.enums.RequestParamsEnum;
+import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.services.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/category")
@@ -28,12 +27,30 @@ public class CategoryController {
         this.productService = productService;
     }
 
-    @GetMapping("/{categoryid}")
-    public ModelAndView getCategoryPage(@PathVariable(name = "categoryid") Integer categoryId) throws EntityOperationException {
-        ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productService.getCategoryProducts(categoryId));
-        return new ModelAndView(PagesPathEnum.CATEGORY_PAGE.getPath(), model);
+    @GetMapping("/{categoryId}")
+    public ModelAndView getCategoryPage(@PathVariable(name = "categoryId") Integer categoryId,
+                                        @RequestParam(name = "page", required = false) Integer currentPage,
+                                        @RequestParam(name = "size", required = false) Integer pageSize) {
+        if (Optional.ofNullable(currentPage).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
+            return productService.getPaginatedProductsByCategoryId(categoryId, currentPage, pageSize);
+        } else {
+            return productService.getPaginatedProductsByCategoryId(categoryId, 1, EshopConstants.MIN_PAGE_SIZE);
+        }
     }
+    /*
+    @GetMapping("/{categoryId}/page/{page}")
+    public ModelAndView changeCategoryPage(@PathVariable(name = "categoryId") Integer categoryId,
+                                           @PathVariable(name = "page") Integer currentPage,
+                                           @RequestParam(name = "size") Integer pageSize) {
+
+    }
+
+    @GetMapping("/{categoryId}/sized")
+    public ModelAndView changeCategoryPageSize(@PathVariable(name = "categoryId") Integer categoryId,
+                                               @RequestParam(name = "size") Integer pageSize) {
+        return productService.getPaginatedProductsByCategoryId(categoryId, 1, pageSize);
+    }
+     */
 
     @GetMapping("/export/{categoryId}")
     public void exportCategoryProducts(@PathVariable(name = "categoryId") Integer categoryId, HttpServletResponse response) throws CSVExportException {
@@ -41,7 +58,8 @@ public class CategoryController {
     }
 
     @PostMapping("/import/{categoryId}")
-    public ModelAndView importCategoryProducts(@RequestParam(name = "file") MultipartFile file, @PathVariable(name = "categoryId") Integer categoryId) throws CSVImportException {
+    public ModelAndView importCategoryProducts(@RequestParam(name = "file") MultipartFile file,
+                                               @PathVariable(name = "categoryId") Integer categoryId) throws CSVImportException {
         return productService.importCategoryProducts(file, categoryId);
     }
 }

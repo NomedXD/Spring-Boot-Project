@@ -2,15 +2,15 @@ package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Cart;
 import by.teachmeskills.project.domain.Product;
-import by.teachmeskills.project.domain.ProductCsv;
+import by.teachmeskills.project.dto.ProductCsv;
 import by.teachmeskills.project.domain.Search;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
-import by.teachmeskills.project.exception.EntityOperationException;
 import by.teachmeskills.project.repositories.ProductRepository;
+import by.teachmeskills.project.repositories.ProductSearchSpecification;
 import by.teachmeskills.project.services.ProductService;
 import by.teachmeskills.project.utils.ProductCsvConverter;
 import com.opencsv.CSVWriter;
@@ -24,10 +24,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.data.domain.Pageable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,69 +53,85 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product create(Product entity) throws EntityOperationException {
-        return productRepository.create(entity);
+    public Product create(Product entity) {
+        return productRepository.save(entity);
     }
 
     @Override
-    public List<Product> read() throws EntityOperationException {
-        return productRepository.read();
+    public List<Product> read() {
+        return productRepository.findAll();
     }
 
     @Override
-    public Product update(Product entity) throws EntityOperationException {
-        return productRepository.update(entity);
+    public Product update(Product entity) {
+        return productRepository.save(entity);
     }
 
     @Override
-    public void delete(Integer id) throws EntityOperationException {
-        productRepository.delete(id);
+    public void delete(Integer id) {
+        productRepository.deleteById(id);
     }
 
     @Override
-    public List<Product> getCategoryProducts(int categoryId) throws EntityOperationException {
-        return productRepository.getCategoryProducts(categoryId);
+    public List<Product> getCategoryProducts(int categoryId) {
+        return productRepository.findAllByCategoryId(categoryId);
     }
 
     @Override
-    public Product getProductById(int id) throws EntityOperationException {
-        return productRepository.getProductById(id);
+    public Optional<Product> getProductById(int id) {
+        return productRepository.findById(id);
     }
 
     @Override
-    public Long getCountOfAllProducts() throws EntityOperationException {
-        return productRepository.getCountOfAllProducts();
+    public Long getCountOfAllProducts() {
+        return productRepository.count();
     }
 
     @Override
-    public Long getCountAppropriateProducts(Search search) throws EntityOperationException {
-        return productRepository.getCountAppropriateProducts(search);
+    public Long getCountAppropriateProducts(Search search) {
+        return productRepository.count(new ProductSearchSpecification(search));
     }
 
     @Override
-    public ModelAndView getPaginatedProducts(Search search, Integer currentPage) throws EntityOperationException {
+    public ModelAndView getSearchedPaginatedProducts(Search search, Integer currentPage, Integer pageSize) {
         ModelMap model = new ModelMap();
         Long count;
         List<Product> productList;
         if ((search == null) || (search.getSearchString() == null)) {
             count = getCountOfAllProducts();
-            productList = productRepository.readOrderedByNameInRange((currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+            Pageable pageable = PageRequest.of((currentPage - 1), pageSize,
+                    Sort.by("name"));
+            productList = productRepository.findAll(pageable).getContent();
         } else {
             count = getCountAppropriateProducts(search);
-            productList = productRepository.getSearchedProducts(search, (currentPage - 1) * EshopConstants.PAGE_SIZE, EshopConstants.PAGE_SIZE);
+            Pageable pageable = PageRequest.of((currentPage - 1), pageSize, Sort.by("name"));
+            productList = productRepository.findAll(new ProductSearchSpecification(search), pageable).getContent();
             model.addAttribute(EshopConstants.SEARCH_ENTITY, search);
         }
         model.addAttribute(RequestParamsEnum.TOTAL_SEARCH_RESULTS.getValue(), count);
+        model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
         model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
-        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(count / EshopConstants.PAGE_SIZE.doubleValue()));
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(count / pageSize.doubleValue()));
         model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productList);
         return new ModelAndView(PagesPathEnum.SEARCH_PAGE.getPath(), model);
     }
 
+    @Override
+    public ModelAndView getPaginatedProductsByCategoryId(Integer categoryId, Integer currentPage, Integer pageSize) {
+        Pageable pageable = PageRequest.of((currentPage - 1), pageSize);
+        ModelMap model = new ModelMap();
+        model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
+        model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
+        model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
+        model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(productRepository.countAllByCategoryId(categoryId) / pageSize.doubleValue()));
+        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productRepository.findAllByCategoryIdOrderByName(categoryId, pageable));
+        return new ModelAndView(PagesPathEnum.CATEGORY_PAGE.getPath(), model);
+    }
+
     /*
-      Внедрение конкретно HttpServletRequest, так как заранее неизвестно, сколько будет параметров в post запросе
-     */
+          Внедрение конкретно HttpServletRequest, так как заранее неизвестно, сколько будет параметров в post запросе
+         */
     @Override
     public ModelAndView applyProductsQuantity(Cart cart, HttpServletRequest request) {
         for (Product product : cart.getProducts()) {
@@ -132,7 +151,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void writeCsv(Integer categoryId, HttpServletResponse response) throws CSVExportException {
-        List<ProductCsv> productCsvList = productCsvConverter.convertInto(productRepository.getCategoryProducts(categoryId));
+        List<ProductCsv> productCsvList = productCsvConverter.convertInto(productRepository.findAllByCategoryId(categoryId));
         try (Writer productsWriter = new OutputStreamWriter(response.getOutputStream())) {
             StatefulBeanToCsv<ProductCsv> productsSbc = new StatefulBeanToCsvBuilder<ProductCsv>(productsWriter)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
@@ -148,9 +167,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ModelAndView importCategoryProducts(MultipartFile file, Integer categoryId) throws CSVImportException {
         List<Product> productList = parseCsv(file);
-        productList.forEach(productRepository::create);
+        productRepository.saveAll(productList);
         ModelMap model = new ModelMap();
-        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productRepository.getCategoryProducts(categoryId));
+        model.addAttribute(RequestParamsEnum.PRODUCTS.getValue(), productRepository.findAllByCategoryId(categoryId));
         model.addAttribute(RequestParamsEnum.EXPORT_IMPORT_MESSAGE.getValue(), EshopConstants.successfulImportMessage);
         return new ModelAndView(PagesPathEnum.CATEGORY_PAGE.getPath(), model);
     }
