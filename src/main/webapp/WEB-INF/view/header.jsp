@@ -33,7 +33,7 @@
             </div>
 
             <div class="item">
-                <a href="${contextPath}/search">Search</a>
+                <a href="${contextPath}/search?page=1&size=5">Search</a>
             </div>
 
             <div class="item-button">

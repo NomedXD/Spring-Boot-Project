@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/search")
@@ -27,14 +28,18 @@ public class SearchController {
     }
 
     @GetMapping
-    public ModelAndView getSearchPage() {
-        return productService.getSearchedPaginatedProducts(null, 1, EshopConstants.MIN_PAGE_SIZE);
+    public ModelAndView getSearchPage(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY, required = false) Search search,
+                                      @RequestParam(name = "page") Integer currentPage,
+                                      @RequestParam(name = "size") Integer pageSize) {
+        if (Optional.ofNullable(currentPage).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
+            return productService.getSearchedPaginatedProducts(search, currentPage, pageSize);
+        } else {
+            return productService.getSearchedPaginatedProducts(search, 1, EshopConstants.MIN_PAGE_SIZE);
+        }
     }
-
+    /*
     @GetMapping("/page/{page}")
-    public ModelAndView changeSearchPage(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY, required = false) Search search,
-                                         @PathVariable(name = "page") Integer currentPage,
-                                         @RequestParam(name = "size") Integer pageSize) {
+    public ModelAndView changeSearchPage() {
         return productService.getSearchedPaginatedProducts(search, currentPage, pageSize);
     }
 
@@ -43,6 +48,8 @@ public class SearchController {
                                              @RequestParam(name = "size") Integer pageSize) {
         return productService.getSearchedPaginatedProducts(search, 1, pageSize);
     }
+
+     */
 
     @PostMapping
     public ModelAndView submitSearch(@ModelAttribute(EshopConstants.SEARCH_ENTITY) Search search,

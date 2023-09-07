@@ -43,29 +43,29 @@
                     <ul class="dropdown-menu">
                         <c:choose>
                             <c:when test="${pageSize == 5}">
-                                <li><a class="dropdown-item disabled" href="${contextPath}/catalog/sized?size=5">5 is
+                                <li><a class="dropdown-item disabled" href="${contextPath}/catalog?page=1&size=5">5 is
                                     current</a></li>
                             </c:when>
                             <c:otherwise>
-                                <li><a class="dropdown-item" href="${contextPath}/catalog/sized?size=5">5</a></li>
+                                <li><a class="dropdown-item" href="${contextPath}/catalog?page=1&size=5">5</a></li>
                             </c:otherwise>
                         </c:choose>
                         <c:choose>
                             <c:when test="${pageSize == 10}">
                                 <li disabled><a class="dropdown-item disabled"
-                                                href="${contextPath}/catalog/sized?size=10">10 is current</a></li>
+                                                href="${contextPath}/catalog?page=1&size=10">10 is current</a></li>
                             </c:when>
                             <c:otherwise>
-                                <li><a class="dropdown-item" href="${contextPath}/catalog/sized?size=10">10</a></li>
+                                <li><a class="dropdown-item" href="${contextPath}/catalog?page=1&size=10">10</a></li>
                             </c:otherwise>
                         </c:choose>
                         <c:choose>
                             <c:when test="${pageSize == 15}">
                                 <li disabled><a class="dropdown-item disabled"
-                                                href="${contextPath}/catalog/sized?size=15">15 is current</a></li>
+                                                href="${contextPath}/catalog?page=1&size=15">15 is current</a></li>
                             </c:when>
                             <c:otherwise>
-                                <li><a class="dropdown-item" href="${contextPath}/catalog/sized?size=15">15</a></li>
+                                <li><a class="dropdown-item" href="${contextPath}/catalog?page=1&size=15">15</a></li>
                             </c:otherwise>
                         </c:choose>
                     </ul>
@@ -88,7 +88,7 @@
                         <ul class="pagination">
                             <c:if test="${currentPage >= 2}">
                                 <li class="page-item">
-                                    <a href="${contextPath}/catalog/page/${currentPage - 1}?size=${pageSize}"
+                                    <a href="${contextPath}/catalog?page=${currentPage - 1}&size=${pageSize}"
                                        class="page-link"
                                        aria-label="Previous">
                                         <span aria-hidden="true"><</span>
@@ -100,12 +100,12 @@
                                     <c:forEach begin="1" end="${lastPageNumber}" var="i">
                                         <c:choose>
                                             <c:when test="${i == currentPage}">
-                                                <li class="page-item active"><a class="page-link" href="${contextPath}/catalog/page/${currentPage}?size=${pageSize}">${currentPage}</a>
+                                                <li class="page-item active"><a class="page-link" href="${contextPath}/catalog?page=${currentPage}&size=${pageSize}">${currentPage}</a>
                                                 </li>
                                             </c:when>
                                             <c:otherwise>
                                                 <li class="page-item"><a class="page-link"
-                                                                         href="${contextPath}/catalog/page/${i}?size=${pageSize}">${i}</a>
+                                                                         href="${contextPath}/catalog?page=${i}&size=${pageSize}">${i}</a>
                                                 </li>
                                             </c:otherwise>
                                         </c:choose>
@@ -117,12 +117,12 @@
                                         <c:choose>
                                             <c:when test="${j == currentPage}">
                                                 <li class="page-item active"><a class="page-link"
-                                                                                href="${contextPath}/catalog/page/${currentPage}?size=${pageSize}">${currentPage}</a>
+                                                                                href="${contextPath}/catalog?page=${currentPage}&size=${pageSize}">${currentPage}</a>
                                                 </li>
                                             </c:when>
                                             <c:otherwise>
                                                 <li class="page-item"><a class="page-link"
-                                                                         href="${contextPath}/catalog/page/${j}?size=${pageSize}">${j}</a>
+                                                                         href="${contextPath}/catalog?page=${j}&size=${pageSize}">${j}</a>
                                                 </li>
                                             </c:otherwise>
                                         </c:choose>
@@ -131,7 +131,7 @@
                             </c:choose>
                             <c:if test="${currentPage <= lastPageNumber - 1}">
                                 <li class="page-item">
-                                    <a href="${contextPath}/catalog/page/${currentPage + 1}?size=${pageSize}"
+                                    <a href="${contextPath}/catalog?page=${currentPage + 1}&size=${pageSize}"
                                        class="page-link" aria-label="Next">
                                         <span aria-hidden="true">></span>
                                     </a>
