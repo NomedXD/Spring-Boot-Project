@@ -253,7 +253,11 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>1</td>
+                                            <td>
+                                                <c:forEach items="${order.orderDetails}" var="details">
+                                                    <c:if test="${details.productId == product.id}">${details.productQuantity}</c:if>
+                                                </c:forEach>
+                                            </td>
                                             <td class="text-end">${product.price}</td>
                                         </tr>
                                     </c:forEach>
@@ -293,8 +297,10 @@
                                         <h3 class="h6">Billing address</h3>
                                         <address>
                                             <strong>${order.user.name} ${order.user.surname}</strong><br>
-                                            1355 Market St, Suite 900<br>
-                                            San Francisco, CA 94103<br>
+                                            <c:choose>
+                                                <c:when test="${empty order.address}">-</c:when>
+                                                <c:otherwise>${order.address}</c:otherwise>
+                                            </c:choose><br>
                                             <abbr title="Phone">P:</abbr> ${order.user.mobile}
                                         </address>
                                     </div>
@@ -318,8 +324,10 @@
                                 <h3 class="h6">Address</h3>
                                 <address>
                                     <strong>${order.user.name} ${order.user.surname}</strong><br>
-                                    1355 Market St, Suite 900<br>
-                                    San Francisco, CA 94103<br>
+                                    <c:choose>
+                                        <c:when test="${empty order.address}">${order.shippingType}</c:when>
+                                        <c:otherwise>${order.shippingType}<br>${order.address}</c:otherwise>
+                                    </c:choose><br>
                                     <abbr title="Phone">P:</abbr> ${order.user.mobile}
                                 </address>
                             </div>

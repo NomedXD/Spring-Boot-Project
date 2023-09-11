@@ -88,7 +88,6 @@
                                     <hr class="my-4">
                                     <div class="d-flex justify-content-between mb-4">
                                         <h5 class="text-uppercase">ITEMS = ${sessionScope.cart.getTotalSize()}</h5>
-                                        <h5>€ 132.00</h5>
                                     </div>
                                     <form id="checkout" action="${contextPath}/cart/checkout" method="POST">
                                         <h5 class="text-uppercase mb-3">Shipping</h5>
@@ -106,9 +105,9 @@
                                         <h5 class="text-uppercase mb-3">Credit card</h5>
                                         <div class="mb-5">
                                             <div class="form-outline">
-                                                <input name="creditCardNumber" class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="[0-9\s]{16,19}" autocomplete="cc-number" maxlength="16" placeholder="xxxx xxxx xxxx xxxx">
-                                                <input class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="(\d{2,2}/\d{4,4})" autocomplete="cc-number" maxlength="7" placeholder="MM/YYYY">
-                                                <input class="form-control form-control-lg" type="password" inputmode="numeric" pattern="(\d{3,3})" autocomplete="cc-number" maxlength="3" placeholder="CVV">
+                                                <input name="creditCardNumber" id="creditCardNumber" class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="[0-9\s]{16,19}" autocomplete="cc-number" minlength="16" onkeyup="cc_format(this.id)" placeholder="xxxx xxxx xxxx xxxx">
+                                                <input class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="(\d{2,2}/\d{4,4})" autocomplete="cc-number" minlength="7" maxlength="7" placeholder="MM/YYYY">
+                                                <input class="form-control form-control-lg" type="password" inputmode="numeric" pattern="(\d{3,3})" autocomplete="cc-number" minlength="3" maxlength="3" placeholder="CVV">
                                             </div>
                                         </div>
                                         <h5 class="text-uppercase mb-3">Give code</h5>
@@ -129,7 +128,10 @@
                                             <h5 class="text-uppercase">Total price</h5>
                                             <h5 id="total">${sessionScope.cart.totalPrice}</h5>
                                         </div>
-                                        <button form="checkout" type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Submit</button>
+                                        <c:if test="${not empty sessionScope.cart && sessionScope.cart.getTotalSize() != 0}">
+                                            <button form="checkout" type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Submit</button>
+                                        </c:if>
+
                                     </form>
                                 </div>
                             </div>

@@ -2,6 +2,7 @@ package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Cart;
 import by.teachmeskills.project.domain.Order;
+import by.teachmeskills.project.domain.OrderDetails;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.repositories.OrderRepository;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -72,8 +75,14 @@ public class OrderServiceImpl implements OrderService {
         order.setDate(LocalDate.now());
         order.setPrice(cart.getTotalPrice());
         String ccNumber = order.getCreditCardNumber();
-        order.setCreditCardNumber(ccNumber.substring(0, 5).concat(" **** **** ").concat(ccNumber.substring(12, 16)));
+        order.setCreditCardNumber(ccNumber.substring(0, 5).concat(" **** **** ").concat(ccNumber.substring(ccNumber.length()-5)));
         order.setUser(user);
         order.setProductList(cart.getProducts());
+        if(Optional.ofNullable(order.getOrderDetails()).isEmpty()){
+            order.setOrderDetails(new ArrayList<>());
+        }
+        cart.getProductQuantities().forEach((productId, productQuantity)-> {
+            order.getOrderDetails().add(OrderDetails.builder().order(order).productId(productId).productQuantity(productQuantity).build());
+        });
     }
 }

@@ -101,6 +101,7 @@ public class UserServiceImpl implements UserService {
         model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
         model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(orderService.getCountUserOrders(userId) / pageSize.doubleValue()));
         model.addAttribute(RequestParamsEnum.ORDERS.getValue(), orderService.getPaginatedOrders(currentPage, pageSize, userId));
+
         return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
     }
 
