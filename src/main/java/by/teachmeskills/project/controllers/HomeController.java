@@ -1,8 +1,6 @@
 package by.teachmeskills.project.controllers;
 
-import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
-import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.services.CategoryService;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -41,19 +38,6 @@ public class HomeController {
             return categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE);
         }
     }
-    /*
-    @GetMapping("/page/{page}")
-    public ModelAndView changeHomePage(@PathVariable(name = "page") Integer currentPage,
-                                       @RequestParam(name = "size") Integer pageSize) {
-        return categoryService.getPaginatedCategories(currentPage, pageSize);
-    }
-
-    @GetMapping("/sized")
-    public ModelAndView changeCategoryPageSize(@RequestParam(name = "size") Integer pageSize) {
-        return categoryService.getPaginatedCategories(1, pageSize);
-    }
-
-     */
 
     @GetMapping("/export")
     public void exportCategories(HttpServletResponse response) throws CSVExportException {

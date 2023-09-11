@@ -37,19 +37,6 @@ public class SearchController {
             return productService.getSearchedPaginatedProducts(search, 1, EshopConstants.MIN_PAGE_SIZE);
         }
     }
-    /*
-    @GetMapping("/page/{page}")
-    public ModelAndView changeSearchPage() {
-        return productService.getSearchedPaginatedProducts(search, currentPage, pageSize);
-    }
-
-    @GetMapping("/sized")
-    public ModelAndView changeSearchPageSize(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY, required = false) Search search,
-                                             @RequestParam(name = "size") Integer pageSize) {
-        return productService.getSearchedPaginatedProducts(search, 1, pageSize);
-    }
-
-     */
 
     @PostMapping
     public ModelAndView submitSearch(@ModelAttribute(EshopConstants.SEARCH_ENTITY) Search search,

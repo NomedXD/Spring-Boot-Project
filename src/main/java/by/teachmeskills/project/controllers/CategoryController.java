@@ -37,20 +37,6 @@ public class CategoryController {
             return productService.getPaginatedProductsByCategoryId(categoryId, 1, EshopConstants.MIN_PAGE_SIZE);
         }
     }
-    /*
-    @GetMapping("/{categoryId}/page/{page}")
-    public ModelAndView changeCategoryPage(@PathVariable(name = "categoryId") Integer categoryId,
-                                           @PathVariable(name = "page") Integer currentPage,
-                                           @RequestParam(name = "size") Integer pageSize) {
-
-    }
-
-    @GetMapping("/{categoryId}/sized")
-    public ModelAndView changeCategoryPageSize(@PathVariable(name = "categoryId") Integer categoryId,
-                                               @RequestParam(name = "size") Integer pageSize) {
-        return productService.getPaginatedProductsByCategoryId(categoryId, 1, pageSize);
-    }
-     */
 
     @GetMapping("/export/{categoryId}")
     public void exportCategoryProducts(@PathVariable(name = "categoryId") Integer categoryId, HttpServletResponse response) throws CSVExportException {

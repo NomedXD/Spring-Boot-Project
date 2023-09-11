@@ -22,9 +22,4 @@ public class Image extends BaseEntity{
     @Size(max = 45, message = "Out of validation bounds")
     @Column(name = "path")
     private String path;
-
-    public Image(Integer id, String path) {
-        this.id = id;
-        this.path = path;
-    }
 }
