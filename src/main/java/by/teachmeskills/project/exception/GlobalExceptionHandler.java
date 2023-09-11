@@ -76,5 +76,14 @@ public class GlobalExceptionHandler {
         }
         return handleEntityOperationException(new EntityOperationException("How you even get there?"));
     }
+
+    @ExceptionHandler(SecurityException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ModelAndView handleSecurityException() {
+        logger.error("User got access to authorized page, but Principal.class return null");
+        ModelMap modelMap = new ModelMap();
+        modelMap.addAttribute("errorMessage", "Server error. Check us later");
+        return new ModelAndView(PagesPathEnum.ERROR_PAGE.getPath(), modelMap);
+    }
 }
 

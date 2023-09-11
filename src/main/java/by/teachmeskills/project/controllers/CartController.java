@@ -10,6 +10,7 @@ import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.NoSuchProductException;
 import by.teachmeskills.project.services.OrderService;
 import by.teachmeskills.project.services.ProductService;
+import by.teachmeskills.project.utils.SecurityContextUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@SessionAttributes({EshopConstants.SHOPPING_CART, EshopConstants.USER})
+@SessionAttributes(EshopConstants.SHOPPING_CART)
 @RequestMapping("/cart")
 public class CartController {
     private final ProductService productService;
@@ -60,8 +61,8 @@ public class CartController {
 
     @PostMapping("/checkout")
     public ModelAndView submitCheckout(@ModelAttribute(name = EshopConstants.ORDER) Order order,
-                                       @SessionAttribute(name = EshopConstants.SHOPPING_CART) Cart cart,
-                                       @SessionAttribute(name = EshopConstants.USER) User user) {
+                                       @SessionAttribute(name = EshopConstants.SHOPPING_CART) Cart cart) {
+        User user = SecurityContextUtils.getUser().orElseThrow(SecurityException::new);
         return orderService.applyOrder(order, cart, user);
     }
 

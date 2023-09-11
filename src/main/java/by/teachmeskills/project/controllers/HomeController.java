@@ -33,17 +33,12 @@ public class HomeController {
     }
 
     @GetMapping
-    public ModelAndView getHomePage(@SessionAttribute(name = EshopConstants.USER, required = false) User user,
-                                    @RequestParam(name = "page", required = false) Integer currentPage,
+    public ModelAndView getHomePage(@RequestParam(name = "page", required = false) Integer currentPage,
                                     @RequestParam(name = "size", required = false) Integer pageSize) {
-        if (userService.checkIfLoggedInUser(user)) {
-            if (Optional.ofNullable(currentPage).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
-                return categoryService.getPaginatedCategories(currentPage, pageSize);
-            } else {
-                return categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE);
-            }
+        if (Optional.ofNullable(currentPage).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
+            return categoryService.getPaginatedCategories(currentPage, pageSize);
         } else {
-            return new ModelAndView(PagesPathEnum.LOG_IN_PAGE.getPath());
+            return categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE);
         }
     }
     /*

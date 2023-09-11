@@ -1,5 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -20,20 +21,22 @@
         <div class="bar warn">No products found. Try later</div>
     </c:when>
     <c:otherwise>
-        <!--Export/import-->
-        <div class="container-fluid mt-2">
-            <a href="${contextPath}/category/export/${products[0].category.id}" class="btn btn-dark btn-lg"
-               data-mdb-ripple-color="dark">Export products</a>
-            <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
-            <form action="${contextPath}/category/import/${products[0].category.id}" method="POST"
-                  enctype="multipart/form-data" id="importProducts">
-                <input type="file" class="file-input" name="file"
-                       aria-describedby="inputGroupFileAddon01" required>
-            </form>
-            <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark" form="importProducts">Import
-                products
-            </button>
-        </div>
+        <sec:authorize access="hasAuthority('ADMIN')">
+            <!--Export/import-->
+            <div class="container-fluid mt-2">
+                <a href="${contextPath}/category/export/${products[0].category.id}" class="btn btn-dark btn-lg"
+                   data-mdb-ripple-color="dark">Export products</a>
+                <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
+                <form action="${contextPath}/category/import/${products[0].category.id}" method="POST"
+                      enctype="multipart/form-data" id="importProducts">
+                    <input type="file" class="file-input" name="file"
+                           aria-describedby="inputGroupFileAddon01" required>
+                </form>
+                <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark" form="importProducts">Import
+                    products
+                </button>
+            </div>
+        </sec:authorize>
         <div class="row p-2 rounded mt-2">
             <div class="dropdown">
                 <button type="button" class="btn btn-dark dropdown-toggle float-end" data-bs-toggle="dropdown">

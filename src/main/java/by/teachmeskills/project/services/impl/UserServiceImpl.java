@@ -1,15 +1,16 @@
 package by.teachmeskills.project.services.impl;
 
+import by.teachmeskills.project.principal.UserPrincipal;
 import by.teachmeskills.project.domain.Order;
+import by.teachmeskills.project.domain.Role;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
+import by.teachmeskills.project.enums.UserRoleEnum;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
-import by.teachmeskills.project.exception.NoSuchUserException;
 import by.teachmeskills.project.repositories.UserRepository;
-import by.teachmeskills.project.services.CategoryService;
 import by.teachmeskills.project.services.OrderService;
 import by.teachmeskills.project.services.UserService;
 import by.teachmeskills.project.dto.OrderProductCsv;
@@ -25,6 +26,8 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -46,21 +49,22 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final CategoryService categoryService;
     private final OrderProductCsvConverter orderProductCsvConverter;
     private final OrderService orderService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService,
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
                            @Lazy OrderProductCsvConverter orderProductCsvConverter, @Lazy OrderService orderService) {
         this.userRepository = userRepository;
-        this.categoryService = categoryService;
+        this.passwordEncoder = passwordEncoder;
         this.orderProductCsvConverter = orderProductCsvConverter;
         this.orderService = orderService;
     }
 
     @Override
     public User create(User entity) {
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         return userRepository.save(entity);
     }
 
@@ -82,6 +86,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUserById(Integer id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public Optional<User> getUserByMail(String userMail) {
+        return userRepository.findUserByMail(userMail);
     }
 
     @Override
@@ -107,15 +116,14 @@ public class UserServiceImpl implements UserService {
                 name(user.getName()).surname(user.getSurname()).date(user.getDate()).currentBalance(user.getCurrentBalance()).
                 mobile(params.get(RequestParamsEnum.MOBILE.getValue())).street(params.get(RequestParamsEnum.STREET.getValue())).
                 accommodationNumber(params.get(RequestParamsEnum.ACCOMMODATION_NUMBER.getValue())).
-                flatNumber(params.get(RequestParamsEnum.FLAT_NUMBER.getValue())).build();
+                flatNumber(params.get(RequestParamsEnum.FLAT_NUMBER.getValue())).roles(user.getRoles()).build();
         ModelMap model = new ModelMap();
         updatedUserFields.setOrders(userRepository.findOrdersByUserId(user.getId()));
-        user = update(updatedUserFields);
+        ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setUser(update(updatedUserFields));
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
         model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);
         model.addAttribute(RequestParamsEnum.TOTAL_PAGINATED_VISIBLE_PAGES.getValue(), EshopConstants.TOTAL_PAGINATED_VISIBLE_PAGES);
         model.addAttribute(RequestParamsEnum.LAST_PAGE_NUMBER.getValue(), Math.ceil(orderService.getCountUserOrders(user.getId()) / pageSize.doubleValue()));
-        model.addAttribute(EshopConstants.USER, user);
         model.addAttribute(EshopConstants.ORDERS, orderService.getPaginatedOrders(currentPage, pageSize, user.getId()));
         return new ModelAndView(PagesPathEnum.ACCOUNT_PAGE.getPath(), model);
     }
@@ -134,34 +142,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView logIn(User user) {
-        Optional<User> loggedUser = userRepository.findUserByMailAndPassword(user.getMail(), user.getPassword());
-        if (loggedUser.isPresent()) {
-            user = loggedUser.get();
-            ModelAndView modelAndView = categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE);
-            modelAndView.getModelMap().addAttribute(EshopConstants.USER, user);
-            return modelAndView;
-        } else {
-            throw new NoSuchUserException("Wrong email or password. Try again");
+    public ModelAndView logIn(String error) {
+        ModelAndView modelAndView = new ModelAndView(PagesPathEnum.LOG_IN_PAGE.getPath());
+        if (error != null) {
+            modelAndView.addObject("loginErrorMessage", "Wrong email or password. Try again");
         }
+        return modelAndView;
     }
 
     @Override
     public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) {
         if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
-            ModelMap model = new ModelMap();
-            user = userRepository.save(User.builder().mail(user.getMail()).password(user.getPassword()).name(user.getName()).
-                    surname(user.getSurname()).date(user.getDate()).currentBalance(0f).orders(new ArrayList<>()).build());
-            model.addAttribute(EshopConstants.USER, user);
-            model.addAttribute(RequestParamsEnum.CATEGORIES.getValue(), categoryService.getPaginatedCategories(1, EshopConstants.MIN_PAGE_SIZE));
-            return new ModelAndView(PagesPathEnum.SHOP_PAGE.getPath(), model);
+            userRepository.save(User.builder().mail(user.getMail()).password(passwordEncoder.encode(user.getPassword())).name(user.getName()).
+                    surname(user.getSurname()).date(user.getDate()).currentBalance(0f).orders(new ArrayList<>()).roles(List.of(Role.builder().id(2).name(UserRoleEnum.USER.name()).build())).build());
+            ModelMap modelMap = new ModelMap();
+            modelMap.addAttribute("loginErrorMessage", "Now you can log in");
+            return new ModelAndView("redirect:/login", modelMap);
         }
-        return new ModelAndView(PagesPathEnum.REGISTRATION_PAGE.getPath());
-    }
-
-    @Override
-    public Boolean checkIfLoggedInUser(User user) {
-        return user != null;
+        ModelMap modelMap = new ModelMap();
+        modelMap.addAttribute("registrationErrorMessage", "Wrong credentials matching");
+        return new ModelAndView(PagesPathEnum.REGISTRATION_PAGE.getPath(), modelMap);
     }
 
     @Override
