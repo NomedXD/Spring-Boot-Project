@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@EnableWebSecurity(debug = true)
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 @Configuration
 public class WebSecurityConfig {
@@ -20,7 +19,8 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((request) -> request
-                                .requestMatchers(new AntPathRequestMatcher("/account/**"))
+                                .requestMatchers(new AntPathRequestMatcher("/account/**"),
+                                        new AntPathRequestMatcher("/cart/checkout"))
                                 .authenticated()
                                 .requestMatchers(new AntPathRequestMatcher("/**/import/**"),
                                         new AntPathRequestMatcher("/category/export/**"),

@@ -53,9 +53,6 @@ public class User extends BaseEntity{
     @Column(name = "date")
     private LocalDate date;
 
-    @Column(name = "balance")
-    private Float currentBalance;
-
     @Column(name = "mobile")
     @ColumnDefault("'Unspecified'")
     private String mobile;

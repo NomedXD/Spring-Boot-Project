@@ -89,7 +89,7 @@
                                     <div class="d-flex justify-content-between mb-4">
                                         <h5 class="text-uppercase">ITEMS = ${sessionScope.cart.getTotalSize()}</h5>
                                     </div>
-                                    <form id="checkout" action="${contextPath}/cart/checkout" method="POST">
+                                    <form name="checkout" id="checkout" action="${contextPath}/cart/checkout" method="POST">
                                         <h5 class="text-uppercase mb-3">Shipping</h5>
                                         <div class="mb-4 pb-2">
                                             <select id="addressSelect" class="selectPicker" data-size="2" name="shippingType">
@@ -113,8 +113,12 @@
                                         <h5 class="text-uppercase mb-3">Give code</h5>
                                         <div class="mb-5">
                                             <div class="form-outline">
-                                                <input type="text" id="form3Examplea2" class="form-control form-control-lg" name="code" maxlength="10" />
-                                                <label class="form-label" for="form3Examplea2">Enter your code</label>
+                                                <input type="text" id="inputBonus" class="form-control form-control-lg" name="code" maxlength="10" />
+                                                <label class="form-label" for="inputBonus">Enter your code</label>
+                                                <form name="bonusCode"  id="bonusCode">
+                                                    <input type="hidden" name="hideBonus" id="hideBonus">
+                                                    <button form="bonusCode" type="submit" class="btn btn-dark btn-block btn-lg" onclick="document.bonusCode.hideBonus.value = document.checkout.code.value" data-mdb-ripple-color="dark">Submit</button>
+                                                </form>
                                             </div>
                                         </div>
                                         <h5 class="text-uppercase mb-3">Customer notes</h5>

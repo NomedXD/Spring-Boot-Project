@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
         params.put(RequestParamsEnum.FLAT_NUMBER.getValue(), updatedUserFields.getFlatNumber());
         setInputs(params, user);
         updatedUserFields = User.builder().id(user.getId()).mail(user.getMail()).password(user.getPassword()).
-                name(user.getName()).surname(user.getSurname()).date(user.getDate()).currentBalance(user.getCurrentBalance()).
+                name(user.getName()).surname(user.getSurname()).date(user.getDate()).
                 mobile(params.get(RequestParamsEnum.MOBILE.getValue())).street(params.get(RequestParamsEnum.STREET.getValue())).
                 accommodationNumber(params.get(RequestParamsEnum.ACCOMMODATION_NUMBER.getValue())).
                 flatNumber(params.get(RequestParamsEnum.FLAT_NUMBER.getValue())).roles(user.getRoles()).build();
@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
     public ModelAndView register(User user, BindingResult bindingResult, String repeatPassword) {
         if (!bindingResult.hasErrors() && ValidatorUtils.validatePasswordMatching(user.getPassword(), repeatPassword)) {
             userRepository.save(User.builder().mail(user.getMail()).password(passwordEncoder.encode(user.getPassword())).name(user.getName()).
-                    surname(user.getSurname()).date(user.getDate()).currentBalance(0f).orders(new ArrayList<>()).roles(List.of(Role.builder().id(2).name(UserRoleEnum.USER.name()).build())).build());
+                    surname(user.getSurname()).date(user.getDate()).orders(new ArrayList<>()).roles(List.of(Role.builder().id(2).name(UserRoleEnum.USER.name()).build())).build());
             ModelMap modelMap = new ModelMap();
             modelMap.addAttribute("loginErrorMessage", "Now you can log in");
             return new ModelAndView("redirect:/login", modelMap);
