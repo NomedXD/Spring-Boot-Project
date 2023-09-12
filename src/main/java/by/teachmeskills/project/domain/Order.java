@@ -52,8 +52,9 @@ public class Order extends BaseEntity{
     @Column(name = "shipping_cost")
     private Float shippingCost;
 
-    @Column(name = "code")
-    private String code;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "code_id")
+    private DiscountCode discountCode;
 
     @Column(name = "address")
     private String address;

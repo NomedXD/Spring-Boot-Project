@@ -4,6 +4,7 @@ import by.teachmeskills.project.domain.Order;
 import by.teachmeskills.project.dto.OrderProductCsv;
 import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.services.CategoryService;
+import by.teachmeskills.project.services.DiscountCodeService;
 import by.teachmeskills.project.services.ImageService;
 import by.teachmeskills.project.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,17 @@ public class OrderProductCsvConverter {
     private final UserService userService;
     private final ImageService imageService;
     private final CategoryService categoryService;
+    private final DiscountCodeService discountCodeService;
 
     @Autowired
-    public OrderProductCsvConverter(UserService userService, ImageService imageService, CategoryService categoryService) {
+    public OrderProductCsvConverter(UserService userService,
+                                    ImageService imageService,
+                                    CategoryService categoryService,
+                                    DiscountCodeService discountCodeService) {
         this.userService = userService;
         this.imageService = imageService;
         this.categoryService = categoryService;
+        this.discountCodeService = discountCodeService;
     }
 
     public List<OrderProductCsv> convertInto(List<Order> orderList) {
@@ -42,7 +48,7 @@ public class OrderProductCsvConverter {
                 .creditCardNumber(order.getCreditCardNumber())
                 .shippingType(order.getShippingType())
                 .shippingCost(order.getShippingCost())
-                .code(order.getCode())
+                .discountCodeId(order.getDiscountCode().getId())
                 .address(order.getAddress())
                 .customerNotes(order.getCustomerNotes()).build())));
         return orderProductCsvList;
@@ -65,7 +71,7 @@ public class OrderProductCsvConverter {
                         .creditCardNumber(orderProductCsv.getCreditCardNumber())
                         .shippingType(orderProductCsv.getShippingType())
                         .shippingCost(orderProductCsv.getShippingCost())
-                        .code(orderProductCsv.getCode())
+                        .discountCode(discountCodeService.getDiscountCodeById(orderProductCsv.getDiscountCodeId()).orElse(null))
                         .address(orderProductCsv.getAddress())
                         .customerNotes(orderProductCsv.getCustomerNotes()).build();
                 Product product = Product.builder()

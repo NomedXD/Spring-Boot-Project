@@ -1,5 +1,6 @@
 package by.teachmeskills.project.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Data
 public class Cart {
     @NotNull(message = "Field is null validation error")
@@ -22,6 +24,9 @@ public class Cart {
     @NotNull(message = "Field is null validation error")
     @Size(max = 100, message = "Out of validation bounds")
     private Map<Integer, Integer> productQuantities;
+
+    @Nullable
+    private DiscountCode appliedDiscountCode;
 
     public Cart() {
         this.products = new HashMap<>();
@@ -42,7 +47,7 @@ public class Cart {
         productQuantities.remove(productId);
     }
 
-    public static Cart checkCart(Product product, Cart cart){
+    public static Cart checkCart(Product product, Cart cart) {
         if (cart != null) {
             cart.addProduct(product);
         } else {
@@ -52,7 +57,22 @@ public class Cart {
         return cart;
     }
 
-    public List<Product> getProducts() {
+    public static Cart applyDiscountCode(DiscountCode discountCode, Cart cart) {
+        if (cart != null) {
+            cart.setAppliedDiscountCode(discountCode);
+        } else {
+            cart = new Cart();
+            cart.setAppliedDiscountCode(discountCode);
+        }
+        return cart;
+    }
+
+    public static void removeZeroQuantityProducts(Cart cart) {
+            cart.getProducts().entrySet().removeIf(product -> cart.getProductQuantities().get(product.getValue().getId()) == 0);
+            cart.getProductQuantities().entrySet().removeIf(quantity->quantity.getValue()==0);
+    }
+
+    public List<Product> getCartProductsInList() {
         return new ArrayList<>(products.values());
     }
 
@@ -62,6 +82,8 @@ public class Cart {
 
     public void clear() {
         products.clear();
+        totalPrice = 0;
+        appliedDiscountCode = null;
         productQuantities.clear();
     }
 

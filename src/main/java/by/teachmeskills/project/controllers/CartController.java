@@ -1,6 +1,7 @@
 package by.teachmeskills.project.controllers;
 
 import by.teachmeskills.project.domain.Cart;
+import by.teachmeskills.project.domain.DiscountCode;
 import by.teachmeskills.project.domain.Order;
 import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.domain.User;
@@ -8,6 +9,7 @@ import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.enums.RequestParamsEnum;
 import by.teachmeskills.project.exception.NoSuchProductException;
+import by.teachmeskills.project.services.DiscountCodeService;
 import by.teachmeskills.project.services.OrderService;
 import by.teachmeskills.project.services.ProductService;
 import by.teachmeskills.project.utils.SecurityContextUtils;
@@ -19,9 +21,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @Controller
 @SessionAttributes(EshopConstants.SHOPPING_CART)
@@ -29,10 +34,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class CartController {
     private final ProductService productService;
     private final OrderService orderService;
+    private final DiscountCodeService discountCodeService;
 
-    public CartController(ProductService productService, OrderService orderService) {
+    public CartController(ProductService productService, OrderService orderService, DiscountCodeService discountCodeService) {
         this.productService = productService;
         this.orderService = orderService;
+        this.discountCodeService = discountCodeService;
     }
 
     @GetMapping
@@ -69,6 +76,18 @@ public class CartController {
     @PostMapping("/apply_quantity")
     public ModelAndView applyQuantity(@SessionAttribute(name = EshopConstants.SHOPPING_CART) Cart cart, HttpServletRequest request) {
         return productService.applyProductsQuantity(cart, request);
+    }
+
+    @PostMapping("/check_code")
+    public ModelAndView checkCode(@SessionAttribute(name = EshopConstants.SHOPPING_CART, required = false) Cart cart, @RequestParam(name = "code") String discountCode) {
+        ModelMap model = new ModelMap();
+        Optional<DiscountCode> code = discountCodeService.getDiscountCodeByName(discountCode);
+        if (code.isPresent()) {
+            model.addAttribute(EshopConstants.SHOPPING_CART, Cart.applyDiscountCode(code.get(), cart));
+        } else {
+            model.addAttribute(RequestParamsEnum.DISCOUNT_CODE_MESSAGE.getValue(), EshopConstants.errorDiscountCodeMessage);
+        }
+        return new ModelAndView(PagesPathEnum.CART_PAGE.getPath(), model);
     }
 
     @ModelAttribute(EshopConstants.ORDER)

@@ -146,7 +146,8 @@
         <!--Export/import-->
         <div class="d-flex justify-content-between align-items-center py-3">
             <sec:authorize access="hasAuthority('USER')">
-                <a href="${contextPath}/account/export" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Export
+                <a href="${contextPath}/account/export" class="btn btn-dark btn-block btn-lg"
+                   data-mdb-ripple-color="dark">Export
                     orders</a>
                 <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
             </sec:authorize>
@@ -154,7 +155,8 @@
                 <form action="${contextPath}/account/import" method="POST" enctype="multipart/form-data">
                     <input type="file" class="custom-file-input" name="file"
                            aria-describedby="inputGroupFileAddon01" required>
-                    <button type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Import orders
+                    <button type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Import
+                        orders
                     </button>
                 </form>
             </sec:authorize>
@@ -265,19 +267,31 @@
                                     <tfoot>
                                     <tr>
                                         <td colspan="2">Subtotal</td>
-                                        <td class="text-end">-</td>
+                                        <td class="text-end">$${order.price}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">Shipping</td>
-                                        <td class="text-end">${order.shippingCost}</td>
+                                        <td class="text-end">$${order.shippingCost}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2">Discount (Code: ${order.code})</td>
-                                        <td class="text-danger text-end">-$10.00</td>
+                                        <c:choose>
+                                            <c:when test="${not empty order.discountCode}">
+                                                <c:set var="codeName" value="${order.discountCode.name}"/>
+                                                <c:set var="codeDiscount" value="${order.discountCode.discount}"/>
+                                                <c:set var="totalPrice" value="${order.price - order.discountCode.discount}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="codeName" value="-"/>
+                                                <c:set var="codeDiscount" value="${0}"/>
+                                                <c:set var="totalPrice" value="${order.price}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <td colspan="2">Discount (Code: ${codeName} )</td>
+                                        <td class="text-danger text-end">-$${codeDiscount}</td>
                                     </tr>
                                     <tr class="fw-bold">
                                         <td colspan="2">TOTAL</td>
-                                        <td class="text-end">${order.price}</td>
+                                        <td class="text-end">$${totalPrice}</td>
                                     </tr>
                                     </tfoot>
                                 </table>

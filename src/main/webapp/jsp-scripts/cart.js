@@ -100,3 +100,7 @@ function cc_format(ccid) {
     formatted=block1 + block2 + block3 + block4;
     document.getElementById(ccid).value=formatted;
 }
+
+function copyCode() {
+    document.getElementById('checkCodeInput').value = document.getElementById('inputCode').value;
+}

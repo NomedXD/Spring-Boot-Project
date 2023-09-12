@@ -42,7 +42,7 @@
                                         </c:choose>
                                     </div>
                                     <hr class="my-4">
-                                    <c:forEach items="${sessionScope.cart.products}" var="cartProduct">
+                                    <c:forEach items="${sessionScope.cart.getCartProductsInList()}" var="cartProduct">
                                         <div class="row mb-4 d-flex justify-content-between align-items-center">
                                             <div class="col-md-2 col-lg-2 col-xl-2">
                                                 <img src="${contextPath}/${cartProduct.image.path}"
@@ -113,12 +113,13 @@
                                         <h5 class="text-uppercase mb-3">Give code</h5>
                                         <div class="mb-5">
                                             <div class="form-outline">
-                                                <input type="text" id="inputBonus" class="form-control form-control-lg" name="code" maxlength="10" />
-                                                <label class="form-label" for="inputBonus">Enter your code</label>
-                                                <form name="bonusCode"  id="bonusCode">
-                                                    <input type="hidden" name="hideBonus" id="hideBonus">
-                                                    <button form="bonusCode" type="submit" class="btn btn-dark btn-block btn-lg" onclick="document.bonusCode.hideBonus.value = document.checkout.code.value" data-mdb-ripple-color="dark">Submit</button>
-                                                </form>
+                                                <input type="text" id="inputCode" form="checkCodeForm" class="form-control form-control-lg" name="code" maxlength="10" />
+                                                <label class="form-label" for="inputCode">Enter your code</label><br>
+                                                <c:if test="${not empty discountCodeMessage}">${discountCodeMessage}<br></c:if>
+                                                <c:if test="${not empty sessionScope.cart && not empty sessionScope.cart.appliedDiscountCode}">
+                                                    <label class="form-label" for="inputCode">Currently applied code: ${sessionScope.cart.appliedDiscountCode.name} -$${sessionScope.cart.appliedDiscountCode.discount}</label><br>
+                                                </c:if>
+                                                <button form="checkCodeForm" type="submit" class="btn btn-dark btn-block btn-lg" onclick="copyCode()" data-mdb-ripple-color="dark">Apply code</button>
                                             </div>
                                         </div>
                                         <h5 class="text-uppercase mb-3">Customer notes</h5>
@@ -135,7 +136,9 @@
                                         <c:if test="${not empty sessionScope.cart && sessionScope.cart.getTotalSize() != 0}">
                                             <button form="checkout" type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Submit</button>
                                         </c:if>
-
+                                    </form>
+                                    <form name="checkCodeForm" id="checkCodeForm" action="${contextPath}/cart/check_code" method="POST">
+                                        <input type="hidden" name="code" id="checkCodeInput" value="">
                                     </form>
                                 </div>
                             </div>

@@ -25,6 +25,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final UserService userService;
 
+
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository, UserService userService) {
         this.orderRepository = orderRepository;
@@ -62,6 +63,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.countAllByUserId(userId);
     }
 
+
     @Override
     public ModelAndView applyOrder(Order order, Cart cart, User user) {
         preBuildOrder(order, cart, user);
@@ -77,7 +79,8 @@ public class OrderServiceImpl implements OrderService {
         String ccNumber = order.getCreditCardNumber();
         order.setCreditCardNumber(ccNumber.substring(0, 5).concat(" **** **** ").concat(ccNumber.substring(ccNumber.length()-5)));
         order.setUser(user);
-        order.setProductList(cart.getProducts());
+        order.setProductList(cart.getCartProductsInList());
+        order.setDiscountCode(cart.getAppliedDiscountCode());
         if(Optional.ofNullable(order.getOrderDetails()).isEmpty()){
             order.setOrderDetails(new ArrayList<>());
         }
