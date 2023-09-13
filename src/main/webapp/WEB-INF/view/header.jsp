@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <header>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -37,8 +38,13 @@
             </div>
 
             <div class="item">
-                <a class="btn btn-outline-dark" href="#" type="button">Sales</a>
+                <a class="btn btn-outline-dark" href="${contextPath}/login" type="button"><i class="fa fa-sign-in"></i></a>
             </div>
+            <sec:authorize access="hasAnyAuthority('USER','ADMIN')">
+                <div class="item">
+                    <a class="btn btn-outline-dark" href="${contextPath}/logout" type="button"><i class="fa fa-sign-out"></i></a>
+                </div>
+            </sec:authorize>
         </div>
 
         <!-- Button trigger modal -->
