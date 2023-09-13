@@ -22,7 +22,7 @@ header {
     width: 100vw;
     height: 100px;
     background-color: #f9eff2;
-    box-shadow: 0px 3px 8px rgba(0, 0, 0, 25%);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 25%);
     display: flex;
     align-items: center;
 }
@@ -30,7 +30,7 @@ header {
 header .container-fluid {
 
     width: 100%;
-    padding: 0 60px;
+    padding: 0 50px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -65,15 +65,9 @@ header .item {
     color: #102447;
     padding: 5px 0;
     transition: all .1s ease;
-    border-bottom: 0px solid #64d6f4;
-    border-top: 0px solid #64d6f4;
+    border-bottom: 0 solid #64d6f4;
+    border-top: 0 solid #64d6f4;
     cursor: pointer;
-}
-
-header .item:hover {
-
-    border-bottom: 3px solid #64d6f4;
-    border-top: 3px solid #64d6f4;
 }
 
 header .item-button a {
@@ -88,11 +82,6 @@ header .item-button a {
     font-weight: 600;
     color: #fff;
     transition: all .5s ease;
-}
-
-header .item-button a:hover {
-
-    background-color: #64d6f4;
 }
 
 header .mobile-toggler {
@@ -136,14 +125,11 @@ header .mobile-toggler {
 }
 
 .modal-header img {
-
-    width: 140px;
     height: 66px;
-    margin-top: 17.5px;
+    margin-top: 18px;
 }
 
 .modal-header .btn-close {
-
     background: transparent;
     opacity: 1;
 }
@@ -186,7 +172,7 @@ header .mobile-toggler {
 
     font-size: 17px;
     font-weight: 500;
-    letter-spacing: 2.5px;
+    letter-spacing: 3px;
     color: #fefefe;
 }
 
@@ -254,18 +240,6 @@ header .mobile-toggler {
     color: #102447;
     width: 90%;
     text-align: center;
-}
-
-.circle {
-    border-radius: 50%;
-    width: 34px;
-    height: 34px;
-    padding: 10px;
-    background: #fff;
-    border: 3px solid #000;
-    color: #000;
-    text-align: center;
-    font: 32px Arial, sans-serif;
 }
 
 @media (max-width: 767px) {

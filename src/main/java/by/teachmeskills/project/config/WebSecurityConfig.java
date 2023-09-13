@@ -36,6 +36,7 @@ public class WebSecurityConfig {
                         .passwordParameter("password").permitAll()
                 ).logout(logout -> logout
                         .logoutUrl("/logout")
+                        .logoutSuccessUrl("/catalog?page=1&size=5")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .permitAll());

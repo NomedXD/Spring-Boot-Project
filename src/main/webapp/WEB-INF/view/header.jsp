@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <header>
@@ -15,34 +15,34 @@
         <div class="navb-items d-none d-xl-flex">
 
             <div class="item">
-                <a href="${contextPath}/catalog?page=1&size=5">Home</a>
+                <a class="btn btn-outline-dark" href="${contextPath}/catalog?page=1&size=5">Home</a>
             </div>
 
             <div class="item">
-                <a href="${contextPath}/cart">Cart</a>
-                <div class="circle">
+                <a class="btn btn-outline-dark" href="${contextPath}/cart">Cart
                     <c:choose>
-                        <c:when test="${empty sessionScope.cart}">0</c:when>
-                        <c:otherwise>${sessionScope.cart.totalSize}</c:otherwise>
+                        <c:when test="${empty sessionScope.cart}"> 0</c:when>
+                        <c:otherwise> ${sessionScope.cart.totalSize}</c:otherwise>
                     </c:choose>
-                </div>
+                </a>
+
             </div>
 
             <div class="item">
-                <a href="${contextPath}/account?page=1&size=5">Account</a>
+                <a class="btn btn-outline-dark" href="${contextPath}/account?page=1&size=5">Account</a>
             </div>
 
             <div class="item">
-                <a href="${contextPath}/search?page=1&size=5">Search</a>
+                <a class="btn btn-outline-dark" href="${contextPath}/search?page=1&size=5">Search</a>
             </div>
 
-            <div class="item-button">
-                <a href="#" type="button">Sales</a>
+            <div class="item">
+                <a class="btn btn-outline-dark" href="#" type="button">Sales</a>
             </div>
         </div>
 
         <!-- Button trigger modal -->
-        <div class="mobile-toggler d-lg-none">
+        <div class="mobile-toggler d-xl-none">
             <a href="#" data-bs-toggle="modal" data-bs-target="#navbModal">
                 <i class="fa-solid fa-bars"></i>
             </a>
@@ -63,19 +63,28 @@
                     <div class="modal-body">
 
                         <div class="modal-line">
-                            <i class="fa-solid fa-house"></i><a href="#">Home</a>
+                            <i class="fa-solid fa-house"></i>
+                            <a class="btn btn-outline-secondary" href="${contextPath}/catalog?page=1&size=5">Home</a>
                         </div>
 
                         <div class="modal-line">
-                            <i class="fa-solid fa-bell-concierge"></i><a href="#">Cart</a>
+                            <i class="fa-solid fa-bell-concierge"></i>
+                            <a class="btn btn-outline-secondary" href="${contextPath}/cart">Cart
+                                <c:choose>
+                                    <c:when test="${empty sessionScope.cart}"> 0</c:when>
+                                    <c:otherwise> ${sessionScope.cart.totalSize}</c:otherwise>
+                                </c:choose>
+                            </a>
                         </div>
 
                         <div class="modal-line">
-                            <i class="fa-solid fa-file-lines"></i> <a href="#">Account</a>
+                            <i class="fa-solid fa-file-lines"></i>
+                            <a class="btn btn-outline-secondary" href="${contextPath}/account?page=1&size=5">Account</a>
                         </div>
 
                         <div class="modal-line">
-                            <i class="fa-solid fa-circle-info"></i><a href="#">About</a>
+                            <i class="fa-solid fa-circle-info"></i>
+                            <a class="btn btn-outline-secondary" href="${contextPath}/search?page=1&size=5">Search</a>
                         </div>
 
                         <a href="#" class="navb-button" type="button">Sales</a>
