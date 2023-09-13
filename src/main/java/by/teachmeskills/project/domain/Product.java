@@ -21,6 +21,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -58,8 +59,12 @@ public class Product extends BaseEntity {
     @EqualsAndHashCode.Exclude
     private List<Order> orders;
 
-    public Image getPrimeProductImage() {
+    public Image getPrimeImage() {
         return images.stream().filter(image -> Optional.ofNullable(image.getIsPrime()).orElse(true).equals(true))
                 .findFirst().orElse(null);
+    }
+
+    public List<Image> getNonPrimeImages() {
+        return images.stream().filter(image -> Optional.ofNullable(image.getIsPrime()).orElse(true).equals(false)).collect(Collectors.toList());
     }
 }

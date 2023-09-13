@@ -67,22 +67,19 @@
                     <div id="carouselExampleControls${product.id}" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <img src="${contextPath}/${product.getPrimeProductImage().path}" class="d-block w-100" alt="...">
+                                <img src="${contextPath}/${product.getPrimeImage().path}" class="d-block w-100" alt="...">
                             </div>
-                            <div class="carousel-item">
-                                <img src="${contextPath}/${product.getPrimeProductImage().path}" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="${contextPath}/${product.getPrimeProductImage().path}" class="d-block w-100" alt="...">
-                            </div>
+                            <c:forEach items="${product.getNonPrimeImages()}" var="nonPrimeImage">
+                                <div class="carousel-item">
+                                    <img src="${contextPath}/${nonPrimeImage.path}" class="d-block w-100" alt="...">
+                                </div>
+                            </c:forEach>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Предыдущий</span>
+                            <span style="filter: invert(100%)" class="carousel-control-prev-icon" aria-hidden="true"></span>
                         </button>
                         <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Следующий</span>
+                            <span style="filter: invert(100%)" class="carousel-control-next-icon" aria-hidden="true"></span>
                         </button>
                     </div>
                 </div>

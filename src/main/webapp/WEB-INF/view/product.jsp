@@ -22,10 +22,26 @@
         <div class="row">
             <div class="col-md-5 col-sm-12 col-xs-12">
                 <div class="product-image">
-                    <img src="${contextPath}/${product.getPrimeProductImage().path}" class="img-responsive" alt=""/>
+                    <div id="carouselExampleControls${product.id}" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="${contextPath}/${product.getPrimeImage().path}" class="d-block w-100" alt="...">
+                            </div>
+                            <c:forEach items="${product.getNonPrimeImages()}" var="nonPrimeImage">
+                                <div class="carousel-item">
+                                    <img src="${contextPath}/${nonPrimeImage.path}" class="d-block w-100" alt="...">
+                                </div>
+                            </c:forEach>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="prev">
+                            <span style="filter: invert(100%)" class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="next">
+                            <span style="filter: invert(100%)" class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </button>
+                    </div>
                 </div>
             </div>
-
             <div class="col-md-6 col-md-offset-1 col-sm-12 col-xs-12">
                 <h2 class="name">
                     ${product.name}

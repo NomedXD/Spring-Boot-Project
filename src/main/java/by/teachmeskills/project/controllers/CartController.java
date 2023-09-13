@@ -79,7 +79,7 @@ public class CartController {
     }
 
     @PostMapping("/check_code")
-    public ModelAndView checkCode(@SessionAttribute(name = EshopConstants.SHOPPING_CART, required = false) Cart cart, @RequestParam(name = "code") String discountCode) {
+    public ModelAndView checkCode(@SessionAttribute(name = EshopConstants.SHOPPING_CART, required = false) Cart cart, @RequestParam(name = "discountCode") String discountCode) {
         ModelMap model = new ModelMap();
         Optional<DiscountCode> code = discountCodeService.getDiscountCodeByName(discountCode);
         if (code.isPresent()) {

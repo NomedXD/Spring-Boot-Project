@@ -241,7 +241,7 @@
                                             <td>
                                                 <div class="d-flex mb-2">
                                                     <div class="flex-shrink-0">
-                                                        <img src="${contextPath}/${product.getPrimeProductImage().path}" alt=""
+                                                        <img src="${contextPath}/${product.getPrimeImage().path}" alt=""
                                                              width="35" class="img-fluid">
                                                     </div>
                                                     <div class="flex-lg-grow-1 ms-3">
@@ -278,12 +278,12 @@
                                             <c:when test="${not empty order.discountCode}">
                                                 <c:set var="codeName" value="${order.discountCode.name}"/>
                                                 <c:set var="codeDiscount" value="${order.discountCode.discount}"/>
-                                                <c:set var="totalPrice" value="${order.price - order.discountCode.discount}"/>
+                                                <c:set var="totalPrice" value="${order.price - order.discountCode.discount - order.shippingCost}"/>
                                             </c:when>
                                             <c:otherwise>
                                                 <c:set var="codeName" value="-"/>
                                                 <c:set var="codeDiscount" value="${0}"/>
-                                                <c:set var="totalPrice" value="${order.price}"/>
+                                                <c:set var="totalPrice" value="${order.price - order.shippingCost}"/>
                                             </c:otherwise>
                                         </c:choose>
                                         <td colspan="2">Discount (Code: ${codeName} )</td>
