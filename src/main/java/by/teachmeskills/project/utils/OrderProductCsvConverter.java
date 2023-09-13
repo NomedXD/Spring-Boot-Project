@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class OrderProductCsvConverter {
         orderList.forEach(order -> order.getProductList().forEach(product -> orderProductCsvList.add(OrderProductCsv.builder()
                 .productId(product.getId())
                 .productName(product.getName())
-                .productImageId(product.getImage().getId())
+                .productImageId(product.getImages().get(0).getId())
                 .productDescription(product.getDescription())
                 .categoryId(product.getCategory().getId())
                 .productPrice(product.getPrice())
@@ -77,7 +78,7 @@ public class OrderProductCsvConverter {
                 Product product = Product.builder()
                         .id(orderProductCsv.getProductId())
                         .name(orderProductCsv.getProductName())
-                        .image(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))
+                        .images(new ArrayList<>(Collections.singletonList(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))))
                         .description(orderProductCsv.getProductDescription())
                         .category(categoryService.getCategoryById(orderProductCsv.getCategoryId()).orElse(null))
                         .price(orderProductCsv.getProductPrice()).build();
@@ -88,7 +89,7 @@ public class OrderProductCsvConverter {
                         Product.builder()
                         .id(orderProductCsv.getProductId())
                         .name(orderProductCsv.getProductName())
-                        .image(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))
+                                .images(new ArrayList<>(Collections.singletonList(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))))
                         .description(orderProductCsv.getProductDescription())
                         .category(categoryService.getCategoryById(orderProductCsv.getCategoryId()).orElse(null))
                         .price(orderProductCsv.getProductPrice()).build());

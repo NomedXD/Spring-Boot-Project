@@ -1,5 +1,6 @@
 package by.teachmeskills.project.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -16,10 +17,14 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Entity
 @Table(name = "images")
-public class Image extends BaseEntity{
+public class Image extends BaseEntity {
 
     @NotNull(message = "Field is null validation error")
     @Size(max = 45, message = "Out of validation bounds")
     @Column(name = "path")
     private String path;
+
+    @Nullable
+    @Column(name = "isPrime")
+    private Boolean isPrime;
 }

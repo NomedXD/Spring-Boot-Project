@@ -241,7 +241,7 @@
                                             <td>
                                                 <div class="d-flex mb-2">
                                                     <div class="flex-shrink-0">
-                                                        <img src="${contextPath}/${product.image.path}" alt=""
+                                                        <img src="${contextPath}/${product.getPrimeProductImage().path}" alt=""
                                                              width="35" class="img-fluid">
                                                     </div>
                                                     <div class="flex-lg-grow-1 ms-3">

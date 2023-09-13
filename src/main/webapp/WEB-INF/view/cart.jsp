@@ -45,7 +45,7 @@
                                     <c:forEach items="${sessionScope.cart.getCartProductsInList()}" var="cartProduct">
                                         <div class="row mb-4 d-flex justify-content-between align-items-center">
                                             <div class="col-md-2 col-lg-2 col-xl-2">
-                                                <img src="${contextPath}/${cartProduct.image.path}"
+                                                <img src="${contextPath}/${cartProduct.getPrimeProductImage().path}"
                                                         class="img-fluid rounded-3" alt="Cotton T-shirt">
                                             </div>
                                             <div class="col-md-3 col-lg-3 col-xl-3">

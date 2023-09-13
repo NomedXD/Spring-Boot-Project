@@ -76,7 +76,7 @@
             </div>
             <c:forEach items="${categories}" var="item">
                 <div class="content">
-                    <img class="shopImg" src="${contextPath}/${item.image.path}"
+                    <img class="shopImg" src="${contextPath}/${item.getPrimeCategoryImage().path}"
                          alt="${contextPath}/images/error-page.png">
                     <h3>${item.name}</h3>
                     <p>${item.sometext}</p>

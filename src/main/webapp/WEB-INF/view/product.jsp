@@ -22,7 +22,7 @@
         <div class="row">
             <div class="col-md-5 col-sm-12 col-xs-12">
                 <div class="product-image">
-                    <img src="${contextPath}/${product.image.path}" class="img-responsive" alt=""/>
+                    <img src="${contextPath}/${product.getPrimeProductImage().path}" class="img-responsive" alt=""/>
                 </div>
             </div>
 

@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/category.css">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/header.css">
     <link href="${contextPath}/jsp-scc-styles/pagination.css" rel="stylesheet"/>
 </head>
@@ -62,8 +63,29 @@
         </div>
         <c:forEach items="${products}" var="product">
             <div class="row p-2 bg-white border rounded mt-2">
-                <div class="col-md-3 mt-1"><img class="img-fluid img-responsive rounded product-image"
-                                                src="${contextPath}/${product.image.path}"></div>
+                <div class="col-md-3 mt-1">
+                    <div id="carouselExampleControls${product.id}" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="${contextPath}/${product.getPrimeProductImage().path}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="${contextPath}/${product.getPrimeProductImage().path}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="${contextPath}/${product.getPrimeProductImage().path}" class="d-block w-100" alt="...">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Предыдущий</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Следующий</span>
+                        </button>
+                    </div>
+                </div>
                 <div class="col-md-6 mt-1">
                     <h5>${product.name}</h5>
                     <div class="d-flex flex-row">

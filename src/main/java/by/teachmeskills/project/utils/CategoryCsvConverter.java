@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -23,7 +24,7 @@ public class CategoryCsvConverter {
         categoryList.forEach(category -> categoryCsvList.add(CategoryCsv.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .imageId(category.getImage().getId())
+                .imageId(category.getImages().get(0).getId())
                 .sometext(category.getSometext()).build()));
         return categoryCsvList;
     }
@@ -36,7 +37,7 @@ public class CategoryCsvConverter {
         List<Category> categoryList = new ArrayList<>();
         categoryCsvList.forEach(categoryCsv -> categoryList.add(Category.builder()
                 .name(categoryCsv.getName())
-                .image(imageService.getImageById(categoryCsv.getImageId()).orElse(null))
+                .images(new ArrayList<>(Collections.singletonList(imageService.getImageById(categoryCsv.getImageId()).orElse(null))))
                 .sometext(categoryCsv.getSometext())
                 .productList(new ArrayList<>()).build()));
         return categoryList;

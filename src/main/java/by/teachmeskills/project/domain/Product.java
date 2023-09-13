@@ -7,7 +7,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -20,6 +20,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -35,10 +36,9 @@ public class Product extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    // Может быть OneToMany в будущем, если будет карусель картинок(тогда еще будет поле boolean primeImage)
-    @OneToOne(optional = false, orphanRemoval = true)
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "product_id")
+    private List<Image> images;
 
     @NotNull(message = "Field is null validation error")
     @Column(name = "description")
@@ -58,12 +58,8 @@ public class Product extends BaseEntity {
     @EqualsAndHashCode.Exclude
     private List<Order> orders;
 
-    public Product(Integer id, String name, Image image, String description, Category category, float price) {
-        this.id = id;
-        this.name = name;
-        this.image = image;
-        this.description = description;
-        this.category = category;
-        this.price = price;
+    public Image getPrimeProductImage() {
+        return images.stream().filter(image -> Optional.ofNullable(image.getIsPrime()).orElse(true).equals(true))
+                .findFirst().orElse(null);
     }
 }
