@@ -149,4 +149,5 @@
     </c:choose>
 </div>
 </body>
+<jsp:include page="footer.jsp"/>
 </html>

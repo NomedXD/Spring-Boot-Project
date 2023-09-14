@@ -165,4 +165,5 @@
     </c:otherwise>
 </c:choose>
 </body>
+<jsp:include page="footer.jsp"/>
 </html>

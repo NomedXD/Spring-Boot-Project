@@ -196,5 +196,6 @@
     </div>
 </div>
 </body>
+<jsp:include page="footer.jsp"/>
 <script rel="stylesheet" src="${contextPath}/jsp-scripts/search-form-script.js"></script>
 </html>

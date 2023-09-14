@@ -150,7 +150,7 @@
     </div>
     <script src="${contextPath}/jsp-scripts/cart.js"></script>
 </section>
-
 </body>
+<jsp:include page="footer.jsp"/>
 </html>
 
