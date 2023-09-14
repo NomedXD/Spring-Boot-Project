@@ -1,92 +1,56 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <head>
-    <title>Product</title>
+    <title>Category</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/header.css">
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/product.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/jsp-scc-styles/header.css">
 </head>
 <body class="body">
 <jsp:include page="header.jsp"/>
 <div class="container">
-    <!-- product -->
-    <div class="product-content product-wrap clearfix product-deatil">
-        <div class="row">
-            <div class="col-md-5 col-sm-12 col-xs-12">
-                <div class="product-image">
-                    <div id="carouselExampleControls${product.id}" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="${contextPath}/${product.getPrimeImage().path}" class="d-block w-100" alt="...">
-                            </div>
-                            <c:forEach items="${product.getNonPrimeImages()}" var="nonPrimeImage">
-                                <div class="carousel-item">
-                                    <img src="${contextPath}/${nonPrimeImage.path}" class="d-block w-100" alt="...">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">${product.name}</h3>
+            <h6 class="card-subtitle">Category: ${product.category.name}</h6>
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="white-box text-left">
+                        <div id="carouselExampleControls${product.id}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="${contextPath}/${product.getPrimeImage().path}" class="d-block w-100" alt="...">
                                 </div>
-                            </c:forEach>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="prev">
-                            <span style="filter: invert(100%)" class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="next">
-                            <span style="filter: invert(100%)" class="carousel-control-next-icon" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-md-offset-1 col-sm-12 col-xs-12">
-                <h2 class="name">
-                    ${product.name}
-                    <small>Genre: <a>Adeline</a></small>
-                    <i class="fa fa-star fa-2x text-primary"></i>
-                    <i class="fa fa-star fa-2x text-primary"></i>
-                    <i class="fa fa-star fa-2x text-primary"></i>
-                    <i class="fa fa-star fa-2x text-primary"></i>
-                    <i class="fa fa-star fa-2x text-muted"></i>
-                </h2>
-                <hr/>
-                <h3 class="price-container">
-                    ${product.name}
-                </h3>
-                <hr/>
-                <div class="description description-tabs">
-                    <ul id="myTab" class="nav nav-pills">
-                        <li class="active"><a data-toggle="tab" class="no-margin">Game Description</a></li>
-                    </ul>
-                    <div id="myTabContent" class="tab-content">
-                        <div class="tab-pane fade active in" id="more-information">
-                            <br/>
-                            <p>
-                                ${product.description}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <hr/>
-                <div class="row">
-                    <div class="col-sm-12 col-md-6 col-lg-6">
-                        <a href="${contextPath}/cart/add/${product.id}" class="btn btn-success btn-lg">Add to cart ${product.price}$</a>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-6">
-                        <div class="btn-group pull-right">
-                            <button class="btn btn-white btn-default"><i class="fa fa-star"></i> Add to wishlist
+                                <c:forEach items="${product.getNonPrimeImages()}" var="nonPrimeImage">
+                                    <div class="carousel-item">
+                                        <img src="${contextPath}/${nonPrimeImage.path}" class="d-block w-100" alt="...">
+                                    </div>
+                                </c:forEach>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="prev">
+                                <span style="filter: invert(100%)" class="carousel-control-prev-icon" aria-hidden="true"></span>
                             </button>
-                            <button class="btn btn-white btn-default"><i class="fa fa-envelope"></i> Contact Us</button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls${product.id}"  data-bs-slide="next">
+                                <span style="filter: invert(100%)" class="carousel-control-next-icon" aria-hidden="true"></span>
+                            </button>
                         </div>
                     </div>
+                </div>
+                <div class="col-lg-7 justify-content: right">
+                    <h4 class="box-title mt-5">Product description</h4>
+                    <p>${product.description}</p><br>
+                    <a href="${contextPath}/cart/add/${product.id}" class="btn btn-dark btn-lg">Add to cart ${product.price}$</a>
                 </div>
             </div>
         </div>
     </div>
-    <!-- end product -->
 </div>
-
 </body>
 </html>
+

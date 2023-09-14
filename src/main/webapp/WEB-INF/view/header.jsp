@@ -40,7 +40,7 @@
             <div class="item">
                 <a class="btn btn-outline-dark" href="${contextPath}/login" type="button"><i class="fa fa-sign-in"></i></a>
             </div>
-            <sec:authorize access="hasAnyAuthority('USER','ADMIN')">
+            <sec:authorize access="isAuthenticated()">
                 <div class="item">
                     <a class="btn btn-outline-dark" href="${contextPath}/logout" type="button"><i class="fa fa-sign-out"></i></a>
                 </div>
