@@ -30,7 +30,7 @@
                             <path d="M18.869 19.162l-5.943-6.484c1.339-1.401 2.075-3.233 2.075-5.178 0-2.003-0.78-3.887-2.197-5.303s-3.3-2.197-5.303-2.197-3.887 0.78-5.303 2.197-2.197 3.3-2.197 5.303 0.78 3.887 2.197 5.303 3.3 2.197 5.303 2.197c1.726 0 3.362-0.579 4.688-1.645l5.943 6.483c0.099 0.108 0.233 0.162 0.369 0.162 0.121 0 0.242-0.043 0.338-0.131 0.204-0.187 0.217-0.503 0.031-0.706zM1 7.5c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5-2.916 6.5-6.5 6.5-6.5-2.916-6.5-6.5z"></path>
                         </svg>
                     </div>
-                    <input id="search" name="searchString" type="text" placeholder="Search..."/>
+                    <input id="searchString" name="searchString" type="text" placeholder="Search..."/>
                     <div class="result-count">
                         <span>${totalSearchResults} </span>results
                     </div>
@@ -41,19 +41,19 @@
                 <div class="row">
                     <div class="input-field">
                         <div class="input-select">
-                            <input placeholder="Price from" name="priceFrom"
+                            <input placeholder="Price from" name="priceFrom" id="priceFrom"
                                    class="form-control border-success" style="color: #4ea63f" type="number">
                         </div>
                     </div>
                     <div class="input-field">
                         <div class="input-select">
-                            <input placeholder="Price to" name="priceTo"
+                            <input placeholder="Price to" name="priceTo" id="priceTo"
                                    class="form-control border-success" style="color: #4ea63f" type="number">
                         </div>
                     </div>
                     <div class="input-field">
                         <div class="input-select">
-                            <input placeholder="Category name" name="categoryName"
+                            <input placeholder="Category name" name="categoryName" id="categoryName"
                                    class="form-control border-success" style="color: #4ea63f" type="text"
                                    maxlength="15">
                         </div>
@@ -64,7 +64,7 @@
                 <div class="row third">
                     <div class="input-field">
                         <button class="btn-search" type="submit">Search</button>
-                        <button class="btn-delete" id="delete">Delete</button>
+                        <button class="btn-delete" type="submit" onclick="resetForm();">Delete</button>
                     </div>
                 </div>
             </div>
@@ -133,9 +133,8 @@
                 </div>
                 <h6 class="text-success">Available</h6>
                 <div class="d-flex flex-column mt-4">
-                    <a class="btn btn-primary btn-sm" type="button" href="${contextPath}/product/${product.id}">More
-                        info</a>
-                    <button class="btn btn-outline-primary btn-sm mt-2" type="button">Add to wishlist</button>
+                    <a class="btn btn-dark btn-sm" type="button" href="${contextPath}/product/${product.id}">More info</a>
+                    <button class="btn btn-outline-dark btn-sm mt-2" type="button">Add to wishlist</button>
                 </div>
             </div>
         </div>
@@ -197,4 +196,5 @@
     </div>
 </div>
 </body>
+<script rel="stylesheet" src="${contextPath}/jsp-scripts/search-form-script.js"></script>
 </html>

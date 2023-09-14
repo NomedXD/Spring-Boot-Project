@@ -32,8 +32,6 @@
                                 <h4>${user.name}</h4>
                                 <p class="text-secondary mb-1">Full Stack Developer</p>
                                 <p class="text-muted font-size-sm">${user.street}, ${user.accommodationNumber}, ${user.flatNumber}</p>
-                                <button class="btn btn-primary">Follow</button>
-                                <button class="btn btn-outline-primary">Message</button>
                             </div>
                         </div>
                     </div>

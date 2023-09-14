@@ -99,9 +99,9 @@
                     </div>
                     <h6 class="text-success">Available</h6>
                     <div class="d-flex flex-column mt-4">
-                        <a class="btn btn-primary btn-sm" type="button"
+                        <a class="btn btn-dark btn-sm" type="button"
                            href="${pageContext.request.contextPath}/product/${product.id}">More info</a>
-                        <button class="btn btn-outline-primary btn-sm mt-2" type="button">Add to wishlist</button>
+                        <button class="btn btn-outline-dark btn-sm mt-2" type="button">Add to wishlist</button>
                     </div>
                 </div>
             </div>
