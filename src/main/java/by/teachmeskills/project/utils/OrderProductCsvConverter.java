@@ -4,12 +4,14 @@ import by.teachmeskills.project.domain.Order;
 import by.teachmeskills.project.dto.OrderProductCsv;
 import by.teachmeskills.project.domain.Product;
 import by.teachmeskills.project.services.CategoryService;
+import by.teachmeskills.project.services.DiscountCodeService;
 import by.teachmeskills.project.services.ImageService;
 import by.teachmeskills.project.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +20,17 @@ public class OrderProductCsvConverter {
     private final UserService userService;
     private final ImageService imageService;
     private final CategoryService categoryService;
+    private final DiscountCodeService discountCodeService;
 
     @Autowired
-    public OrderProductCsvConverter(UserService userService, ImageService imageService, CategoryService categoryService) {
+    public OrderProductCsvConverter(UserService userService,
+                                    ImageService imageService,
+                                    CategoryService categoryService,
+                                    DiscountCodeService discountCodeService) {
         this.userService = userService;
         this.imageService = imageService;
         this.categoryService = categoryService;
+        this.discountCodeService = discountCodeService;
     }
 
     public List<OrderProductCsv> convertInto(List<Order> orderList) {
@@ -31,7 +38,7 @@ public class OrderProductCsvConverter {
         orderList.forEach(order -> order.getProductList().forEach(product -> orderProductCsvList.add(OrderProductCsv.builder()
                 .productId(product.getId())
                 .productName(product.getName())
-                .productImageId(product.getImage().getId())
+                .productImageId(product.getImages().get(0).getId())
                 .productDescription(product.getDescription())
                 .categoryId(product.getCategory().getId())
                 .productPrice(product.getPrice())
@@ -42,7 +49,7 @@ public class OrderProductCsvConverter {
                 .creditCardNumber(order.getCreditCardNumber())
                 .shippingType(order.getShippingType())
                 .shippingCost(order.getShippingCost())
-                .code(order.getCode())
+                .discountCodeId(order.getDiscountCode().getId())
                 .address(order.getAddress())
                 .customerNotes(order.getCustomerNotes()).build())));
         return orderProductCsvList;
@@ -65,13 +72,13 @@ public class OrderProductCsvConverter {
                         .creditCardNumber(orderProductCsv.getCreditCardNumber())
                         .shippingType(orderProductCsv.getShippingType())
                         .shippingCost(orderProductCsv.getShippingCost())
-                        .code(orderProductCsv.getCode())
+                        .discountCode(discountCodeService.getDiscountCodeById(orderProductCsv.getDiscountCodeId()).orElse(null))
                         .address(orderProductCsv.getAddress())
                         .customerNotes(orderProductCsv.getCustomerNotes()).build();
                 Product product = Product.builder()
                         .id(orderProductCsv.getProductId())
                         .name(orderProductCsv.getProductName())
-                        .image(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))
+                        .images(new ArrayList<>(Collections.singletonList(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))))
                         .description(orderProductCsv.getProductDescription())
                         .category(categoryService.getCategoryById(orderProductCsv.getCategoryId()).orElse(null))
                         .price(orderProductCsv.getProductPrice()).build();
@@ -82,7 +89,7 @@ public class OrderProductCsvConverter {
                         Product.builder()
                         .id(orderProductCsv.getProductId())
                         .name(orderProductCsv.getProductName())
-                        .image(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))
+                                .images(new ArrayList<>(Collections.singletonList(imageService.getImageById(orderProductCsv.getProductImageId()).orElse(null))))
                         .description(orderProductCsv.getProductDescription())
                         .category(categoryService.getCategoryById(orderProductCsv.getCategoryId()).orElse(null))
                         .price(orderProductCsv.getProductPrice()).build());

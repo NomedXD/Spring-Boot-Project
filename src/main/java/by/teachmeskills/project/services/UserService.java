@@ -13,15 +13,15 @@ import java.util.Optional;
 public interface UserService extends BaseService<User> {
     Optional<User> getUserById(Integer id);
 
+    Optional<User> getUserByMail(String userMail);
+
     ModelAndView getAccount(Integer userId, Integer currentPage, Integer pageSize);
 
     ModelAndView updateAccountData(User updatedUserFields, User user, Integer currentPage, Integer pageSize);
 
-    ModelAndView logIn(User user);
+    ModelAndView logIn(String error);
 
     ModelAndView register(User user, BindingResult bindingResult, String repeatPassword);
-
-    Boolean checkIfLoggedInUser(User user);
 
     void exportUserOrders(User user, HttpServletResponse response) throws CSVExportException;
 

@@ -94,6 +94,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ModelAndView getSearchedPaginatedProducts(Search search, Integer currentPage, Integer pageSize) {
+        if (Optional.ofNullable(currentPage).isEmpty() || Optional.ofNullable(pageSize).isEmpty()) {
+            currentPage = 1;
+            pageSize = EshopConstants.MIN_PAGE_SIZE;
+        }
         ModelMap model = new ModelMap();
         Long count;
         List<Product> productList;
@@ -119,6 +123,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ModelAndView getPaginatedProductsByCategoryId(Integer categoryId, Integer currentPage, Integer pageSize) {
+        if (Optional.ofNullable(currentPage).isEmpty() || Optional.ofNullable(pageSize).isEmpty()) {
+            currentPage = 1;
+            pageSize = EshopConstants.MIN_PAGE_SIZE;
+        }
         Pageable pageable = PageRequest.of((currentPage - 1), pageSize);
         ModelMap model = new ModelMap();
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
@@ -134,7 +142,7 @@ public class ProductServiceImpl implements ProductService {
          */
     @Override
     public ModelAndView applyProductsQuantity(Cart cart, HttpServletRequest request) {
-        for (Product product : cart.getProducts()) {
+        for (Product product : cart.getCartProductsInList()) {
             String quantity = request.getParameter(product.getId() + "quantity");
             if (quantity != null) {
                 Integer currentQuantity = cart.getProductQuantities().get(product.getId());
@@ -142,6 +150,7 @@ public class ProductServiceImpl implements ProductService {
                 cart.getProductQuantities().replace(product.getId(), Integer.parseInt(quantity));
             }
         }
+        Cart.removeZeroQuantityProducts(cart);
         return new ModelAndView(PagesPathEnum.CART_PAGE.getPath());
     }
 

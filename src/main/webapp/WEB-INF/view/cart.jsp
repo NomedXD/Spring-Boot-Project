@@ -42,10 +42,10 @@
                                         </c:choose>
                                     </div>
                                     <hr class="my-4">
-                                    <c:forEach items="${sessionScope.cart.products}" var="cartProduct">
+                                    <c:forEach items="${sessionScope.cart.getCartProductsInList()}" var="cartProduct">
                                         <div class="row mb-4 d-flex justify-content-between align-items-center">
                                             <div class="col-md-2 col-lg-2 col-xl-2">
-                                                <img src="${contextPath}/${cartProduct.image.path}"
+                                                <img src="${contextPath}/${cartProduct.getPrimeImage().path}"
                                                         class="img-fluid rounded-3" alt="Cotton T-shirt">
                                             </div>
                                             <div class="col-md-3 col-lg-3 col-xl-3">
@@ -88,9 +88,8 @@
                                     <hr class="my-4">
                                     <div class="d-flex justify-content-between mb-4">
                                         <h5 class="text-uppercase">ITEMS = ${sessionScope.cart.getTotalSize()}</h5>
-                                        <h5>€ 132.00</h5>
                                     </div>
-                                    <form id="checkout" action="${contextPath}/cart/checkout" method="POST">
+                                    <form name="checkout" id="checkout" action="${contextPath}/cart/checkout" method="POST">
                                         <h5 class="text-uppercase mb-3">Shipping</h5>
                                         <div class="mb-4 pb-2">
                                             <select id="addressSelect" class="selectPicker" data-size="2" name="shippingType">
@@ -106,16 +105,21 @@
                                         <h5 class="text-uppercase mb-3">Credit card</h5>
                                         <div class="mb-5">
                                             <div class="form-outline">
-                                                <input name="creditCardNumber" class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="[0-9\s]{16,19}" autocomplete="cc-number" maxlength="16" placeholder="xxxx xxxx xxxx xxxx">
-                                                <input class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="(\d{2,2}/\d{4,4})" autocomplete="cc-number" maxlength="7" placeholder="MM/YYYY">
-                                                <input class="form-control form-control-lg" type="password" inputmode="numeric" pattern="(\d{3,3})" autocomplete="cc-number" maxlength="3" placeholder="CVV">
+                                                <input name="creditCardNumber" id="creditCardNumber" class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="[0-9\s]{16,19}" autocomplete="cc-number" minlength="16" onkeyup="cc_format(this.id)" placeholder="xxxx xxxx xxxx xxxx">
+                                                <input class="form-control form-control-lg" type="tel" inputmode="numeric" pattern="(\d{2,2}/\d{4,4})" autocomplete="cc-number" minlength="7" maxlength="7" placeholder="MM/YYYY">
+                                                <input class="form-control form-control-lg" type="password" inputmode="numeric" pattern="(\d{3,3})" autocomplete="cc-number" minlength="3" maxlength="3" placeholder="CVV">
                                             </div>
                                         </div>
                                         <h5 class="text-uppercase mb-3">Give code</h5>
                                         <div class="mb-5">
                                             <div class="form-outline">
-                                                <input type="text" id="form3Examplea2" class="form-control form-control-lg" name="code" maxlength="10" />
-                                                <label class="form-label" for="form3Examplea2">Enter your code</label>
+                                                <input type="text" id="inputCode" form="checkCodeForm" class="form-control form-control-lg" name="code" maxlength="10" />
+                                                <label class="form-label" for="inputCode">Enter your code</label><br>
+                                                <c:if test="${not empty discountCodeMessage}">${discountCodeMessage}<br></c:if>
+                                                <c:if test="${not empty sessionScope.cart && not empty sessionScope.cart.appliedDiscountCode}">
+                                                    <label class="form-label" for="inputCode">Currently applied code: ${sessionScope.cart.appliedDiscountCode.name} -$${sessionScope.cart.appliedDiscountCode.discount}</label><br>
+                                                </c:if>
+                                                <button form="checkCodeForm" type="submit" class="btn btn-dark btn-block btn-lg" onclick="copyCode()" data-mdb-ripple-color="dark">Apply code</button>
                                             </div>
                                         </div>
                                         <h5 class="text-uppercase mb-3">Customer notes</h5>
@@ -129,7 +133,12 @@
                                             <h5 class="text-uppercase">Total price</h5>
                                             <h5 id="total">${sessionScope.cart.totalPrice}</h5>
                                         </div>
-                                        <button form="checkout" type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Submit</button>
+                                        <c:if test="${not empty sessionScope.cart && sessionScope.cart.getTotalSize() != 0}">
+                                            <button form="checkout" type="submit" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Submit</button>
+                                        </c:if>
+                                    </form>
+                                    <form name="checkCodeForm" id="checkCodeForm" action="${contextPath}/cart/check_code" method="POST">
+                                        <input type="hidden" name="discountCode" id="checkCodeInput" value="">
                                     </form>
                                 </div>
                             </div>
@@ -141,7 +150,7 @@
     </div>
     <script src="${contextPath}/jsp-scripts/cart.js"></script>
 </section>
-
 </body>
+<jsp:include page="footer.jsp"/>
 </html>
 

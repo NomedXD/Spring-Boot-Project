@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -25,7 +27,7 @@ public class ProductCsvConverter {
         List<ProductCsv> productCsvList = new ArrayList<>();
         productList.forEach(product -> productCsvList.add(ProductCsv.builder()
                 .name(product.getName())
-                .imageId(product.getImage().getId())
+                .imageId(product.getImages().get(0).getId())
                 .description(product.getDescription())
                 .categoryId(product.getCategory().getId())
                 .price(product.getPrice()).build()));
@@ -41,7 +43,7 @@ public class ProductCsvConverter {
         productCsvList.forEach(productCsv -> productList.add(Product.builder()
                 .id(productCsv.getId())
                 .name(productCsv.getName())
-                .image(imageService.getImageById(productCsv.getImageId()).orElse(null))
+                .images(new ArrayList<>(Collections.singletonList(imageService.getImageById(productCsv.getImageId()).orElse(null))))
                 .description(productCsv.getDescription())
                 .category(categoryService.getCategoryById(productCsv.getCategoryId()).orElse(null))
                 .price(productCsv.getPrice())

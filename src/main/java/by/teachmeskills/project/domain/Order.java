@@ -1,5 +1,6 @@
 package by.teachmeskills.project.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -7,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -50,12 +52,18 @@ public class Order extends BaseEntity{
     @Column(name = "shipping_cost")
     private Float shippingCost;
 
-    @Column(name = "code")
-    private String code;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "code_id")
+    private DiscountCode discountCode;
 
     @Column(name = "address")
     private String address;
 
     @Column(name = "customer_notes")
     private String customerNotes;
+
+    @OneToMany(mappedBy = "order", orphanRemoval = true, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<OrderDetails> orderDetails;
 }

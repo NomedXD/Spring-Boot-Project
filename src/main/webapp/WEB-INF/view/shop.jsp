@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/shop.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="${contextPath}/fontawesome/css/all.css">
     <link href="${contextPath}/jsp-scc-styles/pagination.css" rel="stylesheet"/>
     <link rel="stylesheet" href="${contextPath}/jsp-scc-styles/header.css">
@@ -21,20 +23,22 @@
             <div class="bar warn">No categories found. Try later</div>
         </c:when>
         <c:otherwise>
-            <!--Export/import-->
-            <div class="container-fluid mt-2">
-                <a href="${contextPath}/catalog/export" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark">Export
-                    categories</a>
-                <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
-                <form action="${contextPath}/catalog/import" method="POST" enctype="multipart/form-data"
-                      id="importCategories">
-                    <input type="file" class="file-input" name="file"
-                           aria-describedby="inputGroupFileAddon01" required>
-                </form>
-                <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark" form="importCategories">
-                    Import categories
-                </button>
-            </div>
+            <sec:authorize access="hasAuthority('ADMIN')">
+                <!--Export/import-->
+                <div class="container-fluid mt-2">
+                    <a href="${contextPath}/catalog/export" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark">Export
+                        categories</a>
+                    <c:if test="${not empty eiMessage}">${eiMessage}</c:if>
+                    <form action="${contextPath}/catalog/import" method="POST" enctype="multipart/form-data"
+                          id="importCategories">
+                        <input type="file" class="file-input" name="file"
+                               aria-describedby="inputGroupFileAddon01" required>
+                    </form>
+                    <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark" form="importCategories">
+                        Import categories
+                    </button>
+                </div>
+            </sec:authorize>
             <div class="container-fluid">
                 <div class="dropdown row p-2 mt-2 d-flex justify-content-end">
                     <button type="button" class="btn btn-dark dropdown-toggle float-end" data-bs-toggle="dropdown">
@@ -73,7 +77,7 @@
             </div>
             <c:forEach items="${categories}" var="item">
                 <div class="content">
-                    <img class="shopImg" src="${contextPath}/${item.image.path}"
+                    <img class="shopImg" src="${contextPath}/${item.getPrimeCategoryImage().path}"
                          alt="${contextPath}/images/error-page.png">
                     <h3>${item.name}</h3>
                     <p>${item.sometext}</p>
@@ -145,4 +149,5 @@
     </c:choose>
 </div>
 </body>
+<jsp:include page="footer.jsp"/>
 </html>

@@ -2,6 +2,7 @@ package by.teachmeskills.project.services.impl;
 
 import by.teachmeskills.project.domain.Cart;
 import by.teachmeskills.project.domain.Order;
+import by.teachmeskills.project.domain.OrderDetails;
 import by.teachmeskills.project.domain.User;
 import by.teachmeskills.project.enums.PagesPathEnum;
 import by.teachmeskills.project.repositories.OrderRepository;
@@ -14,13 +15,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     private final UserService userService;
+
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository, UserService userService) {
@@ -59,10 +63,11 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.countAllByUserId(userId);
     }
 
+
     @Override
     public ModelAndView applyOrder(Order order, Cart cart, User user) {
         preBuildOrder(order, cart, user);
-        user.getOrders().add(create(order));
+        user.getOrders().add(orderRepository.save(order));
         user = userService.update(user);
         cart.clear();
         return new ModelAndView(PagesPathEnum.CART_PAGE.getPath());
@@ -72,8 +77,15 @@ public class OrderServiceImpl implements OrderService {
         order.setDate(LocalDate.now());
         order.setPrice(cart.getTotalPrice());
         String ccNumber = order.getCreditCardNumber();
-        order.setCreditCardNumber(ccNumber.substring(0, 5).concat(" **** **** ").concat(ccNumber.substring(12, 16)));
+        order.setCreditCardNumber(ccNumber.substring(0, 5).concat(" **** **** ").concat(ccNumber.substring(ccNumber.length()-5)));
         order.setUser(user);
-        order.setProductList(cart.getProducts());
+        order.setProductList(cart.getCartProductsInList());
+        order.setDiscountCode(cart.getAppliedDiscountCode());
+        if(Optional.ofNullable(order.getOrderDetails()).isEmpty()){
+            order.setOrderDetails(new ArrayList<>());
+        }
+        cart.getProductQuantities().forEach((productId, productQuantity)-> {
+            order.getOrderDetails().add(OrderDetails.builder().order(order).productId(productId).productQuantity(productQuantity).build());
+        });
     }
 }

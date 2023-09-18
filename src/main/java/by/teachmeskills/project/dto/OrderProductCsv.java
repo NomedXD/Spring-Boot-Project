@@ -54,7 +54,7 @@ public class OrderProductCsv {
     private Float shippingCost;
 
     @CsvBindByName
-    private String code;
+    private Integer discountCodeId;
 
     @CsvBindByName
     private String address;

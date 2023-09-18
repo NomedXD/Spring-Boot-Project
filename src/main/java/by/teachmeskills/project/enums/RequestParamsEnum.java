@@ -19,7 +19,8 @@ public enum RequestParamsEnum {
     PAGE_SIZE("pageSize"),
     TOTAL_SEARCH_RESULTS("totalSearchResults"),
     LAST_PAGE_NUMBER("lastPageNumber"),
-    EXPORT_IMPORT_MESSAGE("eiMessage");
+    EXPORT_IMPORT_MESSAGE("eiMessage"),
+    DISCOUNT_CODE_MESSAGE("discountCodeMessage");
     private final String value;
 
     RequestParamsEnum(String value) {

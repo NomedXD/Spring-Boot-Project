@@ -80,6 +80,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ModelAndView getPaginatedCategories(Integer currentPage, Integer pageSize) {
+        if (Optional.ofNullable(currentPage).isEmpty() || Optional.ofNullable(pageSize).isEmpty()) {
+            currentPage = 1;
+            pageSize = EshopConstants.MIN_PAGE_SIZE;
+        }
         Pageable pageable = PageRequest.of((currentPage - 1), pageSize, Sort.by("name"));
         ModelMap model = new ModelMap();
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);

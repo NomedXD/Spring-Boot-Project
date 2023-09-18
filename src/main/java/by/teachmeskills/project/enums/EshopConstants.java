@@ -16,4 +16,5 @@ public interface EshopConstants {
     String errorProductsImportMessage = "Cannot import products from file";
     String errorCategoriesExportMessage = "Cannot export categories to file";
     String errorCategoriesImportMessage = "Cannot import categories from file";
+    String errorDiscountCodeMessage = "Discount code was not found";
 }

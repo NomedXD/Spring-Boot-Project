@@ -3,9 +3,9 @@ package by.teachmeskills.project.domain;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -17,6 +17,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -32,9 +33,9 @@ public class Category extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(optional = false, orphanRemoval = true)
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "category_id")
+    private List<Image> images;
 
     @NotNull(message = "Field is null validation error")
     @Size(max = 45, message = "Out of validation bounds")
@@ -46,10 +47,8 @@ public class Category extends BaseEntity {
     @ToString.Exclude
     private List<Product> productList;
 
-    public Category(Integer id, String name, Image image, String sometext) {
-        this.id = id;
-        this.name = name;
-        this.image = image;
-        this.sometext = sometext;
+    public Image getPrimeCategoryImage() {
+        return images.stream().filter(image -> Optional.ofNullable(image.getIsPrime()).orElse(true).equals(true))
+                .findFirst().orElse(null);
     }
 }
