@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ModelAndView applyOrder(Order order, Cart cart, User user) {
         preBuildOrder(order, cart, user);
-        user.getOrders().add(create(order));
+        user.getOrders().add(orderRepository.save(order));
         user = userService.update(user);
         cart.clear();
         return new ModelAndView(PagesPathEnum.CART_PAGE.getPath());

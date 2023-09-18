@@ -1,7 +1,6 @@
 package by.teachmeskills.project.controllers;
 
 import by.teachmeskills.project.domain.User;
-import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.services.UserService;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
-
 @Controller
 @RequestMapping("/account")
 public class AccountController {
@@ -33,11 +30,7 @@ public class AccountController {
     public ModelAndView getAccountPage(@RequestParam(name = "page", required = false) Integer currentPage,
                                        @RequestParam(name = "size", required = false) Integer pageSize) {
         User user = SecurityContextUtils.getUser().orElseThrow(SecurityException::new);
-        if (Optional.ofNullable(currentPage).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
-            return userService.getAccount(user.getId(), currentPage, pageSize);
-        } else {
-            return userService.getAccount(user.getId(), 1, EshopConstants.MIN_PAGE_SIZE);
-        }
+        return userService.getAccount(user.getId(), currentPage, pageSize);
     }
 
     @PostMapping("/update")

@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
-
 @Controller
 @RequestMapping("/search")
 @SessionAttributes({EshopConstants.SEARCH_ENTITY})
@@ -29,13 +27,9 @@ public class SearchController {
 
     @GetMapping
     public ModelAndView getSearchPage(@SessionAttribute(name = EshopConstants.SEARCH_ENTITY, required = false) Search search,
-                                      @RequestParam(name = "page") Integer currentPage,
-                                      @RequestParam(name = "size") Integer pageSize) {
-        if (Optional.ofNullable(currentPage).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
-            return productService.getSearchedPaginatedProducts(search, currentPage, pageSize);
-        } else {
-            return productService.getSearchedPaginatedProducts(search, 1, EshopConstants.MIN_PAGE_SIZE);
-        }
+                                      @RequestParam(name = "page", required = false) Integer currentPage,
+                                      @RequestParam(name = "size", required = false) Integer pageSize) {
+        return productService.getSearchedPaginatedProducts(search, currentPage, pageSize);
     }
 
     @PostMapping

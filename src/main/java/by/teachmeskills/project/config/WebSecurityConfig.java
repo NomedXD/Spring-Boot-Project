@@ -26,8 +26,6 @@ public class WebSecurityConfig {
                                         new AntPathRequestMatcher("/catalog/export/**"))
                                 .hasRole("ADMIN")
                                 .anyRequest().permitAll()
-//                        .hasRole(UserRoleEnum.USER.name())
-                        //.hasAuthority(UserRoleEnum.USER.name())
                 ).formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/catalog?page=1&size=5")

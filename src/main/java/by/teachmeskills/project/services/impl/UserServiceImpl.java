@@ -95,6 +95,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ModelAndView getAccount(Integer userId, Integer currentPage, Integer pageSize) {
+        if (Optional.ofNullable(currentPage).isEmpty() || Optional.ofNullable(pageSize).isEmpty()) {
+            currentPage = 1;
+            pageSize = EshopConstants.MIN_PAGE_SIZE;
+        }
         ModelMap model = new ModelMap();
         model.addAttribute(RequestParamsEnum.CURRENT_PAGE.getValue(), currentPage);
         model.addAttribute(RequestParamsEnum.PAGE_SIZE.getValue(), pageSize);

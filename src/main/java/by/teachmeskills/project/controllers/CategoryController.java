@@ -1,6 +1,5 @@
 package by.teachmeskills.project.controllers;
 
-import by.teachmeskills.project.enums.EshopConstants;
 import by.teachmeskills.project.exception.CSVExportException;
 import by.teachmeskills.project.exception.CSVImportException;
 import by.teachmeskills.project.services.ProductService;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/category")
@@ -31,11 +28,7 @@ public class CategoryController {
     public ModelAndView getCategoryPage(@PathVariable(name = "categoryId") Integer categoryId,
                                         @RequestParam(name = "page", required = false) Integer currentPage,
                                         @RequestParam(name = "size", required = false) Integer pageSize) {
-        if (Optional.ofNullable(currentPage).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
-            return productService.getPaginatedProductsByCategoryId(categoryId, currentPage, pageSize);
-        } else {
-            return productService.getPaginatedProductsByCategoryId(categoryId, 1, EshopConstants.MIN_PAGE_SIZE);
-        }
+        return productService.getPaginatedProductsByCategoryId(categoryId, currentPage, pageSize);
     }
 
     @GetMapping("/export/{categoryId}")

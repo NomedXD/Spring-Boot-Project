@@ -68,8 +68,8 @@ public class Cart {
     }
 
     public static void removeZeroQuantityProducts(Cart cart) {
-            cart.getProducts().entrySet().removeIf(product -> cart.getProductQuantities().get(product.getValue().getId()) == 0);
-            cart.getProductQuantities().entrySet().removeIf(quantity->quantity.getValue()==0);
+        cart.getProducts().entrySet().removeIf(product -> cart.getProductQuantities().get(product.getValue().getId()) == 0);
+        cart.getProductQuantities().entrySet().removeIf(quantity -> quantity.getValue() == 0);
     }
 
     public List<Product> getCartProductsInList() {
