@@ -1,0 +1,27 @@
+version: "2.21.0-desktop.1"
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 2007659
+      MYSQL_DATABASE: tmsdb
+    ports:
+      - "3306:3306"
+
+  spring_boot_project:
+    container_name: spring_boot_project
+    restart: always
+    depends_on:
+      - mysql
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/tmsdb
+networks:
+  spring_boot_project_mysql:

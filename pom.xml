@@ -16,7 +16,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>SpringBootProject</name>
     <description>SpringBootProject</description>
-
+    <packaging>war</packaging>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -110,6 +110,22 @@
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                        <resource>
+                            <directory>src/main/resources</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
