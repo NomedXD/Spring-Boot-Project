@@ -34,7 +34,8 @@
                         <input type="file" class="file-input" name="file"
                                aria-describedby="inputGroupFileAddon01" required>
                     </form>
-                    <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark" form="importCategories">
+                    <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark"
+                            form="importCategories">
                         Import categories
                     </button>
                 </div>
@@ -86,67 +87,68 @@
                     </form>
                 </div>
             </c:forEach>
-            <div class="container">
-                <div class="paginationContainer">
-                    <nav class="pagination-outer" aria-label="Page navigation">
-                        <ul class="pagination">
-                            <c:if test="${currentPage >= 2}">
-                                <li class="page-item">
-                                    <a href="${contextPath}/catalog?page=${currentPage - 1}&size=${pageSize}"
-                                       class="page-link"
-                                       aria-label="Previous">
-                                        <span aria-hidden="true"><</span>
-                                    </a>
-                                </li>
-                            </c:if>
-                            <c:choose>
-                                <c:when test="${currentPage <= totalPaginatedVisiblePages / 2 + 1}">
-                                    <c:forEach begin="1" end="${lastPageNumber}" var="i">
-                                        <c:choose>
-                                            <c:when test="${i == currentPage}">
-                                                <li class="page-item active"><a class="page-link" href="${contextPath}/catalog?page=${currentPage}&size=${pageSize}">${currentPage}</a>
-                                                </li>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <li class="page-item"><a class="page-link"
-                                                                         href="${contextPath}/catalog?page=${i}&size=${pageSize}">${i}</a>
-                                                </li>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:forEach begin="${currentPage - totalPaginatedVisiblePages / 2}"
-                                               end="${lastPageNumber}" var="j">
-                                        <c:choose>
-                                            <c:when test="${j == currentPage}">
-                                                <li class="page-item active"><a class="page-link"
-                                                                                href="${contextPath}/catalog?page=${currentPage}&size=${pageSize}">${currentPage}</a>
-                                                </li>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <li class="page-item"><a class="page-link"
-                                                                         href="${contextPath}/catalog?page=${j}&size=${pageSize}">${j}</a>
-                                                </li>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:forEach>
-                                </c:otherwise>
-                            </c:choose>
-                            <c:if test="${currentPage <= lastPageNumber - 1}">
-                                <li class="page-item">
-                                    <a href="${contextPath}/catalog?page=${currentPage + 1}&size=${pageSize}"
-                                       class="page-link" aria-label="Next">
-                                        <span aria-hidden="true">></span>
-                                    </a>
-                                </li>
-                            </c:if>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
         </c:otherwise>
     </c:choose>
+</div>
+<div class="container">
+    <div class="paginationContainer">
+        <nav class="pagination-outer" aria-label="Page navigation">
+            <ul class="pagination">
+                <c:if test="${currentPage >= 2}">
+                    <li class="page-item">
+                        <a href="${contextPath}/catalog?page=${currentPage - 1}&size=${pageSize}"
+                           class="page-link"
+                           aria-label="Previous">
+                            <span aria-hidden="true"><</span>
+                        </a>
+                    </li>
+                </c:if>
+                <c:choose>
+                    <c:when test="${currentPage <= totalPaginatedVisiblePages / 2 + 1}">
+                        <c:forEach begin="1" end="${lastPageNumber}" var="i">
+                            <c:choose>
+                                <c:when test="${i == currentPage}">
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="${contextPath}/catalog?page=${currentPage}&size=${pageSize}">${currentPage}</a>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="${contextPath}/catalog?page=${i}&size=${pageSize}">${i}</a>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach begin="${currentPage - totalPaginatedVisiblePages / 2}"
+                                   end="${lastPageNumber}" var="j">
+                            <c:choose>
+                                <c:when test="${j == currentPage}">
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="${contextPath}/catalog?page=${currentPage}&size=${pageSize}">${currentPage}</a>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="${contextPath}/catalog?page=${j}&size=${pageSize}">${j}</a>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
+                <c:if test="${currentPage <= lastPageNumber - 1}">
+                    <li class="page-item">
+                        <a href="${contextPath}/catalog?page=${currentPage + 1}&size=${pageSize}"
+                           class="page-link" aria-label="Next">
+                            <span aria-hidden="true">></span>
+                        </a>
+                    </li>
+                </c:if>
+            </ul>
+        </nav>
+    </div>
 </div>
 </body>
 <jsp:include page="footer.jsp"/>
